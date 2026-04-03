@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const CreateSceneSchema = z.object({
-  sequenceId: z.string().min(1),
-  sceneNumber: z.number().int().min(1).optional(), // Auto-assign if not provided
+  sequenceId: z.string().min(1).optional(), // Auto-resolve if not provided
+  sceneNumber: z.number().int().min(1).optional(),
   intExt: z.enum(['INT', 'EXT', 'INT_EXT']).optional(),
   locationId: z.string().optional().nullable(),
   timeOfDay: z.string().max(50).optional().nullable(),

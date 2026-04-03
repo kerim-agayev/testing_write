@@ -3,6 +3,7 @@ import { requireAuth, handleAuthError } from '@/lib/auth-utils';
 import { listScenes, createScene } from '@/lib/db/scenes';
 import { canEditScreenplay } from '@/lib/db/screenplays';
 import { CreateSceneSchema } from '@/lib/validations/scene';
+import { prisma } from '@/lib/prisma';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -32,7 +33,7 @@ export async function POST(req: Request, { params }: Params) {
       );
     }
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const parsed = CreateSceneSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -42,7 +43,41 @@ export async function POST(req: Request, { params }: Params) {
       );
     }
 
-    const scene = await createScene(parsed.data);
+    // Auto-resolve sequenceId if not provided
+    let sequenceId = parsed.data.sequenceId;
+    if (!sequenceId) {
+      // Find the last sequence in this screenplay
+      const lastSequence = await prisma.sequence.findFirst({
+        where: {
+          structure: {
+            act: { screenplayId: id },
+          },
+        },
+        orderBy: { order: 'desc' },
+      });
+
+      if (lastSequence) {
+        sequenceId = lastSequence.id;
+      } else {
+        // No structure exists — create default Act → Structure → Sequence
+        const act = await prisma.act.create({
+          data: { screenplayId: id, title: 'Act One', order: 1 },
+        });
+        const structure = await prisma.structure.create({
+          data: { actId: act.id, title: 'Setup', order: 1 },
+        });
+        const sequence = await prisma.sequence.create({
+          data: { structureId: structure.id, title: 'Sequence 1', order: 1 },
+        });
+        sequenceId = sequence.id;
+      }
+    }
+
+    const scene = await createScene({
+      ...parsed.data,
+      sequenceId,
+    });
+
     return NextResponse.json(scene, { status: 201 });
   } catch (error) {
     return handleAuthError(error);
