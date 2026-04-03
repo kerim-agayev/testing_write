@@ -9,6 +9,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { useUIStore } from '@/store/uiStore';
+import { useTranslations } from 'next-intl';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import type { UserProfile } from '@/types/api';
@@ -19,6 +20,7 @@ export default function ProfilePage() {
   const updateProfile = useUpdateProfile();
   const { theme, setTheme } = useTheme();
   const addToast = useUIStore((s) => s.addToast);
+  const tc = useTranslations('common');
 
   const [name, setName] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -52,7 +54,14 @@ export default function ProfilePage() {
     }
   };
 
-  if (!profile) return <div className="max-w-[600px] mx-auto px-6 py-10 text-txt-muted">Loading...</div>;
+  if (!profile) return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-txt-muted">{tc('loading')}</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-[600px] mx-auto px-6 py-10 space-y-8">

@@ -1,16 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { useAdminStats, useAdminUsers, useAdminMentors, useCreateMentor } from '@/lib/api/hooks';
+import { useTranslations } from 'next-intl';
+import {
+  useAdminStats, useAdminUsers, useAdminMentors, useCreateMentor,
+  useAdminMentorRequests, useApproveMentorRequest, useRejectMentorRequest,
+} from '@/lib/api/hooks';
 import { Tabs } from '@/components/ui/Tabs';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Avatar } from '@/components/ui/Avatar';
 import { useUIStore } from '@/store/uiStore';
+import { Check, X } from 'lucide-react';
 import type { AdminStats } from '@/types/api';
 
 export default function AdminPage() {
+  const t = useTranslations('admin');
+  const tc = useTranslations('common');
   const [activeTab, setActiveTab] = useState('stats');
   const { data: statsData } = useAdminStats();
   const stats = statsData as AdminStats | undefined;
@@ -19,7 +26,15 @@ export default function AdminPage() {
   const users = (usersData || []) as Array<{ id: string; name: string; email: string; role: string; createdAt: string; _count: { screenplays: number } }>;
   const { data: mentorsData } = useAdminMentors();
   const mentors = (mentorsData || []) as Array<{ id: string; name: string; email: string; _count: { mentorAssignments: number } }>;
+  const { data: requestsData } = useAdminMentorRequests('PENDING');
+  const pendingRequests = (requestsData || []) as Array<{
+    id: string; screenplayId: string; status: string; requestedAt: string;
+    mentor: { id: string; name: string; email: string };
+    screenplay: { id: string; title: string; type: string; owner: { id: string; name: string; email: string } };
+  }>;
   const createMentor = useCreateMentor();
+  const approveMentor = useApproveMentorRequest();
+  const rejectMentor = useRejectMentorRequest();
   const addToast = useUIStore((s) => s.addToast);
 
   const [mentorForm, setMentorForm] = useState({ name: '', email: '', password: '' });
@@ -29,7 +44,7 @@ export default function AdminPage() {
     if (!mentorForm.name || !mentorForm.email || !mentorForm.password) return;
     try {
       await createMentor.mutateAsync(mentorForm);
-      addToast('Mentor created successfully', 'success');
+      addToast('Mentor created', 'success');
       setMentorForm({ name: '', email: '', password: '' });
       setShowMentorForm(false);
     } catch {
@@ -37,16 +52,35 @@ export default function AdminPage() {
     }
   };
 
+  const handleApprove = async (id: string) => {
+    try {
+      await approveMentor.mutateAsync({ id, status: 'ACTIVE' });
+      addToast('Mentor request approved', 'success');
+    } catch {
+      addToast('Failed to approve', 'error');
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      await rejectMentor.mutateAsync(id);
+      addToast('Mentor request rejected', 'success');
+    } catch {
+      addToast('Failed to reject', 'error');
+    }
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-10">
-      <h1 className="text-[32px] font-semibold text-txt-primary mb-6">Admin Panel</h1>
+      <h1 className="text-[32px] font-semibold text-txt-primary mb-6">{t('title') || 'Admin Panel'}</h1>
 
       <Tabs
         tabs={[
-          { key: 'stats', label: 'Platform Stats' },
-          { key: 'mentors', label: 'Mentors' },
-          { key: 'users', label: 'Users' },
-          { key: 'demo', label: 'Demo Screenplay' },
+          { key: 'stats', label: t('platformStats') || 'Platform Stats' },
+          { key: 'mentors', label: t('mentors') || 'Mentors' },
+          { key: 'requests', label: `${t('mentorRequests') || 'Mentor Requests'}${pendingRequests.length ? ` (${pendingRequests.length})` : ''}` },
+          { key: 'users', label: t('users') || 'Users' },
+          { key: 'demo', label: t('demoScreenplay') || 'Demo Screenplay' },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -56,10 +90,10 @@ export default function AdminPage() {
       {/* Stats Tab */}
       {activeTab === 'stats' && stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Total Users" value={stats.totalUsers} />
-          <StatCard label="Total Screenplays" value={stats.totalScreenplays} />
-          <StatCard label="Total Scenes" value={stats.totalScenes} />
-          <StatCard label="Active This Week" value={stats.activeThisWeek} />
+          <StatCard label={t('totalUsers') || 'Total Users'} value={stats.totalUsers} />
+          <StatCard label={t('totalScreenplays') || 'Total Screenplays'} value={stats.totalScreenplays} />
+          <StatCard label={t('totalScenes') || 'Total Scenes'} value={stats.totalScenes} />
+          <StatCard label={t('activeThisWeek') || 'Active This Week'} value={stats.activeThisWeek} />
         </div>
       )}
 
@@ -68,17 +102,17 @@ export default function AdminPage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-txt-primary">Mentors ({mentors.length})</h2>
-            <Button onClick={() => setShowMentorForm(!showMentorForm)}>Add Mentor</Button>
+            <Button onClick={() => setShowMentorForm(!showMentorForm)}>{t('addMentor') || 'Add Mentor'}</Button>
           </div>
 
           {showMentorForm && (
             <div className="bg-surface-card border border-border rounded-lg p-6 mb-6 max-w-md">
-              <h3 className="font-semibold text-txt-primary mb-4">New Mentor</h3>
+              <h3 className="font-semibold text-txt-primary mb-4">{t('newMentor') || 'New Mentor'}</h3>
               <div className="space-y-3">
                 <Input label="Name" value={mentorForm.name} onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })} />
                 <Input label="Email" type="email" value={mentorForm.email} onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })} />
                 <Input label="Password" type="password" value={mentorForm.password} onChange={(e) => setMentorForm({ ...mentorForm, password: e.target.value })} />
-                <Button onClick={handleCreateMentor} loading={createMentor.isPending} className="w-full">Create Mentor</Button>
+                <Button onClick={handleCreateMentor} loading={createMentor.isPending} className="w-full">{tc('create')}</Button>
               </div>
             </div>
           )}
@@ -106,6 +140,73 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Mentor Requests Tab */}
+      {activeTab === 'requests' && (
+        <div>
+          <h2 className="text-lg font-semibold text-txt-primary mb-6">{t('mentorRequests') || 'Pending Mentor Requests'}</h2>
+
+          {pendingRequests.length === 0 ? (
+            <div className="bg-surface-card border border-border rounded-lg p-8 text-center">
+              <p className="text-sm text-txt-muted">No pending mentor requests.</p>
+            </div>
+          ) : (
+            <div className="bg-surface-card border border-border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-txt-muted">User</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-txt-muted">Screenplay</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-txt-muted">Requested Mentor</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-txt-muted">Date</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold uppercase text-txt-muted">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingRequests.map((req) => (
+                    <tr key={req.id} className="border-b border-border hover:bg-surface-hover">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <Avatar name={req.screenplay.owner.name} size={32} />
+                          <span className="text-sm text-txt-primary">{req.screenplay.owner.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-txt-secondary">{req.screenplay.title}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <Avatar name={req.mentor.name} size={32} />
+                          <span className="text-sm text-txt-primary">{req.mentor.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-txt-muted">
+                        {new Date(req.requestedAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleApprove(req.id)}
+                            className="w-8 h-8 flex items-center justify-center rounded bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                            title="Approve"
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleReject(req.id)}
+                            className="w-8 h-8 flex items-center justify-center rounded bg-[var(--color-danger)]/10 text-[var(--color-danger)] hover:bg-[var(--color-danger)]/20 transition-colors"
+                            title="Reject"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
@@ -146,11 +247,11 @@ export default function AdminPage() {
       {/* Demo Tab */}
       {activeTab === 'demo' && (
         <div className="bg-surface-card border border-border rounded-lg p-6 max-w-lg">
-          <h3 className="font-semibold text-txt-primary mb-2">Global Demo Screenplay</h3>
+          <h3 className="font-semibold text-txt-primary mb-2">{t('demoScreenplay') || 'Global Demo Screenplay'}</h3>
           <p className="text-sm text-txt-secondary mb-4">
-            The demo screenplay is shown to all visitors on the landing page. Only one screenplay can be the demo at a time.
+            The demo screenplay is shown to all visitors on the landing page. Run the seed script to set up the Harry Potter demo.
           </p>
-          <p className="text-sm text-txt-muted">Current demo management will be available here.</p>
+          <code className="text-xs bg-surface-panel rounded p-2 block text-txt-muted">npm run seed:demo</code>
         </div>
       )}
     </div>

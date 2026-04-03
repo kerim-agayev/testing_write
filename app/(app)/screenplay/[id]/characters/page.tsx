@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Plus, ArrowLeft } from 'lucide-react';
+import { Plus, ArrowLeft, X } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useCharacters, useCreateCharacter, useUpdateCharacter } from '@/lib/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -14,12 +15,10 @@ import { Avatar } from '@/components/ui/Avatar';
 import { cn } from '@/lib/utils/cn';
 import type { CharacterRole } from '@/types/api';
 
-const ROLE_LABELS: Record<CharacterRole, string> = {
-  PROTAGONIST: 'Protagonist', ANTAGONIST: 'Antagonist', SUPPORTING: 'Supporting', MINOR: 'Minor',
-};
-
 export default function CharactersPage() {
   const { id } = useParams<{ id: string }>();
+  const t = useTranslations('characters');
+  const tc = useTranslations('common');
   const { data: characters = [], isLoading } = useCharacters(id);
   const createMutation = useCreateCharacter(id);
   const updateMutation = useUpdateCharacter(id);
@@ -28,6 +27,12 @@ export default function CharactersPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [detailTab, setDetailTab] = useState('profile');
+  const [addingTrait, setAddingTrait] = useState(false);
+  const [newTrait, setNewTrait] = useState('');
+
+  const ROLE_LABELS: Record<CharacterRole, string> = {
+    PROTAGONIST: t('protagonist'), ANTAGONIST: t('antagonist'), SUPPORTING: t('supporting'), MINOR: t('minor'),
+  };
 
   const chars = characters as Array<{
     id: string; name: string; roleType: CharacterRole; isMajor: boolean;
@@ -44,6 +49,20 @@ export default function CharactersPage() {
     setShowAddForm(false);
   };
 
+  const handleAddTrait = () => {
+    if (!newTrait.trim() || !selected) return;
+    const updatedTraits = [...selected.traits, newTrait.trim()];
+    updateMutation.mutate({ id: selected.id, data: { traits: updatedTraits } });
+    setNewTrait('');
+    setAddingTrait(false);
+  };
+
+  const handleRemoveTrait = (traitToRemove: string) => {
+    if (!selected) return;
+    const updatedTraits = selected.traits.filter((tr) => tr !== traitToRemove);
+    updateMutation.mutate({ id: selected.id, data: { traits: updatedTraits } });
+  };
+
   return (
     <div className="flex h-[calc(100vh-64px)]">
       {/* Left sidebar - Character list */}
@@ -51,14 +70,14 @@ export default function CharactersPage() {
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <Link href={`/screenplay/${id}/edit`} className="flex items-center gap-1 text-sm text-txt-secondary hover:text-txt-primary">
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-4 h-4" /> {tc('back')}
             </Link>
             <Button size="sm" onClick={() => setShowAddForm(true)}>
-              <Plus className="w-3.5 h-3.5" /> Add
+              <Plus className="w-3.5 h-3.5" /> {tc('create')}
             </Button>
           </div>
 
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-3">Characters</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-3">{t('addCharacter').replace('əlavə et', '').trim() || 'Characters'}</h2>
 
           {/* Filter tabs */}
           <div className="flex flex-wrap gap-1 mb-4">
@@ -71,7 +90,7 @@ export default function CharactersPage() {
                   filter === f ? 'bg-primary text-white' : 'text-txt-muted hover:text-txt-primary'
                 )}
               >
-                {f === 'all' ? 'All' : ROLE_LABELS[f as CharacterRole]}
+                {f === 'all' ? tc('confirm').replace('Təsdiq et', 'All') || 'All' : ROLE_LABELS[f as CharacterRole]}
               </button>
             ))}
           </div>
@@ -80,13 +99,13 @@ export default function CharactersPage() {
           {showAddForm && (
             <div className="mb-3 flex gap-2">
               <Input placeholder="Name" value={newName} onChange={(e) => setNewName(e.target.value)} className="flex-1" />
-              <Button size="sm" onClick={handleAddCharacter} loading={createMutation.isPending}>Add</Button>
+              <Button size="sm" onClick={handleAddCharacter} loading={createMutation.isPending}>{tc('create')}</Button>
             </div>
           )}
 
           {/* Character list */}
           {isLoading ? (
-            <p className="text-sm text-txt-muted">Loading...</p>
+            <p className="text-sm text-txt-muted">{tc('loading')}</p>
           ) : (
             <div className="space-y-1">
               {filtered.map((c) => (
@@ -128,18 +147,18 @@ export default function CharactersPage() {
 
             <div className="flex items-center gap-6 text-sm text-txt-secondary mb-6">
               {selected.age && <span>Age {selected.age}</span>}
-              <span>In {selected._count.sceneCharacters} scenes</span>
+              <span>{selected._count.sceneCharacters} scenes</span>
               <Toggle
                 checked={selected.isMajor}
                 onChange={(v) => updateMutation.mutate({ id: selected.id, data: { isMajor: v } })}
-                label="Track arc?"
+                label={t('isMajor')}
               />
             </div>
 
             <Tabs
               tabs={[
                 { key: 'profile', label: 'Profile' },
-                { key: 'arc', label: 'Arc Chart' },
+                { key: 'arc', label: t('episodeArc').replace('Bölüm Arkı', 'Arc Chart') || 'Arc Chart' },
               ]}
               activeTab={detailTab}
               onTabChange={setDetailTab}
@@ -149,12 +168,44 @@ export default function CharactersPage() {
               {detailTab === 'profile' && (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-sm font-medium text-txt-secondary mb-2">Traits</h3>
+                    <h3 className="text-sm font-medium text-txt-secondary mb-2">{t('traits')}</h3>
                     <div className="flex flex-wrap gap-2">
-                      {selected.traits.map((t, i) => (
-                        <Badge key={i} variant="genre">{t}</Badge>
+                      {selected.traits.map((trait, i) => (
+                        <span
+                          key={i}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--surface-hover)] text-txt-primary border border-border"
+                        >
+                          {trait}
+                          <button
+                            onClick={() => handleRemoveTrait(trait)}
+                            className="ml-0.5 text-txt-muted hover:text-[var(--color-danger)] transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </span>
                       ))}
-                      <Badge variant="genre" onClick={() => {}}>+ Add trait</Badge>
+
+                      {addingTrait ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            autoFocus
+                            value={newTrait}
+                            onChange={(e) => setNewTrait(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddTrait()}
+                            onBlur={() => { if (!newTrait) setAddingTrait(false); }}
+                            placeholder="Trait..."
+                            className="w-24 text-sm border-b border-primary outline-none bg-transparent px-1 py-0.5"
+                          />
+                          <button onClick={handleAddTrait} className="text-xs text-primary font-medium">+</button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setAddingTrait(true)}
+                          className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border border-dashed border-border text-txt-secondary hover:text-primary hover:border-primary transition-colors"
+                        >
+                          + {t('addCharacter').includes('əlavə') ? 'Add trait' : 'Add trait'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -162,8 +213,8 @@ export default function CharactersPage() {
               {detailTab === 'arc' && (
                 <div className="py-10 text-center text-txt-muted">
                   {selected.isMajor
-                    ? 'Add internal/external scores in the editor to see the arc chart.'
-                    : `Arc tracking is enabled for major characters. Change ${selected.name} to a major character to track their journey.`}
+                    ? t('externalJourney') + ' / ' + t('internalJourney') + ' — Add scores in the editor to see the arc chart.'
+                    : `Arc tracking is for major characters. Enable "${t('isMajor')}" to track ${selected.name}'s journey.`}
                 </div>
               )}
             </div>

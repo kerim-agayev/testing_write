@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useMentorAssignments, useCreateMentorNote } from '@/lib/api/hooks';
+import { useTranslations } from 'next-intl';
+import { useMentorAssignments, useCreateMentorNote, useScreenplayScenes } from '@/lib/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Flag, MessageSquare, Send } from 'lucide-react';
@@ -9,6 +10,8 @@ import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils/cn';
 
 export default function MentorPage() {
+  const t = useTranslations('mentor');
+  const tc = useTranslations('common');
   const { data } = useMentorAssignments();
   const assignments = (data || []) as Array<{
     id: string; screenplayId: string; status: string;
@@ -17,23 +20,34 @@ export default function MentorPage() {
   const createNote = useCreateMentorNote();
   const addToast = useUIStore((s) => s.addToast);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
   const [noteContent, setNoteContent] = useState('');
   const [noteType, setNoteType] = useState<'NOTE' | 'FLAG'>('NOTE');
   const [flagReason, setFlagReason] = useState('');
 
   const selected = assignments.find((a) => a.screenplayId === selectedId);
 
+  // Fetch scenes for selected screenplay
+  const { data: scenesData } = useScreenplayScenes(selectedId || '');
+  const scenes = (scenesData || []) as Array<{
+    id: string; sceneNumber: number; intExt: string; synopsis: string | null;
+  }>;
+
   const handleSubmitNote = async () => {
-    if (!noteContent.trim() || !selectedId) return;
+    if (!noteContent.trim() || !selectedSceneId) {
+      addToast('Select a scene and write your note', 'error');
+      return;
+    }
     try {
       await createNote.mutateAsync({
-        sceneId: 'placeholder', // Will need actual scene selection
+        sceneId: selectedSceneId,
         content: noteContent,
         type: noteType,
         flagReason: noteType === 'FLAG' ? flagReason : null,
       });
-      addToast('Note added successfully', 'success');
+      addToast(t('noteAdded') || 'Note added', 'success');
       setNoteContent('');
+      setFlagReason('');
     } catch {
       addToast('Failed to add note', 'error');
     }
@@ -44,15 +58,17 @@ export default function MentorPage() {
       {/* Left sidebar - Assigned scripts */}
       <div className="w-[300px] bg-surface-panel border-r border-border overflow-y-auto shrink-0">
         <div className="p-4">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">Assigned Scripts</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">
+            {t('assignedScripts') || 'Assigned Scripts'}
+          </h2>
           {assignments.length === 0 ? (
-            <p className="text-sm text-txt-muted">No scripts assigned for review at this time.</p>
+            <p className="text-sm text-txt-muted">{t('noAssignments') || 'No scripts assigned for review.'}</p>
           ) : (
             <div className="space-y-2">
               {assignments.map((a) => (
                 <button
                   key={a.id}
-                  onClick={() => setSelectedId(a.screenplayId)}
+                  onClick={() => { setSelectedId(a.screenplayId); setSelectedSceneId(null); }}
                   className={cn(
                     'w-full text-left p-3 rounded-lg border transition-all',
                     selectedId === a.screenplayId
@@ -82,22 +98,54 @@ export default function MentorPage() {
               <p className="text-sm text-txt-secondary">by {selected.screenplay.owner.name}</p>
             </div>
 
+            {/* Scene selector */}
+            <div className="mb-6">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-txt-muted mb-2">
+                Select Scene
+              </label>
+              {scenes.length === 0 ? (
+                <p className="text-sm text-txt-muted">{tc('loading')}</p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
+                  {scenes.map((scene) => (
+                    <button
+                      key={scene.id}
+                      onClick={() => setSelectedSceneId(scene.id)}
+                      className={cn(
+                        'text-left p-2 rounded border text-sm transition-all',
+                        selectedSceneId === scene.id
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-border text-txt-secondary hover:border-txt-muted'
+                      )}
+                    >
+                      <span className="font-mono text-xs">#{scene.sceneNumber}</span>{' '}
+                      <span className="text-xs">{scene.intExt}. {scene.synopsis || 'Untitled'}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Mentor tools */}
             <div className="bg-surface-card border border-border rounded-lg p-6 max-w-lg">
-              <h3 className="text-sm font-semibold text-txt-primary mb-4">Mentor Tools</h3>
+              <h3 className="text-sm font-semibold text-txt-primary mb-4">{t('mentorTools') || 'Mentor Tools'}</h3>
+
+              {!selectedSceneId && (
+                <p className="text-sm text-[var(--color-warning)] mb-4">Select a scene above to add feedback.</p>
+              )}
 
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setNoteType('NOTE')}
                   className={cn('flex-1 py-2 rounded text-sm font-medium transition-all', noteType === 'NOTE' ? 'bg-primary text-white' : 'bg-surface-panel text-txt-secondary')}
                 >
-                  <MessageSquare className="w-4 h-4 inline mr-1" /> Note
+                  <MessageSquare className="w-4 h-4 inline mr-1" /> {t('addNote') || 'Note'}
                 </button>
                 <button
                   onClick={() => setNoteType('FLAG')}
-                  className={cn('flex-1 py-2 rounded text-sm font-medium transition-all', noteType === 'FLAG' ? 'bg-warning text-white' : 'bg-surface-panel text-txt-secondary')}
+                  className={cn('flex-1 py-2 rounded text-sm font-medium transition-all', noteType === 'FLAG' ? 'bg-[var(--color-warning)] text-white' : 'bg-surface-panel text-txt-secondary')}
                 >
-                  <Flag className="w-4 h-4 inline mr-1" /> Flag
+                  <Flag className="w-4 h-4 inline mr-1" /> {t('flagScene') || 'Flag'}
                 </button>
               </div>
 
@@ -108,11 +156,11 @@ export default function MentorPage() {
                   className="w-full mb-3 h-10 px-3 border border-border rounded bg-surface-card text-sm text-txt-primary"
                 >
                   <option value="">Select reason...</option>
-                  <option value="Pacing">Pacing</option>
-                  <option value="Dialogue">Dialogue</option>
-                  <option value="Structure">Structure</option>
-                  <option value="Character">Character</option>
-                  <option value="Other">Other</option>
+                  <option value="Pacing">{t('flagReasons.pacing') || 'Pacing'}</option>
+                  <option value="Dialogue">{t('flagReasons.dialogue') || 'Dialogue'}</option>
+                  <option value="Structure">{t('flagReasons.structure') || 'Structure'}</option>
+                  <option value="Character">{t('flagReasons.character') || 'Character'}</option>
+                  <option value="Other">{t('flagReasons.other') || 'Other'}</option>
                 </select>
               )}
 
@@ -124,7 +172,12 @@ export default function MentorPage() {
                 className="w-full px-3 py-2.5 border border-border rounded bg-surface-card text-sm text-txt-primary resize-y outline-none focus:border-primary mb-3"
               />
 
-              <Button onClick={handleSubmitNote} loading={createNote.isPending} className="w-full">
+              <Button
+                onClick={handleSubmitNote}
+                loading={createNote.isPending}
+                className="w-full"
+                disabled={!selectedSceneId}
+              >
                 <Send className="w-4 h-4" /> Submit {noteType === 'FLAG' ? 'Flag' : 'Note'}
               </Button>
             </div>

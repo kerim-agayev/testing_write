@@ -5,7 +5,8 @@
     "profile": "Profile",
     "signOut": "Sign Out",
     "mentor": "Mentor Panel",
-    "admin": "Admin Panel"
+    "admin": "Admin Panel",
+    "myScreenplays": "My Screenplays"
   },
   "dashboard": {
     "greeting": "Good morning, {name}",
@@ -27,7 +28,8 @@
       "inThisScene": "IN THIS SCENE",
       "sceneValue": "SCENE VALUE",
       "dramaticCharge": "Dramatic Charge",
-      "addScene": "+ Add Scene"
+      "addScene": "+ Add Scene",
+      "noScenes": "No scenes yet. Add your first scene to start writing."
     },
     "rightPanel": {
       "storyData": "STORY DATA",
@@ -121,6 +123,9 @@
     "flagScene": "Flag this scene",
     "messageAuthor": "Message Author",
     "noFeedback": "No mentor feedback for this scene yet.",
+    "noAssignments": "No scripts assigned for review at this time.",
+    "mentorTools": "Mentor Tools",
+    "noteAdded": "Note added successfully",
     "flagReasons": {
       "pacing": "Pacing",
       "dialogue": "Dialogue",
@@ -140,7 +145,9 @@
     "totalUsers": "Total Users",
     "totalScreenplays": "Total Screenplays",
     "totalScenes": "Total Scenes",
-    "activeThisWeek": "Active This Week"
+    "activeThisWeek": "Active This Week",
+    "mentorRequests": "Mentor Requests",
+    "newMentor": "New Mentor"
   },
   "share": {
     "title": "Share & Collaboration",
@@ -150,6 +157,9 @@
     "sendInvite": "Send Invite",
     "requestMentor": "Request a Mentor",
     "requestSent": "Request Sent",
+    "inviteSent": "Invitation sent!",
+    "requestMentorDesc": "Request a mentor to review your screenplay and provide feedback.",
+    "mentor": "Mentor",
     "coWriterInfo": "Co-writers can read and edit all scenes in this screenplay.",
     "mentorInfo": "Mentors can view and annotate your screenplay but cannot edit it."
   },

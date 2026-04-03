@@ -1,7 +1,31 @@
 import { NextResponse } from 'next/server';
-import { requireRole, handleAuthError } from '@/lib/auth-utils';
+import { requireAuth, requireRole, handleAuthError } from '@/lib/auth-utils';
 import { createMentorNote } from '@/lib/db/mentors';
 import { CreateMentorNoteSchema } from '@/lib/validations/mentor';
+import { prisma } from '@/lib/prisma';
+
+// GET /api/mentor/notes?sceneId=xxx — get notes for a scene
+export async function GET(req: Request) {
+  try {
+    await requireAuth();
+    const { searchParams } = new URL(req.url);
+    const sceneId = searchParams.get('sceneId');
+
+    if (!sceneId) {
+      return NextResponse.json({ error: 'sceneId required' }, { status: 400 });
+    }
+
+    const notes = await prisma.mentorNote.findMany({
+      where: { sceneId },
+      include: { mentor: { select: { id: true, name: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return NextResponse.json(notes);
+  } catch (error) {
+    return handleAuthError(error);
+  }
+}
 
 // POST /api/mentor/notes — mentor adds note/flag to scene
 export async function POST(req: Request) {

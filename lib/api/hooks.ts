@@ -157,3 +157,91 @@ export function useCreateMentor() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-mentors'] }),
   });
 }
+
+// ─── Collaborators ───
+export function useCollaborators(screenplayId: string) {
+  return useQuery({
+    queryKey: ['collaborators', screenplayId],
+    queryFn: () => get(`/screenplays/${screenplayId}/collaborators`),
+    enabled: !!screenplayId,
+  });
+}
+
+export function useInviteCollaborator(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { email: string }) => post(`/screenplays/${screenplayId}/collaborators`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['collaborators', screenplayId] }),
+  });
+}
+
+// ─── Mentor System (User-facing) ───
+export function useActiveMentors() {
+  return useQuery({ queryKey: ['active-mentors'], queryFn: () => get('/mentors') });
+}
+
+export function useMentorRequest(screenplayId: string) {
+  return useQuery({
+    queryKey: ['mentor-request', screenplayId],
+    queryFn: () => get(`/screenplays/${screenplayId}/mentor-request`),
+    enabled: !!screenplayId,
+  });
+}
+
+export function useRequestMentor(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { mentorId: string }) => post(`/screenplays/${screenplayId}/mentor-request`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['mentor-request', screenplayId] }),
+  });
+}
+
+export function useCancelMentorRequest(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => del(`/screenplays/${screenplayId}/mentor-request`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['mentor-request', screenplayId] }),
+  });
+}
+
+// ─── Admin Mentor Requests ───
+export function useAdminMentorRequests(status?: string) {
+  return useQuery({
+    queryKey: ['admin-mentor-requests', status],
+    queryFn: () => get(`/admin/assignments${status ? `?status=${status}` : ''}`),
+  });
+}
+
+export function useApproveMentorRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { id: string; status: 'ACTIVE' | 'COMPLETED' }) => patch('/admin/assignments', data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-mentor-requests'] }),
+  });
+}
+
+export function useRejectMentorRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => del(`/admin/assignments?id=${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-mentor-requests'] }),
+  });
+}
+
+// ─── Mentor Notes (for scenes) ───
+export function useMentorNotes(sceneId: string) {
+  return useQuery({
+    queryKey: ['mentor-notes', sceneId],
+    queryFn: () => get(`/mentor/notes?sceneId=${sceneId}`),
+    enabled: !!sceneId,
+  });
+}
+
+// ─── Scenes for a screenplay (used in mentor page) ───
+export function useScreenplayScenes(screenplayId: string) {
+  return useQuery({
+    queryKey: ['screenplay-scenes', screenplayId],
+    queryFn: () => get(`/screenplays/${screenplayId}/scenes`),
+    enabled: !!screenplayId,
+  });
+}
