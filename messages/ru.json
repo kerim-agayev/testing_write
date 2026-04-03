@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "dashboard": "Панель управления",
+    "newScreenplay": "Новый сценарий",
+    "profile": "Профиль",
+    "signOut": "Выйти",
+    "mentor": "Панель ментора",
+    "admin": "Панель администратора"
+  },
+  "dashboard": {
+    "greeting": "Доброе утро, {name}",
+    "totalScreenplays": "Всего сценариев",
+    "totalScenes": "Всего сцен",
+    "activeCollaborations": "Активные коллаборации",
+    "newScreenplay": "+ Новый сценарий",
+    "continueWriting": "Продолжить писать →",
+    "emptyState": {
+      "headline": "Каждый шедевр начинается с одной строки.",
+      "cta": "Написать первый сценарий"
+    },
+    "recentScripts": "Последние сценарии",
+    "viewAll": "Показать все"
+  },
+  "editor": {
+    "leftPanel": {
+      "structure": "СТРУКТУРА",
+      "inThisScene": "В ЭТОЙ СЦЕНЕ",
+      "sceneValue": "ЦЕННОСТЬ СЦЕНЫ",
+      "dramaticCharge": "Драматический заряд",
+      "addScene": "+ Добавить сцену"
+    },
+    "rightPanel": {
+      "storyData": "ДАННЫЕ ИСТОРИИ",
+      "notes": "ЗАМЕТКИ",
+      "mentor": "МЕНТОР",
+      "storyEvent": "Событие истории",
+      "valueShift": "Сдвиг ценности",
+      "polarityShift": "Сдвиг полярности",
+      "turnOn": "Триггер",
+      "turningPoint": "Поворотный момент",
+      "characterArcs": "АРКИ ПЕРСОНАЖЕЙ",
+      "externalScore": "Внешний",
+      "internalScore": "Внутренний"
+    },
+    "autosave": {
+      "saving": "Сохранение...",
+      "saved": "Сохранено {time} назад"
+    },
+    "toolbar": {
+      "action": "Действие",
+      "dialogue": "Диалог",
+      "parenthetical": "Ремарка",
+      "transition": "Переход",
+      "note": "Заметка"
+    }
+  },
+  "characters": {
+    "title": "Персонажи",
+    "addCharacter": "Добавить персонажа",
+    "protagonist": "Протагонист",
+    "antagonist": "Антагонист",
+    "supporting": "Второстепенный",
+    "minor": "Эпизодический",
+    "isMajor": "Отслеживать арку?",
+    "biography": "Биография",
+    "traits": "Черты",
+    "personality": "Личность",
+    "externalJourney": "Внешнее путешествие",
+    "internalJourney": "Внутреннее путешествие",
+    "episodeArc": "Арка эпизода",
+    "seasonArc": "Арка сезона",
+    "arcChart": "График арки",
+    "profile": "Профиль",
+    "inScenes": "В {count} сценах"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "storyArc": "Арка истории",
+    "characterJourneys": "ПУТЕШЕСТВИЯ ПЕРСОНАЖЕЙ",
+    "storyGrid": "СЕТКА ИСТОРИИ",
+    "sceneNo": "СЦЕНА №",
+    "storyEvent": "СОБЫТИЕ ИСТОРИИ",
+    "valueShift": "СДВИГ ЦЕННОСТИ",
+    "polarityShift": "СДВИГ ПОЛЯРНОСТИ",
+    "turnOn": "ТРИГГЕР",
+    "turningPoint": "ПОВОРОТНЫЙ МОМЕНТ",
+    "onStageCharacters": "ПЕРСОНАЖИ НА СЦЕНЕ",
+    "exportCsv": "Экспорт CSV",
+    "exportXlsx": "Экспорт XLSX",
+    "downloadPng": "Скачать PNG"
+  },
+  "screenplay": {
+    "film": "Фильм",
+    "series": "Сериал",
+    "newFilm": "Новый фильм",
+    "newSeries": "Новый сериал",
+    "act": "Акт",
+    "structure": "Структура",
+    "sequence": "Секвенция",
+    "scene": "Сцена",
+    "episode": "Эпизод",
+    "season": "Сезон",
+    "genre": "Жанр",
+    "logline": "Логлайн",
+    "title": "Название"
+  },
+  "setup": {
+    "step1": "Основные данные",
+    "step2": "Структура",
+    "step3": "Персонажи",
+    "titlePlaceholder": "Без названия",
+    "loglinePlaceholder": "Опишите вашу историю в одном предложении...",
+    "selectType": "Выберите тип сценария",
+    "addStructureLater": "Структуру можно добавить позже",
+    "addCharactersLater": "Добавлю персонажей позже →"
+  },
+  "mentor": {
+    "title": "Панель ментора",
+    "assignedScripts": "Назначенные сценарии",
+    "addNote": "Добавить заметку к этой сцене",
+    "flagScene": "Отметить сцену",
+    "messageAuthor": "Написать автору",
+    "noFeedback": "Пока нет отзывов ментора для этой сцены.",
+    "flagReasons": {
+      "pacing": "Темп",
+      "dialogue": "Диалог",
+      "structure": "Структура",
+      "character": "Персонаж",
+      "other": "Другое"
+    }
+  },
+  "admin": {
+    "title": "Панель администратора",
+    "demoScreenplay": "Демо-сценарий",
+    "mentors": "Менторы",
+    "users": "Пользователи",
+    "platformStats": "Статистика платформы",
+    "addMentor": "Добавить ментора",
+    "changeDemoScreenplay": "Изменить демо-сценарий",
+    "totalUsers": "Всего пользователей",
+    "totalScreenplays": "Всего сценариев",
+    "totalScenes": "Всего сцен",
+    "activeThisWeek": "Активных на этой неделе"
+  },
+  "share": {
+    "title": "Совместная работа",
+    "coWriters": "Соавторы",
+    "mentorSection": "Ментор",
+    "inviteByEmail": "Пригласить по email",
+    "sendInvite": "Отправить приглашение",
+    "requestMentor": "Запросить ментора",
+    "requestSent": "Запрос отправлен",
+    "coWriterInfo": "Соавторы могут читать и редактировать все сцены в этом сценарии.",
+    "mentorInfo": "Менторы могут просматривать и комментировать ваш сценарий, но не могут его редактировать."
+  },
+  "export": {
+    "title": "Экспорт вашего сценария",
+    "docx": "Документ Word",
+    "pdf": "Документ PDF",
+    "downloadDocx": "Скачать DOCX",
+    "downloadPdf": "Скачать PDF",
+    "preview": "Предпросмотр",
+    "formatNote": "Отформатировано по стандартам WGA. Courier Prime 12pt, стандартные поля."
+  },
+  "profile": {
+    "title": "Настройки профиля",
+    "account": "Аккаунт",
+    "security": "Безопасность",
+    "notifications": "Уведомления",
+    "dangerZone": "Опасная зона",
+    "displayName": "Отображаемое имя",
+    "email": "Электронная почта",
+    "changePassword": "Изменить пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "updatePassword": "Обновить пароль",
+    "deleteAccount": "Удалить аккаунт",
+    "deleteConfirm": "Это действие необратимо. Введите DELETE для подтверждения.",
+    "saveChanges": "Сохранить изменения",
+    "discardChanges": "Отменить",
+    "emailNotifications": "Email уведомления",
+    "mentorNoteNotif": "Когда ментор добавляет заметку",
+    "collabJoinNotif": "Когда присоединяется соавтор",
+    "weeklySummary": "Еженедельная сводка"
+  },
+  "auth": {
+    "login": "Войти",
+    "register": "Регистрация",
+    "welcomeBack": "С возвращением",
+    "createAccount": "Создайте аккаунт",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "fullName": "Полное имя",
+    "continue": "Продолжить",
+    "forgotPassword": "Забыли пароль?",
+    "noAccount": "Нет аккаунта?",
+    "hasAccount": "Уже есть аккаунт?",
+    "signUp": "Зарегистрироваться",
+    "signIn": "Войти"
+  },
+  "landing": {
+    "tagline": "Пишите глубже. Увидьте историю.",
+    "cta": "Начать писать бесплатно",
+    "seeLiveDemo": "Смотреть демо",
+    "demoBanner": "Войдите, чтобы начать писать с ScriptFlow →",
+    "features": {
+      "storyAutomation": "Автоматизация истории",
+      "characterArcTracking": "Отслеживание арки персонажей",
+      "formatSupport": "Поддержка файлов и форматов"
+    }
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "back": "Назад",
+    "next": "Далее",
+    "create": "Создать",
+    "loading": "Загрузка...",
+    "error": "Произошла ошибка",
+    "success": "Успешно",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "noResults": "Ничего не найдено",
+    "actions": "Действия"
+  }
+}

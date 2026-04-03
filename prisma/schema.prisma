@@ -1,0 +1,345 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// USERS & AUTH
+// ─────────────────────────────────────────────
+
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  passwordHash    String
+  role            UserRole @default(USER)
+  avatarUrl       String?
+  preferredLocale String   @default("az")
+  preferredTheme  String   @default("system")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  screenplays       Screenplay[]             @relation("OwnerScreenplays")
+  collaborations    ScreenplayCollaborator[]
+  mentorAssignments MentorAssignment[]       @relation("MentorAssignments")
+  mentorNotes       MentorNote[]
+  notifications     Notification[]
+
+  @@index([email])
+  @@index([role])
+}
+
+enum UserRole {
+  USER
+  MENTOR
+  ADMIN
+}
+
+// ─────────────────────────────────────────────
+// SCREENPLAY & STRUCTURE
+// ─────────────────────────────────────────────
+
+model Screenplay {
+  id           String         @id @default(cuid())
+  ownerId      String
+  title        String
+  type         ScreenplayType
+  genre        String[]
+  logline      String?
+  isDemo       Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lastEditedAt DateTime       @default(now())
+
+  owner             User                     @relation("OwnerScreenplays", fields: [ownerId], references: [id], onDelete: Cascade)
+  episodes          Episode[]
+  acts              Act[]
+  characters        Character[]
+  collaborators     ScreenplayCollaborator[]
+  mentorAssignments MentorAssignment[]
+  locations         Location[]
+
+  @@index([ownerId])
+  @@index([isDemo])
+  @@index([updatedAt])
+}
+
+enum ScreenplayType {
+  FILM
+  SERIES
+}
+
+model Episode {
+  id           String  @id @default(cuid())
+  screenplayId String
+  title        String
+  order        Int
+  synopsis     String?
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  acts       Act[]
+
+  @@unique([screenplayId, order])
+  @@index([screenplayId])
+}
+
+model Act {
+  id           String  @id @default(cuid())
+  screenplayId String
+  episodeId    String?
+  title        String
+  order        Int
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  episode    Episode?   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  structures Structure[]
+
+  @@unique([screenplayId, episodeId, order])
+  @@index([screenplayId])
+  @@index([episodeId])
+}
+
+model Structure {
+  id    String @id @default(cuid())
+  actId String
+  title String
+  order Int
+
+  act       Act        @relation(fields: [actId], references: [id], onDelete: Cascade)
+  sequences Sequence[]
+
+  @@unique([actId, order])
+  @@index([actId])
+}
+
+model Sequence {
+  id          String @id @default(cuid())
+  structureId String
+  title       String
+  order       Int
+
+  structure Structure @relation(fields: [structureId], references: [id], onDelete: Cascade)
+  scenes    Scene[]
+
+  @@unique([structureId, order])
+  @@index([structureId])
+}
+
+model Scene {
+  id          String  @id @default(cuid())
+  sequenceId  String
+  sceneNumber Int
+  intExt      IntExt  @default(INT)
+  locationId  String?
+  timeOfDay   String?
+  content     Json    @default("{}")
+  synopsis    String?
+
+  // Story Grid fields
+  storyEvent      String?
+  valueShift      String?
+  polarityShift   PolarityShift?
+  turnOn          TurnOn?
+  turningPoint    Boolean @default(false)
+  storyValueScore Int?    @db.SmallInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sequence        Sequence         @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  location        Location?        @relation(fields: [locationId], references: [id])
+  sceneCharacters SceneCharacter[]
+  characterArcs   CharacterArc[]
+  mentorNotes     MentorNote[]
+
+  @@index([sequenceId])
+  @@index([sceneNumber])
+  @@index([turningPoint])
+}
+
+enum IntExt {
+  INT
+  EXT
+  INT_EXT
+}
+
+enum PolarityShift {
+  POS_TO_POS
+  POS_TO_NEG
+  NEG_TO_POS
+  NEG_TO_NEG
+  NEUTRAL
+}
+
+enum TurnOn {
+  ACTION
+  REVELATION
+}
+
+model Location {
+  id           String  @id @default(cuid())
+  screenplayId String
+  name         String
+  intExt       IntExt  @default(INT)
+  description  String?
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  scenes     Scene[]
+
+  @@unique([screenplayId, name])
+  @@index([screenplayId])
+}
+
+// ─────────────────────────────────────────────
+// CHARACTERS
+// ─────────────────────────────────────────────
+
+model Character {
+  id           String        @id @default(cuid())
+  screenplayId String
+  name         String
+  roleType     CharacterRole @default(SUPPORTING)
+  isMajor      Boolean       @default(false)
+  age          Int?
+  height       String?
+  weight       String?
+  traits       String[]
+  personality  String?
+  biography    String?       @db.Text
+  createdAt    DateTime      @default(now())
+
+  screenplay      Screenplay       @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  sceneCharacters SceneCharacter[]
+  arcs            CharacterArc[]
+
+  @@unique([screenplayId, name])
+  @@index([screenplayId])
+  @@index([isMajor])
+}
+
+enum CharacterRole {
+  PROTAGONIST
+  ANTAGONIST
+  SUPPORTING
+  MINOR
+}
+
+model SceneCharacter {
+  sceneId     String
+  characterId String
+
+  scene     Scene     @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@id([sceneId, characterId])
+  @@index([characterId])
+}
+
+// ─────────────────────────────────────────────
+// CHARACTER ARC SCORES
+// ─────────────────────────────────────────────
+
+model CharacterArc {
+  id            String @id @default(cuid())
+  characterId   String
+  sceneId       String
+  externalScore Int    @db.SmallInt
+  internalScore Int    @db.SmallInt
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  scene     Scene     @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, sceneId])
+  @@index([characterId])
+  @@index([sceneId])
+}
+
+// ─────────────────────────────────────────────
+// COLLABORATION
+// ─────────────────────────────────────────────
+
+model ScreenplayCollaborator {
+  screenplayId String
+  userId       String
+  role         CollaboratorRole @default(CO_WRITER)
+  invitedAt    DateTime         @default(now())
+  acceptedAt   DateTime?
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([screenplayId, userId])
+  @@index([userId])
+}
+
+enum CollaboratorRole {
+  CO_WRITER
+  VIEWER
+}
+
+// ─────────────────────────────────────────────
+// MENTOR SYSTEM
+// ─────────────────────────────────────────────
+
+model MentorAssignment {
+  id           String                 @id @default(cuid())
+  screenplayId String
+  mentorId     String
+  status       MentorAssignmentStatus @default(PENDING)
+  requestedAt  DateTime               @default(now())
+  acceptedAt   DateTime?
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  mentor     User       @relation("MentorAssignments", fields: [mentorId], references: [id])
+
+  @@unique([screenplayId, mentorId])
+  @@index([mentorId])
+  @@index([status])
+}
+
+enum MentorAssignmentStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+}
+
+model MentorNote {
+  id         String   @id @default(cuid())
+  mentorId   String
+  sceneId    String
+  content    String   @db.Text
+  type       NoteType @default(NOTE)
+  flagReason String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  mentor User  @relation(fields: [mentorId], references: [id])
+  scene  Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+
+  @@index([sceneId])
+  @@index([mentorId])
+  @@index([isRead])
+}
+
+enum NoteType {
+  NOTE
+  FLAG
+  MESSAGE
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  message   String
+  linkUrl   String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}

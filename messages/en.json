@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "newScreenplay": "New Screenplay",
+    "profile": "Profile",
+    "signOut": "Sign Out",
+    "mentor": "Mentor Panel",
+    "admin": "Admin Panel"
+  },
+  "dashboard": {
+    "greeting": "Good morning, {name}",
+    "totalScreenplays": "Total Screenplays",
+    "totalScenes": "Total Scenes",
+    "activeCollaborations": "Active Collaborations",
+    "newScreenplay": "+ New Screenplay",
+    "continueWriting": "Continue Writing →",
+    "emptyState": {
+      "headline": "Every masterpiece starts with a single line.",
+      "cta": "Write Your First Screenplay"
+    },
+    "recentScripts": "Recent Scripts",
+    "viewAll": "View All"
+  },
+  "editor": {
+    "leftPanel": {
+      "structure": "STRUCTURE",
+      "inThisScene": "IN THIS SCENE",
+      "sceneValue": "SCENE VALUE",
+      "dramaticCharge": "Dramatic Charge",
+      "addScene": "+ Add Scene"
+    },
+    "rightPanel": {
+      "storyData": "STORY DATA",
+      "notes": "NOTES",
+      "mentor": "MENTOR",
+      "storyEvent": "Story Event",
+      "valueShift": "Value Shift",
+      "polarityShift": "Polarity Shift",
+      "turnOn": "Turn On",
+      "turningPoint": "Turning Point",
+      "characterArcs": "CHARACTER ARCS",
+      "externalScore": "External",
+      "internalScore": "Internal"
+    },
+    "autosave": {
+      "saving": "Saving...",
+      "saved": "Saved {time} ago"
+    },
+    "toolbar": {
+      "action": "Action",
+      "dialogue": "Dialogue",
+      "parenthetical": "Parenthetical",
+      "transition": "Transition",
+      "note": "Note"
+    }
+  },
+  "characters": {
+    "title": "Characters",
+    "addCharacter": "Add Character",
+    "protagonist": "Protagonist",
+    "antagonist": "Antagonist",
+    "supporting": "Supporting",
+    "minor": "Minor",
+    "isMajor": "Track arc?",
+    "biography": "Biography",
+    "traits": "Traits",
+    "personality": "Personality",
+    "externalJourney": "External Journey",
+    "internalJourney": "Internal Journey",
+    "episodeArc": "Episode Arc",
+    "seasonArc": "Season Arc",
+    "arcChart": "Arc Chart",
+    "profile": "Profile",
+    "inScenes": "In {count} scenes"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "storyArc": "Story Arc",
+    "characterJourneys": "CHARACTER JOURNEYS",
+    "storyGrid": "STORY GRID",
+    "sceneNo": "SCENE #",
+    "storyEvent": "STORY EVENT",
+    "valueShift": "VALUE SHIFT",
+    "polarityShift": "POLARITY SHIFT",
+    "turnOn": "TURN ON",
+    "turningPoint": "TURNING POINT",
+    "onStageCharacters": "ON-STAGE CHARACTERS",
+    "exportCsv": "Export CSV",
+    "exportXlsx": "Export XLSX",
+    "downloadPng": "Download PNG"
+  },
+  "screenplay": {
+    "film": "Film",
+    "series": "TV Series",
+    "newFilm": "New Film",
+    "newSeries": "New Series",
+    "act": "Act",
+    "structure": "Structure",
+    "sequence": "Sequence",
+    "scene": "Scene",
+    "episode": "Episode",
+    "season": "Season",
+    "genre": "Genre",
+    "logline": "Logline",
+    "title": "Title"
+  },
+  "setup": {
+    "step1": "Basics",
+    "step2": "Structure",
+    "step3": "Characters",
+    "titlePlaceholder": "Untitled Screenplay",
+    "loglinePlaceholder": "Describe your story in one sentence...",
+    "selectType": "Select screenplay type",
+    "addStructureLater": "You can add structure later",
+    "addCharactersLater": "I'll add characters later →"
+  },
+  "mentor": {
+    "title": "Mentor Panel",
+    "assignedScripts": "Assigned Scripts",
+    "addNote": "Add a note to this scene",
+    "flagScene": "Flag this scene",
+    "messageAuthor": "Message Author",
+    "noFeedback": "No mentor feedback for this scene yet.",
+    "flagReasons": {
+      "pacing": "Pacing",
+      "dialogue": "Dialogue",
+      "structure": "Structure",
+      "character": "Character",
+      "other": "Other"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "demoScreenplay": "Demo Screenplay",
+    "mentors": "Mentors",
+    "users": "Users",
+    "platformStats": "Platform Stats",
+    "addMentor": "Add Mentor",
+    "changeDemoScreenplay": "Change Demo Screenplay",
+    "totalUsers": "Total Users",
+    "totalScreenplays": "Total Screenplays",
+    "totalScenes": "Total Scenes",
+    "activeThisWeek": "Active This Week"
+  },
+  "share": {
+    "title": "Share & Collaboration",
+    "coWriters": "Co-Writers",
+    "mentorSection": "Mentor",
+    "inviteByEmail": "Invite by email",
+    "sendInvite": "Send Invite",
+    "requestMentor": "Request a Mentor",
+    "requestSent": "Request Sent",
+    "coWriterInfo": "Co-writers can read and edit all scenes in this screenplay.",
+    "mentorInfo": "Mentors can view and annotate your screenplay but cannot edit it."
+  },
+  "export": {
+    "title": "Export Your Vision",
+    "docx": "Word Document",
+    "pdf": "PDF Document",
+    "downloadDocx": "Download DOCX",
+    "downloadPdf": "Download PDF",
+    "preview": "Preview",
+    "formatNote": "Formatted to WGA screenplay standards. Courier Prime 12pt, standard margins."
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "account": "Account",
+    "security": "Security",
+    "notifications": "Notifications",
+    "dangerZone": "Danger Zone",
+    "displayName": "Display Name",
+    "email": "Email",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "updatePassword": "Update Password",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "This action cannot be undone. Type DELETE to confirm.",
+    "saveChanges": "Save Changes",
+    "discardChanges": "Discard Changes",
+    "emailNotifications": "Email Notifications",
+    "mentorNoteNotif": "When a mentor adds a note",
+    "collabJoinNotif": "When a collaborator joins",
+    "weeklySummary": "Weekly writing summary"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "continue": "Continue",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in"
+  },
+  "landing": {
+    "tagline": "Write deeper. See the story.",
+    "cta": "Start Writing Free",
+    "seeLiveDemo": "See Live Demo",
+    "demoBanner": "Sign in to start writing with ScriptFlow →",
+    "features": {
+      "storyAutomation": "Story Automation",
+      "characterArcTracking": "Character Arc Tracking",
+      "formatSupport": "File & Format Support"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "create": "Create",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success",
+    "confirm": "Confirm",
+    "search": "Search",
+    "noResults": "No results found",
+    "actions": "Actions"
+  }
+}

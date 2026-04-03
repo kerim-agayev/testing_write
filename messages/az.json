@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "dashboard": "İdarə paneli",
+    "newScreenplay": "Yeni ssenari",
+    "profile": "Profil",
+    "signOut": "Çıxış",
+    "mentor": "Mentor paneli",
+    "admin": "Admin paneli"
+  },
+  "dashboard": {
+    "greeting": "Günaydın, {name}",
+    "totalScreenplays": "Ümumi ssenariylər",
+    "totalScenes": "Ümumi səhnələr",
+    "activeCollaborations": "Aktiv əməkdaşlıqlar",
+    "newScreenplay": "+ Yeni Ssenari",
+    "continueWriting": "Yazmağa davam et →",
+    "emptyState": {
+      "headline": "Hər şah əsər tək bir sətirdən başlayır.",
+      "cta": "İlk ssenarinizi yazın"
+    },
+    "recentScripts": "Son ssenariylər",
+    "viewAll": "Hamısına bax"
+  },
+  "editor": {
+    "leftPanel": {
+      "structure": "QURULUŞ",
+      "inThisScene": "BU SƏHNƏDƏ",
+      "sceneValue": "SƏHNƏ DƏYƏRİ",
+      "dramaticCharge": "Dramatik yük",
+      "addScene": "+ Səhnə əlavə et"
+    },
+    "rightPanel": {
+      "storyData": "HEKAYƏ MƏLUMATİ",
+      "notes": "QEYDLƏR",
+      "mentor": "MENTOR",
+      "storyEvent": "Hekayə hadisəsi",
+      "valueShift": "Dəyər dəyişimi",
+      "polarityShift": "Polarite dəyişimi",
+      "turnOn": "Tetikleyici",
+      "turningPoint": "Dönüm nöqtəsi",
+      "characterArcs": "KARAKTER ARKLARI",
+      "externalScore": "Xarici",
+      "internalScore": "Daxili"
+    },
+    "autosave": {
+      "saving": "Saxlanılır...",
+      "saved": "{time} əvvəl saxlanıldı"
+    },
+    "toolbar": {
+      "action": "Hərəkət",
+      "dialogue": "Dialoq",
+      "parenthetical": "Mötərizə",
+      "transition": "Keçid",
+      "note": "Qeyd"
+    }
+  },
+  "characters": {
+    "title": "Karakterlər",
+    "addCharacter": "Karakter əlavə et",
+    "protagonist": "Baş qəhrəman",
+    "antagonist": "Antaqonist",
+    "supporting": "İkinci dərəcəli",
+    "minor": "Epizodik",
+    "isMajor": "Ark izlə?",
+    "biography": "Bioqrafiya",
+    "traits": "Xüsusiyyətlər",
+    "personality": "Şəxsiyyət",
+    "externalJourney": "Xarici yolculuq",
+    "internalJourney": "Daxili yolculuq",
+    "episodeArc": "Bölüm Arkı",
+    "seasonArc": "Sezon Arkı",
+    "arcChart": "Ark Qrafiki",
+    "profile": "Profil",
+    "inScenes": "{count} səhnədə"
+  },
+  "analytics": {
+    "title": "Analitika",
+    "storyArc": "Hekayə Arkı",
+    "characterJourneys": "KARAKTER YOLÇULUQLARİ",
+    "storyGrid": "HEKAYƏ ŞƏBƏKƏSİ",
+    "sceneNo": "SƏHNƏ №",
+    "storyEvent": "HEKAYƏ HADİSƏSİ",
+    "valueShift": "DƏYƏRİN DƏYİŞİMİ",
+    "polarityShift": "POLARİTE DƏYİŞİMİ",
+    "turnOn": "TETİKLƏYİCİ",
+    "turningPoint": "DÖNÜM NÖQTƏSİ",
+    "onStageCharacters": "SƏHNƏ KARAKTERLƏRİ",
+    "exportCsv": "CSV Yüklə",
+    "exportXlsx": "XLSX Yüklə",
+    "downloadPng": "PNG Yüklə"
+  },
+  "screenplay": {
+    "film": "Film",
+    "series": "Serial",
+    "newFilm": "Yeni Film",
+    "newSeries": "Yeni Serial",
+    "act": "Pərdə",
+    "structure": "Struktur",
+    "sequence": "Ardıcıllıq",
+    "scene": "Səhnə",
+    "episode": "Bölüm",
+    "season": "Mövsüm",
+    "genre": "Janr",
+    "logline": "Loqlayn",
+    "title": "Başlıq"
+  },
+  "setup": {
+    "step1": "Əsas məlumatlar",
+    "step2": "Quruluş",
+    "step3": "Karakterlər",
+    "titlePlaceholder": "Adsız Ssenari",
+    "loglinePlaceholder": "Bir cümlə ilə hekayənizi izah edin...",
+    "selectType": "Ssenari növünü seçin",
+    "addStructureLater": "Quruluşu sonra da əlavə edə bilərsiniz",
+    "addCharactersLater": "Karakterləri sonra da əlavə edə bilərsiniz →"
+  },
+  "mentor": {
+    "title": "Mentor Paneli",
+    "assignedScripts": "Təyin olunmuş ssenariylər",
+    "addNote": "Bu səhnəyə qeyd əlavə et",
+    "flagScene": "Səhnəni işarələ",
+    "messageAuthor": "Müəllifə mesaj göndər",
+    "noFeedback": "Bu səhnə üçün hələ mentor rəyi yoxdur.",
+    "flagReasons": {
+      "pacing": "Temp problemi",
+      "dialogue": "Dialoq",
+      "structure": "Struktur",
+      "character": "Karakter",
+      "other": "Digər"
+    }
+  },
+  "admin": {
+    "title": "Admin Paneli",
+    "demoScreenplay": "Demo Ssenari",
+    "mentors": "Mentorlar",
+    "users": "İstifadəçilər",
+    "platformStats": "Platforma Statistikası",
+    "addMentor": "Mentor əlavə et",
+    "changeDemoScreenplay": "Demo ssenarini dəyiş",
+    "totalUsers": "Ümumi istifadəçilər",
+    "totalScreenplays": "Ümumi ssenariylər",
+    "totalScenes": "Ümumi səhnələr",
+    "activeThisWeek": "Bu həftə aktiv"
+  },
+  "share": {
+    "title": "Paylaşım və Əməkdaşlıq",
+    "coWriters": "Həm-müəlliflər",
+    "mentorSection": "Mentor",
+    "inviteByEmail": "E-poçt ilə dəvət et",
+    "sendInvite": "Dəvət göndər",
+    "requestMentor": "Mentor tələb et",
+    "requestSent": "Tələb göndərildi",
+    "coWriterInfo": "Həm-müəlliflər bu ssenarinin bütün səhnələrini oxuya və redaktə edə bilərlər.",
+    "mentorInfo": "Mentorlar ssenarini görə və qeyd əlavə edə bilərlər, lakin redaktə edə bilməzlər."
+  },
+  "export": {
+    "title": "Ssenarinizi İxrac Edin",
+    "docx": "Word Sənədi",
+    "pdf": "PDF Sənədi",
+    "downloadDocx": "DOCX Yüklə",
+    "downloadPdf": "PDF Yüklə",
+    "preview": "Ön baxış",
+    "formatNote": "WGA ssenari standartlarına uyğun formatlanmışdır. Courier Prime 12pt, standart kənarlar."
+  },
+  "profile": {
+    "title": "Profil Ayarları",
+    "account": "Hesab",
+    "security": "Təhlükəsizlik",
+    "notifications": "Bildirişlər",
+    "dangerZone": "Təhlükə Zonası",
+    "displayName": "Göstərilən ad",
+    "email": "E-poçt",
+    "changePassword": "Şifrəni dəyiş",
+    "currentPassword": "Hazırkı şifrə",
+    "newPassword": "Yeni şifrə",
+    "updatePassword": "Şifrəni yenilə",
+    "deleteAccount": "Hesabı Sil",
+    "deleteConfirm": "Bu əməliyyat geri qaytarıla bilməz. Təsdiq etmək üçün DELETE yazın.",
+    "saveChanges": "Dəyişiklikləri Saxla",
+    "discardChanges": "Ləğv Et",
+    "emailNotifications": "E-poçt bildirişləri",
+    "mentorNoteNotif": "Mentor qeyd əlavə etdikdə",
+    "collabJoinNotif": "Əməkdaş qoşulduqda",
+    "weeklySummary": "Həftəlik yazı xülasəsi"
+  },
+  "auth": {
+    "login": "Daxil ol",
+    "register": "Qeydiyyat",
+    "welcomeBack": "Xoş gəldiniz",
+    "createAccount": "Hesab yaradın",
+    "email": "E-poçt ünvanı",
+    "password": "Şifrə",
+    "confirmPassword": "Şifrəni təsdiq edin",
+    "fullName": "Tam ad",
+    "continue": "Davam et",
+    "forgotPassword": "Şifrəni unutdunuz?",
+    "noAccount": "Hesabınız yoxdur?",
+    "hasAccount": "Artıq hesabınız var?",
+    "signUp": "Qeydiyyatdan keçin",
+    "signIn": "Daxil olun"
+  },
+  "landing": {
+    "tagline": "Daha dərin yazın. Hekayəni görün.",
+    "cta": "Pulsuz Yazmağa Başlayın",
+    "seeLiveDemo": "Canlı Demoya Baxın",
+    "demoBanner": "ScriptFlow ilə yazmağa başlamaq üçün daxil olun →",
+    "features": {
+      "storyAutomation": "Hekayə Avtomatlaşdırılması",
+      "characterArcTracking": "Karakter Arkı İzləmə",
+      "formatSupport": "Fayl və Format Dəstəyi"
+    }
+  },
+  "common": {
+    "save": "Saxla",
+    "cancel": "Ləğv et",
+    "delete": "Sil",
+    "edit": "Redaktə et",
+    "back": "Geri",
+    "next": "İrəli",
+    "create": "Yarat",
+    "loading": "Yüklənir...",
+    "error": "Xəta baş verdi",
+    "success": "Uğurlu",
+    "confirm": "Təsdiq et",
+    "search": "Axtar",
+    "noResults": "Nəticə tapılmadı",
+    "actions": "Əməliyyatlar"
+  }
+}
