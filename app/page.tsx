@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getDemoScreenplay } from '@/lib/db/screenplays';
 import { Sparkles, GitBranch, FileText } from 'lucide-react';
+import { DemoEditorPreview } from '@/components/landing/DemoEditorPreview';
 
 export default async function LandingPage() {
   const demo = await getDemoScreenplay();
@@ -57,61 +58,14 @@ export default async function LandingPage() {
               Sign in to start writing with ScriptFlow →
             </div>
             {/* Demo editor preview */}
-            <div className="bg-surface-card border border-border rounded-b-lg shadow-2 overflow-hidden" style={{ height: '60vh', maxHeight: 600 }}>
-              <div className="flex h-full">
-                {/* Mini left panel */}
-                <div className="w-48 bg-surface-panel p-3 border-r border-border hidden md:block">
-                  <p className="text-[10px] font-semibold uppercase text-txt-muted mb-2">Structure</p>
-                  {demo?.acts.map((act) => (
-                    <div key={act.id} className="mb-2">
-                      <p className="text-xs font-medium text-txt-secondary">{act.title}</p>
-                      {act.structures?.map((str) =>
-                        str.sequences?.map((seq) =>
-                          seq.scenes?.map((scene) => (
-                            <p key={scene.id} className="text-[10px] text-txt-muted pl-2 py-0.5 truncate">
-                              <span className="font-mono mr-1">{scene.sceneNumber}.</span>
-                              {scene.synopsis || `${scene.intExt}. Scene`}
-                            </p>
-                          ))
-                        )
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Mini center */}
-                <div className="flex-1 bg-surface-base p-4 overflow-y-auto">
-                  <div className="max-w-md mx-auto bg-white shadow-1 rounded p-8 font-screenplay text-[10pt] leading-normal">
-                    {demo?.acts[0]?.structures?.[0]?.sequences?.[0]?.scenes?.[0] && (() => {
-                      const scene = demo.acts[0].structures[0].sequences[0].scenes[0];
-                      const content = scene.content as { content?: Array<{ type: string; content?: Array<{ text: string }> }> };
-                      return (
-                        <>
-                          {content?.content?.map((node, i) => {
-                            const text = node.content?.map((c) => c.text).join('') || '';
-                            if (node.type === 'sceneHeading') return <p key={i} className="uppercase font-bold mb-3">{text}</p>;
-                            if (node.type === 'action') return <p key={i} className="mb-3">{text}</p>;
-                            if (node.type === 'characterName') return <p key={i} className="uppercase text-center mt-3">{text}</p>;
-                            if (node.type === 'dialogue') return <p key={i} className="mx-8 mb-3">{text}</p>;
-                            return <p key={i}>{text}</p>;
-                          })}
-                        </>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                {/* Mini right panel */}
-                <div className="w-44 bg-surface-panel p-3 border-l border-border hidden lg:block">
-                  <p className="text-[10px] font-semibold uppercase text-txt-muted mb-2">Story Data</p>
-                  <div className="space-y-2 text-[10px]">
-                    <div><span className="text-txt-muted">Event:</span> <span className="text-txt-secondary">Discovery</span></div>
-                    <div><span className="text-txt-muted">Value:</span> <span className="text-txt-secondary">Routine → Discovery</span></div>
-                    <div><span className="text-txt-muted">Score:</span> <span className="font-mono text-accent">60</span></div>
-                  </div>
-                </div>
+            {demo ? (
+              <DemoEditorPreview screenplay={demo} />
+            ) : (
+              <div className="bg-surface-card border border-border rounded-b-lg p-12 text-center">
+                <p className="text-txt-secondary">Demo screenplay not loaded yet.</p>
+                <code className="text-xs text-txt-muted block mt-2">npx prisma db seed</code>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

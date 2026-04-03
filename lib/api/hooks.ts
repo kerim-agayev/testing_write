@@ -58,6 +58,22 @@ export function useCreateScene(screenplayId: string) {
   });
 }
 
+export function useScene(screenplayId: string, sceneId: string | null) {
+  return useQuery({
+    queryKey: ['scene', screenplayId, sceneId],
+    queryFn: () => get(`/screenplays/${screenplayId}/scenes/${sceneId}`),
+    enabled: !!screenplayId && !!sceneId,
+  });
+}
+
+export function useDeleteScene(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (sceneId: string) => del(`/screenplays/${screenplayId}/scenes/${sceneId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['scenes', screenplayId] }),
+  });
+}
+
 // ─── Characters ───
 export function useCharacters(screenplayId: string) {
   return useQuery({
@@ -234,6 +250,44 @@ export function useMentorNotes(sceneId: string) {
     queryKey: ['mentor-notes', sceneId],
     queryFn: () => get(`/mentor/notes?sceneId=${sceneId}`),
     enabled: !!sceneId,
+  });
+}
+
+// ─── Notifications ───
+export function useNotifications() {
+  return useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => get('/notifications'),
+    refetchInterval: 30000,
+  });
+}
+
+export function useMarkNotificationsRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => patch('/notifications/read-all', {}),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
+// ─── Invites ───
+export function usePendingInvites() {
+  return useQuery({
+    queryKey: ['pending-invites'],
+    queryFn: () => get('/invites/pending'),
+  });
+}
+
+export function useRespondToInvite() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { screenplayId: string; userId: string; action: 'accept' | 'reject' }) =>
+      post('/invites/respond', data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['pending-invites'] });
+      qc.invalidateQueries({ queryKey: ['screenplays'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 }
 

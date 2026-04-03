@@ -36,7 +36,9 @@ export default function CharactersPage() {
 
   const chars = characters as Array<{
     id: string; name: string; roleType: CharacterRole; isMajor: boolean;
-    age: number | null; traits: string[]; _count: { sceneCharacters: number };
+    age: number | null; height: string | null; weight: string | null;
+    personality: string | null; biography: string | null;
+    traits: string[]; _count: { sceneCharacters: number };
   }>;
 
   const filtered = filter === 'all' ? chars : chars.filter((c) => c.roleType === filter);
@@ -166,7 +168,63 @@ export default function CharactersPage() {
 
             <div className="mt-6">
               {detailTab === 'profile' && (
-                <div className="space-y-6">
+                <div className="space-y-6 max-w-xl">
+                  {/* Role selector */}
+                  <div>
+                    <h3 className="text-sm font-medium text-txt-secondary mb-2">Role</h3>
+                    <div className="flex gap-2">
+                      {(['PROTAGONIST', 'ANTAGONIST', 'SUPPORTING', 'MINOR'] as CharacterRole[]).map((role) => (
+                        <button
+                          key={role}
+                          onClick={() => updateMutation.mutate({ id: selected.id, data: { roleType: role } })}
+                          className={cn(
+                            'px-3 py-1.5 text-xs rounded border transition-colors',
+                            selected.roleType === role
+                              ? 'bg-primary text-white border-primary'
+                              : 'border-border text-txt-secondary hover:border-primary'
+                          )}
+                        >
+                          {ROLE_LABELS[role]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Age, Height, Weight */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-txt-secondary mb-1">Age</label>
+                      <input
+                        type="number" min={0} max={150}
+                        defaultValue={selected.age ?? ''}
+                        onBlur={(e) => updateMutation.mutate({ id: selected.id, data: { age: e.target.value ? Number(e.target.value) : null } })}
+                        placeholder="28"
+                        className="w-full px-2.5 py-2 text-sm border border-border rounded bg-surface-card text-txt-primary outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-txt-secondary mb-1">Height</label>
+                      <input
+                        type="text"
+                        defaultValue={selected.height ?? ''}
+                        onBlur={(e) => updateMutation.mutate({ id: selected.id, data: { height: e.target.value || null } })}
+                        placeholder="5'10&quot;"
+                        className="w-full px-2.5 py-2 text-sm border border-border rounded bg-surface-card text-txt-primary outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-txt-secondary mb-1">Weight</label>
+                      <input
+                        type="text"
+                        defaultValue={selected.weight ?? ''}
+                        onBlur={(e) => updateMutation.mutate({ id: selected.id, data: { weight: e.target.value || null } })}
+                        placeholder="165 lbs"
+                        className="w-full px-2.5 py-2 text-sm border border-border rounded bg-surface-card text-txt-primary outline-none focus:border-primary"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Traits */}
                   <div>
                     <h3 className="text-sm font-medium text-txt-secondary mb-2">{t('traits')}</h3>
                     <div className="flex flex-wrap gap-2">
@@ -184,7 +242,6 @@ export default function CharactersPage() {
                           </button>
                         </span>
                       ))}
-
                       {addingTrait ? (
                         <div className="flex items-center gap-1">
                           <input
@@ -203,10 +260,34 @@ export default function CharactersPage() {
                           onClick={() => setAddingTrait(true)}
                           className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border border-dashed border-border text-txt-secondary hover:text-primary hover:border-primary transition-colors"
                         >
-                          + {t('addCharacter').includes('əlavə') ? 'Add trait' : 'Add trait'}
+                          + Add trait
                         </button>
                       )}
                     </div>
+                  </div>
+
+                  {/* Personality */}
+                  <div>
+                    <label className="block text-sm font-medium text-txt-secondary mb-1">Personality</label>
+                    <textarea
+                      rows={3}
+                      defaultValue={selected.personality ?? ''}
+                      onBlur={(e) => updateMutation.mutate({ id: selected.id, data: { personality: e.target.value || null } })}
+                      placeholder="Describe the character's personality..."
+                      className="w-full px-2.5 py-2 text-sm border border-border rounded bg-surface-card text-txt-primary outline-none focus:border-primary resize-y"
+                    />
+                  </div>
+
+                  {/* Biography */}
+                  <div>
+                    <label className="block text-sm font-medium text-txt-secondary mb-1">{t('biography')}</label>
+                    <textarea
+                      rows={6}
+                      defaultValue={selected.biography ?? ''}
+                      onBlur={(e) => updateMutation.mutate({ id: selected.id, data: { biography: e.target.value || null } })}
+                      placeholder="Character backstory, motivations, key events..."
+                      className="w-full px-2.5 py-2 text-sm border border-border rounded bg-surface-card text-txt-primary outline-none focus:border-primary resize-y"
+                    />
                   </div>
                 </div>
               )}

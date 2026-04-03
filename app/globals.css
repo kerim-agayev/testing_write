@@ -172,6 +172,76 @@ body {
   line-height: 1;
 }
 
+/* ─── TIPTAP / PROSEMIRROR SCREENPLAY STYLES ─── */
+.screenplay-editor .ProseMirror {
+  outline: none;
+  min-height: 100%;
+  font-family: var(--font-screenplay, 'Courier Prime', 'Courier New', monospace);
+  font-size: 12pt;
+  line-height: 1.2;
+  color: var(--screenplay-text);
+}
+
+.screenplay-editor .ProseMirror p {
+  margin: 0;
+  padding: 0;
+}
+
+.screenplay-editor .ProseMirror .scene-heading {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 1.5em;
+  margin-bottom: 0.25em;
+}
+
+.screenplay-editor .ProseMirror .action-line {
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+}
+
+.screenplay-editor .ProseMirror .character-name {
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 1em;
+  margin-bottom: 0;
+  padding-left: 2.5in;
+  cursor: pointer;
+}
+
+.screenplay-editor .ProseMirror .character-name:hover {
+  text-decoration: underline;
+}
+
+.screenplay-editor .ProseMirror .dialogue {
+  margin-left: 1.5in;
+  margin-right: 1.5in;
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
+
+.screenplay-editor .ProseMirror .parenthetical {
+  margin-left: 2in;
+  margin-right: 2in;
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.screenplay-editor .ProseMirror .transition-line {
+  text-transform: uppercase;
+  text-align: right;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.screenplay-editor .ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

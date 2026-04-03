@@ -7,7 +7,8 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from '@/components/providers/ThemeProvider';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { Avatar } from '@/components/ui/Avatar';
-import { Sun, Moon, Monitor, ChevronDown, LogOut, User, Shield, BookOpen, GraduationCap, Bell } from 'lucide-react';
+import { Sun, Moon, Monitor, ChevronDown, LogOut, User, Shield, BookOpen, GraduationCap } from 'lucide-react';
+import { NotificationBell } from './NotificationBell';
 
 export function GlobalNav() {
   const { data: session } = useSession();
@@ -64,9 +65,7 @@ export function GlobalNav() {
 
         {user && (
           <>
-            <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-hover transition-colors relative">
-              <Bell className="w-4 h-4 text-txt-secondary" />
-            </button>
+            <NotificationBell />
 
             <div className="relative">
               <button

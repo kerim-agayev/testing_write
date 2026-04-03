@@ -118,9 +118,10 @@ export async function updateScene(
       externalScore: number;
       internalScore: number;
     }>;
+    characterIds?: string[];
   }
 ) {
-  const { characterArcs, content, ...sceneData } = data;
+  const { characterArcs, characterIds, content, ...sceneData } = data;
 
   // Use transaction for atomic scene + arc updates
   return prisma.$transaction(async (tx) => {
@@ -152,6 +153,16 @@ export async function updateScene(
             externalScore: arc.externalScore,
             internalScore: arc.internalScore,
           },
+        });
+      }
+    }
+
+    // Update scene characters
+    if (characterIds !== undefined) {
+      await tx.sceneCharacter.deleteMany({ where: { sceneId } });
+      if (characterIds.length > 0) {
+        await tx.sceneCharacter.createMany({
+          data: characterIds.map((cid) => ({ sceneId, characterId: cid })),
         });
       }
     }

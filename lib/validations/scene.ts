@@ -32,6 +32,7 @@ export const UpdateSceneSchema = z.object({
       })
     )
     .optional(),
+  characterIds: z.array(z.string()).optional(),
 });
 
 export const CreateLocationSchema = z.object({

@@ -1,13 +1,15 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useScreenplay, useScenes, useCreateScene, useSaveScene, useMentorNotes } from '@/lib/api/hooks';
+import { useEffect, useState, useCallback } from 'react';
+import { useScreenplay, useScenes, useCreateScene, useSaveScene, useScene, useDeleteScene, useCharacters, useMentorNotes } from '@/lib/api/hooks';
 import { useEditorStore } from '@/store/editorStore';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Flag, MessageSquare } from 'lucide-react';
+import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
+import { useDebouncedCallback } from 'use-debounce';
 import type { ScreenplayFull } from '@/types/api';
 
 const POLARITY_OPTIONS = [
@@ -18,6 +20,27 @@ const POLARITY_OPTIONS = [
   { value: 'NEUTRAL', label: '●' },
 ];
 
+type SceneListItem = {
+  id: string; sceneNumber: number; intExt: string;
+  synopsis: string | null; timeOfDay: string | null;
+  storyValueScore?: number | null;
+  location?: { name: string } | null;
+  sceneCharacters?: Array<{ character: { id: string; name: string } }>;
+};
+
+type SceneFull = {
+  id: string; content: Record<string, unknown> | null;
+  storyEvent?: string | null; valueShift?: string | null;
+  polarityShift?: string | null; turnOn?: string | null;
+  turningPoint?: boolean; storyValueScore?: number | null;
+  synopsis?: string | null;
+  characterArcs?: Array<{ characterId: string; externalScore: number; internalScore: number }>;
+};
+
+type CharacterItem = {
+  id: string; name: string; roleType: string; isMajor: boolean;
+};
+
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const t = useTranslations('editor');
@@ -25,16 +48,13 @@ export default function EditorPage() {
   const { data: screenplayData } = useScreenplay(id);
   const screenplay = screenplayData as ScreenplayFull | undefined;
   const { data: scenesData } = useScenes(id);
-  const scenes = (scenesData || []) as Array<{
-    id: string; sceneNumber: number; intExt: string;
-    synopsis: string | null; timeOfDay: string | null;
-    storyEvent?: string | null; valueShift?: string | null;
-    polarityShift?: string | null; turnOn?: string | null;
-    turningPoint?: boolean; storyValueScore?: number | null;
-  }>;
+  const scenes = (scenesData || []) as SceneListItem[];
+  const { data: charsData } = useCharacters(id);
+  const characters = (charsData || []) as CharacterItem[];
 
   const createScene = useCreateScene(id);
   const saveScene = useSaveScene(id);
+  const deleteSceneMutation = useDeleteScene(id);
 
   const {
     activeSceneId, setActiveScene, setScreenplayId,
@@ -42,14 +62,22 @@ export default function EditorPage() {
     rightPanelTab, setRightPanelTab, isSaving, lastSavedAt,
   } = useEditorStore();
 
+  // Fetch full scene data (with content) for active scene
+  const { data: activeSceneData } = useScene(id, activeSceneId);
+  const activeScene = activeSceneData as SceneFull | undefined;
+  const activeSceneListItem = scenes.find(s => s.id === activeSceneId);
+
   // Story data form state
-  const activeScene = scenes.find(s => s.id === activeSceneId);
   const [storyEvent, setStoryEvent] = useState('');
   const [valueShift, setValueShift] = useState('');
   const [polarityShift, setPolarityShift] = useState('');
   const [turnOn, setTurnOn] = useState('');
   const [turningPoint, setTurningPoint] = useState(false);
   const [notes, setNotes] = useState('');
+  const [sceneValue, setSceneValue] = useState(50);
+
+  // Arc scores state
+  const [arcScores, setArcScores] = useState<Record<string, { ext: number; int: number }>>({});
 
   // Mentor notes
   const { data: mentorNotesData } = useMentorNotes(activeSceneId || '');
@@ -67,11 +95,26 @@ export default function EditorPage() {
       setTurnOn(activeScene.turnOn || '');
       setTurningPoint(activeScene.turningPoint || false);
       setNotes(activeScene.synopsis || '');
+      setSceneValue(activeScene.storyValueScore ?? 50);
+      // Load arc scores
+      const scores: Record<string, { ext: number; int: number }> = {};
+      activeScene.characterArcs?.forEach(a => {
+        scores[a.characterId] = { ext: a.externalScore, int: a.internalScore };
+      });
+      setArcScores(scores);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSceneId]);
+  }, [activeSceneId, activeScene?.id]);
 
   useEffect(() => { setScreenplayId(id); }, [id, setScreenplayId]);
+
+  // Auto-select first scene if none selected
+  useEffect(() => {
+    if (!activeSceneId && scenes.length > 0) {
+      setActiveScene(scenes[0].id);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenes.length]);
 
   const formatSavedTime = () => {
     if (isSaving) return t('autosave.saving');
@@ -83,13 +126,60 @@ export default function EditorPage() {
   };
 
   const handleAddScene = () => {
-    createScene.mutate({});
+    createScene.mutate({}, {
+      onSuccess: (data: unknown) => {
+        const scene = data as { id: string };
+        setActiveScene(scene.id);
+      },
+    });
+  };
+
+  const handleDeleteScene = (sceneId: string) => {
+    if (!confirm('Delete this scene?')) return;
+    deleteSceneMutation.mutate(sceneId, {
+      onSuccess: () => {
+        if (activeSceneId === sceneId) {
+          const remaining = scenes.filter(s => s.id !== sceneId);
+          setActiveScene(remaining[0]?.id || null as unknown as string);
+        }
+      },
+    });
   };
 
   const handleSaveStoryData = (field: string, value: unknown) => {
     if (!activeSceneId) return;
     saveScene.mutate({ sceneId: activeSceneId, data: { [field]: value } });
   };
+
+  // Debounced save for scene value slider
+  const debouncedSaveValue = useDebouncedCallback((v: number) => {
+    if (!activeSceneId) return;
+    saveScene.mutate({ sceneId: activeSceneId, data: { storyValueScore: v } });
+  }, 800);
+
+  // Debounced save for arc scores
+  const debouncedSaveArc = useDebouncedCallback((charId: string, ext: number, int_: number) => {
+    if (!activeSceneId) return;
+    saveScene.mutate({
+      sceneId: activeSceneId,
+      data: { characterArcs: [{ characterId: charId, externalScore: ext, internalScore: int_ }] },
+    });
+  }, 600);
+
+  // Toggle character in scene
+  const handleToggleCharacter = useCallback((charId: string) => {
+    if (!activeSceneId || !activeSceneListItem) return;
+    const current = activeSceneListItem.sceneCharacters?.map(sc => sc.character.id) || [];
+    const isIn = current.includes(charId);
+    const newIds = isIn ? current.filter(c => c !== charId) : [...current, charId];
+    saveScene.mutate({ sceneId: activeSceneId, data: { characterIds: newIds } });
+  }, [activeSceneId, activeSceneListItem, saveScene]);
+
+  const sceneCharIds = new Set(activeSceneListItem?.sceneCharacters?.map(sc => sc.character.id) || []);
+  const majorCharsInScene = characters.filter(c => c.isMajor && sceneCharIds.has(c.id));
+
+  // Scene value color
+  const valueColor = sceneValue <= 30 ? '#C0392B' : sceneValue <= 69 ? '#E67E22' : '#1D9E75';
 
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col">
@@ -126,7 +216,7 @@ export default function EditorPage() {
 
       {/* Three-panel layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel */}
+        {/* ─── LEFT PANEL ─── */}
         <div className={cn(
           'bg-surface-panel overflow-y-auto transition-all duration-250 shrink-0',
           leftPanelOpen ? 'w-[250px]' : 'w-12'
@@ -138,7 +228,7 @@ export default function EditorPage() {
           </div>
           {leftPanelOpen && (
             <div className="px-3 pb-4">
-              {/* Add Scene button — always visible */}
+              {/* Add Scene */}
               <div className="mb-3">
                 <button
                   onClick={handleAddScene}
@@ -162,51 +252,111 @@ export default function EditorPage() {
               ) : (
                 <div className="space-y-0.5">
                   {scenes.map((scene) => (
-                    <button
-                      key={scene.id}
-                      onClick={() => setActiveScene(scene.id)}
-                      className={cn(
-                        'w-full text-left px-2.5 py-2 rounded text-sm transition-all',
-                        activeSceneId === scene.id
-                          ? 'bg-primary text-white'
-                          : 'text-txt-primary hover:bg-surface-hover'
-                      )}
-                    >
-                      <span className="font-mono text-xs mr-2">{scene.sceneNumber}</span>
-                      <span className="text-xs">{scene.intExt}. {scene.synopsis || 'Untitled scene'}</span>
-                    </button>
+                    <div key={scene.id} className="group flex items-center">
+                      <button
+                        onClick={() => setActiveScene(scene.id)}
+                        className={cn(
+                          'flex-1 text-left px-2.5 py-2 rounded-l text-sm transition-all',
+                          activeSceneId === scene.id
+                            ? 'bg-primary text-white'
+                            : 'text-txt-primary hover:bg-surface-hover'
+                        )}
+                      >
+                        <span className="font-mono text-xs mr-2">{scene.sceneNumber}</span>
+                        <span className="text-xs">{scene.intExt}. {scene.location?.name || scene.synopsis || 'Untitled'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteScene(scene.id)}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-txt-muted hover:text-[var(--color-danger)] transition-all"
+                        title="Delete scene"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
                   ))}
+                </div>
+              )}
+
+              {/* ─── CHARACTER CHIPS ─── */}
+              {activeSceneId && (
+                <div className="mt-4 pt-3 border-t border-border">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-txt-muted mb-2">
+                    {t('leftPanel.inThisScene')}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {characters.map((char) => (
+                      <button
+                        key={char.id}
+                        onClick={() => handleToggleCharacter(char.id)}
+                        className={cn(
+                          'px-2.5 py-1 text-xs rounded-full border transition-colors',
+                          sceneCharIds.has(char.id)
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-transparent text-txt-secondary border-border hover:border-primary hover:text-primary'
+                        )}
+                      >
+                        {char.name}
+                      </button>
+                    ))}
+                    {characters.length === 0 && (
+                      <p className="text-xs text-txt-muted">No characters yet</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ─── SCENE VALUE SLIDER ─── */}
+              {activeSceneId && (
+                <div className="mt-4 pt-3 border-t border-border">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-txt-muted">
+                      {t('leftPanel.sceneValue')}
+                    </p>
+                    <span className="text-lg font-mono font-bold" style={{ color: valueColor }}>
+                      {sceneValue}
+                    </span>
+                  </div>
+                  <input
+                    type="range" min={0} max={100} step={1}
+                    value={sceneValue}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setSceneValue(v);
+                      debouncedSaveValue(v);
+                    }}
+                    className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, ${valueColor} ${sceneValue}%, var(--border-color) ${sceneValue}%)`,
+                    }}
+                  />
+                  <p className="text-[10px] text-txt-muted mt-1">{t('leftPanel.dramaticCharge')}</p>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* Center Panel */}
+        {/* ─── CENTER PANEL (Tiptap Editor) ─── */}
         <div className="flex-1 bg-surface-base overflow-y-auto p-8">
-          <div className="max-w-[680px] mx-auto bg-[var(--screenplay-page-bg)] shadow-1 rounded min-h-[800px] p-16">
-            <div className="font-screenplay text-[12pt] leading-normal text-[var(--screenplay-text)]">
-              {activeSceneId ? (
-                <div>
-                  <p className="uppercase font-bold mb-4">
-                    {activeScene?.intExt}.{' '}
-                    {activeScene?.synopsis || 'LOCATION'} -{' '}
-                    {activeScene?.timeOfDay || 'DAY'}
-                  </p>
-                  <p className="text-txt-muted italic">
-                    Rich text editor (Tiptap) will be integrated here.
-                  </p>
-                </div>
-              ) : (
-                <p className="text-txt-muted text-center py-20">
-                  Select a scene from the left panel to start editing.
-                </p>
-              )}
+          {activeSceneId && activeScene ? (
+            <ScreenplayEditor
+              key={activeSceneId}
+              sceneId={activeSceneId}
+              screenplayId={id}
+              initialContent={activeScene.content}
+            />
+          ) : (
+            <div className="max-w-[680px] mx-auto bg-[var(--screenplay-page-bg)] shadow-1 rounded min-h-[800px] p-16 flex items-center justify-center">
+              <p className="text-txt-muted text-center">
+                {scenes.length === 0
+                  ? 'Click "+ Add Scene" to start writing.'
+                  : 'Select a scene from the left panel to start editing.'}
+              </p>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Right Panel */}
+        {/* ─── RIGHT PANEL ─── */}
         <div className={cn(
           'bg-surface-panel overflow-y-auto transition-all duration-250 shrink-0',
           rightPanelOpen ? 'w-[260px]' : 'w-12'
@@ -233,6 +383,7 @@ export default function EditorPage() {
                 ))}
               </div>
 
+              {/* ─── STORY DATA TAB ─── */}
               {rightPanelTab === 'story' && activeSceneId && (
                 <div className="space-y-4">
                   <div>
@@ -309,6 +460,57 @@ export default function EditorPage() {
                       )} />
                     </button>
                   </div>
+
+                  {/* ─── CHARACTER ARC SLIDERS ─── */}
+                  {majorCharsInScene.length > 0 && (
+                    <div className="pt-3 border-t border-border">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-txt-muted mb-3">
+                        {t('rightPanel.characterArcs')}
+                      </p>
+                      <div className="space-y-4">
+                        {majorCharsInScene.map((char) => {
+                          const scores = arcScores[char.id] || { ext: 50, int: 50 };
+                          return (
+                            <div key={char.id}>
+                              <p className="text-xs font-medium text-txt-primary mb-2">{char.name}</p>
+                              {/* External */}
+                              <div className="mb-2">
+                                <div className="flex justify-between text-[10px] text-txt-muted mb-1">
+                                  <span>{t('rightPanel.externalScore')}</span>
+                                  <span className="font-mono font-bold text-[var(--color-accent)]">{scores.ext}</span>
+                                </div>
+                                <input
+                                  type="range" min={0} max={100} step={1} value={scores.ext}
+                                  onChange={(e) => {
+                                    const v = Number(e.target.value);
+                                    setArcScores(prev => ({ ...prev, [char.id]: { ...scores, ext: v } }));
+                                    debouncedSaveArc(char.id, v, scores.int);
+                                  }}
+                                  className="w-full h-1 rounded-full appearance-none cursor-pointer accent-[var(--color-accent)]"
+                                />
+                              </div>
+                              {/* Internal */}
+                              <div>
+                                <div className="flex justify-between text-[10px] text-txt-muted mb-1">
+                                  <span>{t('rightPanel.internalScore')}</span>
+                                  <span className="font-mono font-bold text-primary">{scores.int}</span>
+                                </div>
+                                <input
+                                  type="range" min={0} max={100} step={1} value={scores.int}
+                                  onChange={(e) => {
+                                    const v = Number(e.target.value);
+                                    setArcScores(prev => ({ ...prev, [char.id]: { ...scores, int: v } }));
+                                    debouncedSaveArc(char.id, scores.ext, v);
+                                  }}
+                                  className="w-full h-1 rounded-full appearance-none cursor-pointer accent-[var(--color-primary)]"
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -316,6 +518,7 @@ export default function EditorPage() {
                 <p className="text-sm text-txt-muted text-center py-8">Select a scene to edit story data.</p>
               )}
 
+              {/* ─── NOTES TAB ─── */}
               {rightPanelTab === 'notes' && (
                 <div>
                   <textarea
@@ -329,6 +532,7 @@ export default function EditorPage() {
                 </div>
               )}
 
+              {/* ─── MENTOR TAB ─── */}
               {rightPanelTab === 'mentor' && (
                 <div>
                   {mentorNotes.length === 0 ? (

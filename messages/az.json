@@ -9,11 +9,11 @@
     "myScreenplays": "Ssenarilərim"
   },
   "dashboard": {
-    "greeting": "Günaydın, {name}",
-    "totalScreenplays": "Ümumi ssenariylər",
+    "greeting": "Salam, {name}",
+    "totalScreenplays": "Ümumi ssenarilər",
     "totalScenes": "Ümumi səhnələr",
     "activeCollaborations": "Aktiv əməkdaşlıqlar",
-    "newScreenplay": "+ Yeni Ssenari",
+    "newScreenplay": " Yeni Ssenari",
     "continueWriting": "Yazmağa davam et →",
     "emptyState": {
       "headline": "Hər şah əsər tək bir sətirdən başlayır.",
@@ -28,7 +28,7 @@
       "inThisScene": "BU SƏHNƏDƏ",
       "sceneValue": "SƏHNƏ DƏYƏRİ",
       "dramaticCharge": "Dramatik yük",
-      "addScene": "+ Səhnə əlavə et",
+      "addScene": " Səhnə əlavə et",
       "noScenes": "Hələ səhnə yoxdur. Yazmağa başlamaq üçün ilk səhnənizi əlavə edin."
     },
     "rightPanel": {
@@ -42,7 +42,9 @@
       "turningPoint": "Dönüm nöqtəsi",
       "characterArcs": "KARAKTER ARKLARI",
       "externalScore": "Xarici",
-      "internalScore": "Daxili"
+      "internalScore": "Daxili",
+      "action": "Hərəkət",
+      "revelation": "Kəşf"
     },
     "autosave": {
       "saving": "Saxlanılır...",
@@ -53,7 +55,10 @@
       "dialogue": "Dialoq",
       "parenthetical": "Mötərizə",
       "transition": "Keçid",
-      "note": "Qeyd"
+      "note": "Qeyd",
+      "next": "növbəti",
+      "sceneHeading": "Səhnə Başlığı",
+      "characterName": "Karakter"
     }
   },
   "characters": {
@@ -219,6 +224,21 @@
       "characterArcTracking": "Karakter Arkı İzləmə",
       "formatSupport": "Fayl və Format Dəstəyi"
     }
+  },
+  "notifications": {
+    "title": "Bildirişlər",
+    "markAllRead": "Hamısını oxunmuş kimi işarələ",
+    "noNotifications": "Bildiriş yoxdur",
+    "inviteAccepted": "{name} \"{title}\" üçün dəvəti qəbul etdi",
+    "inviteRejected": "{name} \"{title}\" üçün dəvəti rədd etdi",
+    "mentorNote": "Mentor {name} Səhnə {scene} üçün qeyd əlavə etdi",
+    "mentorFlag": "Mentor {name} Səhnə {scene} işarələdi"
+  },
+  "invites": {
+    "pendingInvitations": "Gözləyən Dəvətlər",
+    "invitedBy": "{name} tərəfindən dəvət edildiniz",
+    "accept": "Qəbul et",
+    "decline": "Rədd et"
   },
   "common": {
     "save": "Saxla",

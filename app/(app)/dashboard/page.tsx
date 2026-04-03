@@ -7,6 +7,7 @@ import { ScreenplayCard } from '@/components/screenplay/ScreenplayCard';
 import { Button } from '@/components/ui/Button';
 import { Plus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { PendingInvites } from '@/components/dashboard/PendingInvites';
 
 export const metadata: Metadata = { title: 'Dashboard — ScriptFlow' };
 
@@ -45,6 +46,9 @@ export default async function DashboardPage() {
         <StatCard label={t('activeCollaborations')} value={screenplays.reduce((sum: number, s: { _count: { collaborators: number } }) => sum + s._count.collaborators, 0)} />
         <StatCard label="Film / Series" value={`${screenplays.filter((s: { type: string }) => s.type === 'FILM').length} / ${screenplays.filter((s: { type: string }) => s.type === 'SERIES').length}`} />
       </div>
+
+      {/* Pending Invites */}
+      <PendingInvites />
 
       {/* Screenplays */}
       {screenplays.length === 0 ? (
