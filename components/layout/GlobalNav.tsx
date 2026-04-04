@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from '@/components/providers/ThemeProvider';
@@ -14,6 +15,7 @@ export function GlobalNav() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const t = useTranslations('nav');
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = session?.user;
 
@@ -35,16 +37,16 @@ export function GlobalNav() {
         {/* Main nav links based on role */}
         {user && (
           <div className="hidden md:flex items-center gap-1">
-            <Link href="/dashboard" className="px-3 py-1.5 text-sm text-txt-secondary hover:text-txt-primary hover:bg-surface-hover rounded transition-colors">
+            <Link href="/dashboard" className={`px-3 py-1.5 text-sm rounded transition-colors ${pathname === '/dashboard' ? 'text-primary bg-[#F0F0F9] font-medium' : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-hover'}`}>
               {t('dashboard')}
             </Link>
             {(user.role === 'MENTOR' || user.role === 'ADMIN') && (
-              <Link href="/mentor" className="px-3 py-1.5 text-sm text-txt-secondary hover:text-txt-primary hover:bg-surface-hover rounded transition-colors">
+              <Link href="/mentor" className={`px-3 py-1.5 text-sm rounded transition-colors ${pathname === '/mentor' ? 'text-primary bg-[#F0F0F9] font-medium' : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-hover'}`}>
                 Mentor
               </Link>
             )}
             {user.role === 'ADMIN' && (
-              <Link href="/admin" className="px-3 py-1.5 text-sm text-txt-secondary hover:text-txt-primary hover:bg-surface-hover rounded transition-colors">
+              <Link href="/admin" className={`px-3 py-1.5 text-sm rounded transition-colors ${pathname === '/admin' ? 'text-primary bg-[#F0F0F9] font-medium' : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-hover'}`}>
                 Admin
               </Link>
             )}
@@ -53,7 +55,7 @@ export function GlobalNav() {
       </div>
 
       <div className="flex items-center gap-3">
-        <LanguageSwitcher current="az" />
+        <LanguageSwitcher />
 
         <button
           onClick={cycleTheme}

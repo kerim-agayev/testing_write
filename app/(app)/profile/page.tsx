@@ -90,7 +90,7 @@ export default function ProfilePage() {
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium uppercase tracking-wide text-txt-secondary mb-2">Language</label>
-            <LanguageSwitcher current={profile.preferredLocale} />
+            <LanguageSwitcher />
           </div>
           <div>
             <label className="block text-xs font-medium uppercase tracking-wide text-txt-secondary mb-2">Theme</label>

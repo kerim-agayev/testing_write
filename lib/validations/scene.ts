@@ -13,6 +13,7 @@ export const UpdateSceneSchema = z.object({
   content: z.any().optional(),
   intExt: z.enum(['INT', 'EXT', 'INT_EXT']).optional(),
   locationId: z.string().optional().nullable(),
+  locationName: z.string().max(200).optional(),
   timeOfDay: z.string().max(50).optional().nullable(),
   synopsis: z.string().max(500).optional().nullable(),
   storyEvent: z.string().max(500).optional().nullable(),

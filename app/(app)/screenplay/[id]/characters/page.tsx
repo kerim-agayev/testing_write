@@ -5,7 +5,9 @@ import { useParams } from 'next/navigation';
 import { Plus, ArrowLeft, X } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useCharacters, useCreateCharacter, useUpdateCharacter } from '@/lib/api/hooks';
+import { useCharacters, useCreateCharacter, useUpdateCharacter, useAnalytics } from '@/lib/api/hooks';
+import { CharacterArcChart } from '@/components/charts/CharacterArcChart';
+import type { ReactElement } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
@@ -139,7 +141,7 @@ export default function CharactersPage() {
       {/* Main content - Character detail */}
       <div className="flex-1 overflow-y-auto p-8">
         {selected ? (
-          <div>
+          <div key={selected.id}>
             <div className="flex items-center gap-4 mb-6">
               <h1 className="text-3xl font-semibold text-txt-primary">{selected.name}</h1>
               <Badge variant={selected.roleType.toLowerCase() as 'protagonist' | 'antagonist' | 'supporting' | 'minor'}>
@@ -292,10 +294,14 @@ export default function CharactersPage() {
                 </div>
               )}
               {detailTab === 'arc' && (
-                <div className="py-10 text-center text-txt-muted">
-                  {selected.isMajor
-                    ? t('externalJourney') + ' / ' + t('internalJourney') + ' — Add scores in the editor to see the arc chart.'
-                    : `Arc tracking is for major characters. Enable "${t('isMajor')}" to track ${selected.name}'s journey.`}
+                <div>
+                  {selected.isMajor ? (
+                    <CharacterArcForCharacter characterId={selected.id} characterName={selected.name} screenplayId={id} />
+                  ) : (
+                    <div className="py-10 text-center text-txt-muted">
+                      Arc tracking is for major characters. Enable &quot;{t('isMajor')}&quot; to track {selected.name}&apos;s journey.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -308,4 +314,20 @@ export default function CharactersPage() {
       </div>
     </div>
   );
+}
+
+function CharacterArcForCharacter({ characterId, characterName, screenplayId }: {
+  characterId: string; characterName: string; screenplayId: string;
+}): ReactElement {
+  const { data, isLoading } = useAnalytics(screenplayId);
+  const analytics = data as { characterArcs?: Array<{ character: { id: string }; arcs: Array<{ sceneId: string; sceneNumber: number; externalScore: number | null; internalScore: number | null }> }> } | undefined;
+
+  if (isLoading) return <div className="py-10 text-center text-txt-muted">Loading arc data...</div>;
+
+  const charArc = analytics?.characterArcs?.find(ca => ca.character.id === characterId);
+  if (!charArc || charArc.arcs.length === 0) {
+    return <div className="py-10 text-center text-txt-muted">Add arc scores in the editor to see {characterName}&apos;s journey.</div>;
+  }
+
+  return <CharacterArcChart data={charArc.arcs} characterName={characterName} screenplayId={screenplayId} />;
 }

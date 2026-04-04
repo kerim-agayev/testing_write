@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth, handleAuthError } from '@/lib/auth-utils';
-import { generateDOCX, generatePDFBuffer } from '@/lib/utils/export';
+import { generateDOCX, generatePDFHTML } from '@/lib/utils/export';
 import { prisma } from '@/lib/prisma';
 
 type Params = { params: Promise<{ id: string }> };
@@ -37,11 +37,10 @@ export async function GET(req: Request, { params }: Params) {
     }
 
     if (format === 'pdf') {
-      const buffer = await generatePDFBuffer(id);
-      return new Response(new Uint8Array(buffer), {
+      const html = await generatePDFHTML(id);
+      return new Response(html, {
         headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${safeTitle}.pdf"`,
+          'Content-Type': 'text/html; charset=utf-8',
         },
       });
     }

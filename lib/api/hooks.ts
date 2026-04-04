@@ -46,7 +46,10 @@ export function useSaveScene(screenplayId: string) {
   return useMutation({
     mutationFn: ({ sceneId, data }: { sceneId: string; data: Record<string, unknown> }) =>
       patch(`/screenplays/${screenplayId}/scenes/${sceneId}`, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['scenes', screenplayId] }),
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries({ queryKey: ['scenes', screenplayId] });
+      qc.invalidateQueries({ queryKey: ['scene-data', variables.sceneId] });
+    },
   });
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { usePendingInvites, useRespondToInvite } from '@/lib/api/hooks';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { Check, X } from 'lucide-react';
 
 type Invite = {
@@ -18,7 +18,7 @@ type Invite = {
 export function PendingInvites() {
   const { data, isLoading } = usePendingInvites();
   const respond = useRespondToInvite();
-  const t = useTranslations('common');
+  const router = useRouter();
 
   const invites = (data || []) as Invite[];
 
@@ -40,7 +40,7 @@ export function PendingInvites() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => respond.mutate({ screenplayId: inv.screenplayId, userId: inv.userId, action: 'accept' })}
+                onClick={() => respond.mutate({ screenplayId: inv.screenplayId, userId: inv.userId, action: 'accept' }, { onSuccess: () => router.refresh() })}
                 disabled={respond.isPending}
                 className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-[var(--color-accent)] text-white rounded hover:opacity-90 transition-opacity disabled:opacity-50"
               >

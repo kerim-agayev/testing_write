@@ -96,7 +96,7 @@ export default function EditorPage() {
     createdAt: string; mentor: { name: string };
   }>;
 
-  // Sync form state when active scene changes
+  // Sync form state when active scene data loads/changes
   useEffect(() => {
     if (activeScene) {
       setStoryEvent(activeScene.storyEvent || '');
@@ -106,15 +106,17 @@ export default function EditorPage() {
       setTurningPoint(activeScene.turningPoint || false);
       setNotes(activeScene.synopsis || '');
       setSceneValue(activeScene.storyValueScore ?? 50);
-      // Load arc scores
       const scores: Record<string, { ext: number; int: number }> = {};
       activeScene.characterArcs?.forEach(a => {
         scores[a.characterId] = { ext: a.externalScore, int: a.internalScore };
       });
       setArcScores(scores);
+    } else {
+      setStoryEvent(''); setValueShift(''); setPolarityShift('');
+      setTurnOn(''); setTurningPoint(false); setNotes('');
+      setSceneValue(50); setArcScores({});
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSceneId, activeScene?.id]);
+  }, [activeSceneId, activeScene]);
 
   useEffect(() => { setScreenplayId(id); }, [id, setScreenplayId]);
 

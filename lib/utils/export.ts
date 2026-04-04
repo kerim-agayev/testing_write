@@ -175,10 +175,12 @@ export async function generateDOCX(screenplayId: string): Promise<Buffer> {
   return Buffer.from(buffer);
 }
 
-export async function generatePDFBuffer(screenplayId: string): Promise<Buffer> {
-  // PDF generation requires @react-pdf/renderer which needs React.
-  // For server-side, we return a simple text representation.
-  // Full PDF generation will be implemented in the frontend layer.
+export async function generatePDFHTML(screenplayId: string): Promise<string> {
+  const screenplay = await prisma.screenplay.findUnique({
+    where: { id: screenplayId },
+    select: { title: true },
+  });
+
   const scenes = await prisma.scene.findMany({
     where: {
       sequence: { structure: { act: { screenplayId } } },
@@ -187,13 +189,41 @@ export async function generatePDFBuffer(screenplayId: string): Promise<Buffer> {
     orderBy: { sceneNumber: 'asc' },
   });
 
-  // Generate simple text for now — proper PDF rendering happens client-side
-  const text = scenes
-    .map((scene) => {
-      const content = scene.content as ProseMirrorNode;
-      return getTextContent(content);
-    })
-    .join('\n\n');
+  const scenesHTML = scenes.map((scene) => {
+    const content = scene.content as ProseMirrorNode;
+    if (!content.content) return '';
+    return content.content.map(node => {
+      const t = getTextContent(node)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      switch (node.type) {
+        case 'sceneHeading': return `<p class="sh">${t}</p>`;
+        case 'actionLine':
+        case 'action': return `<p class="act">${t}</p>`;
+        case 'characterName': return `<p class="char">${t}</p>`;
+        case 'dialogue': return `<p class="dial">${t}</p>`;
+        case 'parenthetical': return `<p class="paren">(${t.replace(/^\(|\)$/g, '')})</p>`;
+        case 'transition': return `<p class="trans">${t}</p>`;
+        default: return `<p>${t}</p>`;
+      }
+    }).join('\n');
+  }).join('\n');
 
-  return Buffer.from(text, 'utf-8');
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>${screenplay?.title ?? 'Screenplay'}</title>
+<style>
+@media print { @page { size: letter; margin: 1in 1in 1in 1.5in; } }
+body{font-family:'Courier New',Courier,monospace;font-size:12pt;line-height:1.2;margin:1in 1in 1in 1.5in;color:#000;}
+h1{text-align:center;font-size:14pt;margin-bottom:2em;}
+.sh{text-transform:uppercase;font-weight:bold;margin-top:2em;margin-bottom:.5em;}
+.act{margin:.5em 0;}
+.char{text-align:center;text-transform:uppercase;margin-top:1em;margin-bottom:0;padding-left:1.5in;}
+.dial{margin-left:1in;margin-right:1.5in;margin-bottom:.5em;}
+.paren{margin-left:1.3in;font-style:italic;}
+.trans{text-align:right;text-transform:uppercase;margin-top:1em;}
+</style></head>
+<body>
+<h1>${screenplay?.title ?? ''}</h1>
+${scenesHTML}
+<script>window.onload=function(){window.print()}</script>
+</body></html>`;
 }

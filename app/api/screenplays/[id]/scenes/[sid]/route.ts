@@ -3,6 +3,7 @@ import { requireAuth, handleAuthError } from '@/lib/auth-utils';
 import { getScene, updateScene, deleteScene } from '@/lib/db/scenes';
 import { canEditScreenplay } from '@/lib/db/screenplays';
 import { UpdateSceneSchema } from '@/lib/validations/scene';
+import { prisma } from '@/lib/prisma';
 
 type Params = { params: Promise<{ id: string; sid: string }> };
 
@@ -47,7 +48,19 @@ export async function PATCH(req: Request, { params }: Params) {
       );
     }
 
-    const updated = await updateScene(sid, parsed.data);
+    // Handle locationName -> upsert Location
+    const updateData = { ...parsed.data };
+    if (updateData.locationName) {
+      const loc = await prisma.location.upsert({
+        where: { screenplayId_name: { screenplayId: id, name: updateData.locationName.toUpperCase() } },
+        create: { screenplayId: id, name: updateData.locationName.toUpperCase(), intExt: updateData.intExt ?? 'INT' },
+        update: {},
+      });
+      updateData.locationId = loc.id;
+      delete updateData.locationName;
+    }
+
+    const updated = await updateScene(sid, updateData);
     return NextResponse.json(updated);
   } catch (error) {
     return handleAuthError(error);

@@ -25,7 +25,7 @@ export default function SharePage() {
     user: { id: string; name: string; email: string };
   }>;
   const inviteCollaborator = useInviteCollaborator(id);
-  const { data: mentorsData } = useActiveMentors();
+  const { data: mentorsData, isLoading: mentorsLoading } = useActiveMentors();
   const activeMentors = (mentorsData || []) as Array<{
     id: string; name: string; email: string;
     _count: { mentorAssignments: number };
@@ -163,7 +163,20 @@ export default function SharePage() {
                 {t('requestMentorDesc') || 'Request a mentor to review your screenplay and provide feedback.'}
               </p>
 
-              {activeMentors.length === 0 ? (
+              {mentorsLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="p-3 rounded-lg border border-border flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-surface-panel animate-pulse" />
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3.5 w-28 bg-surface-panel rounded animate-pulse" />
+                        <div className="h-2.5 w-20 bg-surface-panel rounded animate-pulse" />
+                      </div>
+                      <div className="w-16 h-7 bg-surface-panel rounded animate-pulse" />
+                    </div>
+                  ))}
+                </div>
+              ) : activeMentors.length === 0 ? (
                 <p className="text-sm text-txt-muted py-4">No mentors available at this time.</p>
               ) : (
                 <div className="space-y-3">

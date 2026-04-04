@@ -1,75 +1,89 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
 import { useEditorStore } from '@/store/editorStore';
 import { useSceneData } from '@/hooks/useSceneData';
+import { useSaveScene } from '@/lib/api/hooks';
+import { Save } from 'lucide-react';
 
-const INT_EXT_OPTIONS = ['INT.', 'EXT.', 'INT./EXT.'];
+const INT_EXT_OPTIONS = ['INT', 'EXT', 'INT_EXT'] as const;
+const INT_EXT_LABELS: Record<string, string> = { INT: 'INT.', EXT: 'EXT.', INT_EXT: 'INT./EXT.' };
 const TIME_OPTIONS = ['DAY', 'NIGHT', 'DAWN', 'DUSK', 'CONTINUOUS', 'LATER'];
 
 export function SceneHeadingBar({ screenplayId }: { screenplayId: string }) {
   const activeSceneId = useEditorStore(s => s.activeSceneId);
   const { data: rawData } = useSceneData(screenplayId);
   const sceneData = rawData as { intExt?: string; location?: { name: string } | null; timeOfDay?: string | null; sceneNumber?: number } | undefined;
+  const saveScene = useSaveScene(screenplayId);
 
-  const [intExt, setIntExt] = useState('INT.');
-  const [location, setLocation] = useState('');
+  const [intExt, setIntExt] = useState('INT');
+  const [locationName, setLocationName] = useState('');
   const [timeOfDay, setTimeOfDay] = useState('DAY');
 
   useEffect(() => {
     if (sceneData) {
-      const map: Record<string, string> = { INT: 'INT.', EXT: 'EXT.', INT_EXT: 'INT./EXT.' };
-      setIntExt(map[sceneData.intExt ?? 'INT'] ?? 'INT.');
-      setLocation(sceneData.location?.name ?? '');
+      setIntExt(sceneData.intExt ?? 'INT');
+      setLocationName(sceneData.location?.name ?? '');
       setTimeOfDay(sceneData.timeOfDay ?? 'DAY');
     }
   }, [sceneData, activeSceneId]);
 
-  const save = useDebouncedCallback(async (updates: Record<string, string>) => {
-    if (!activeSceneId) return;
-    await fetch(`/api/screenplays/${screenplayId}/scenes/${activeSceneId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates),
-    });
-  }, 500);
-
   if (!activeSceneId) return null;
 
+  const handleSaveIntExt = (val: string) => {
+    setIntExt(val);
+    saveScene.mutate({ sceneId: activeSceneId, data: { intExt: val } });
+  };
+
+  const handleSaveTime = (val: string) => {
+    setTimeOfDay(val);
+    saveScene.mutate({ sceneId: activeSceneId, data: { timeOfDay: val } });
+  };
+
+  const handleSaveLocation = () => {
+    if (!locationName.trim()) return;
+    saveScene.mutate({ sceneId: activeSceneId, data: { locationName: locationName.trim().toUpperCase() } });
+  };
+
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-b border-[var(--border-color)] bg-[var(--surface-base)] max-w-[680px] mx-auto rounded-t">
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-[var(--border-color)] bg-[var(--surface-panel)] max-w-[680px] mx-auto rounded-t">
       <select
         value={intExt}
-        onChange={e => {
-          setIntExt(e.target.value);
-          const dbMap: Record<string, string> = { 'INT.': 'INT', 'EXT.': 'EXT', 'INT./EXT.': 'INT_EXT' };
-          save({ intExt: dbMap[e.target.value] });
-        }}
+        onChange={e => handleSaveIntExt(e.target.value)}
         className="text-xs font-mono font-bold bg-[var(--surface-card)] border border-[var(--border-color)] rounded px-2 py-1.5 focus:border-[var(--color-primary)] focus:outline-none cursor-pointer text-[var(--text-primary)]"
       >
-        {INT_EXT_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+        {INT_EXT_OPTIONS.map(o => <option key={o} value={o}>{INT_EXT_LABELS[o]}</option>)}
       </select>
 
       <input
         type="text"
-        value={location}
-        onChange={e => { const v = e.target.value.toUpperCase(); setLocation(v); save({ locationName: v }); }}
-        placeholder="LOCATION"
+        value={locationName}
+        onChange={e => setLocationName(e.target.value.toUpperCase())}
+        onKeyDown={e => { if (e.key === 'Enter') handleSaveLocation(); }}
+        placeholder="LOCATION NAME"
         className="flex-1 text-xs font-mono uppercase bg-transparent border-b border-[var(--border-color)] focus:border-[var(--color-primary)] focus:outline-none px-1 py-1 text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
       />
+
+      <button
+        onClick={handleSaveLocation}
+        disabled={saveScene.isPending}
+        className="p-1.5 rounded hover:bg-[var(--surface-card)] transition-colors text-[var(--text-muted)] hover:text-[var(--color-primary)] disabled:opacity-50"
+        title="Save location"
+      >
+        <Save className="w-3.5 h-3.5" />
+      </button>
 
       <span className="text-[var(--text-muted)] font-mono text-xs">—</span>
 
       <select
         value={timeOfDay}
-        onChange={e => { setTimeOfDay(e.target.value); save({ timeOfDay: e.target.value }); }}
+        onChange={e => handleSaveTime(e.target.value)}
         className="text-xs font-mono bg-[var(--surface-card)] border border-[var(--border-color)] rounded px-2 py-1.5 focus:border-[var(--color-primary)] focus:outline-none cursor-pointer text-[var(--text-primary)]"
       >
         {TIME_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
 
-      <span className="text-xs font-mono text-[var(--text-muted)] ml-1 hidden sm:block">
+      <span className="text-xs font-mono text-[var(--text-muted)] ml-1">
         S.{sceneData?.sceneNumber ?? '—'}
       </span>
     </div>
