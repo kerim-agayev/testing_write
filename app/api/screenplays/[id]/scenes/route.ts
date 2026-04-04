@@ -73,9 +73,22 @@ export async function POST(req: Request, { params }: Params) {
       }
     }
 
+    // Handle locationName → create/find Location
+    let locationId = parsed.data.locationId ?? undefined;
+    if (!locationId && parsed.data.locationName) {
+      const loc = await prisma.location.upsert({
+        where: { screenplayId_name: { screenplayId: id, name: parsed.data.locationName.toUpperCase() } },
+        create: { screenplayId: id, name: parsed.data.locationName.toUpperCase(), intExt: parsed.data.intExt ?? 'INT' },
+        update: {},
+      });
+      locationId = loc.id;
+    }
+
     const scene = await createScene({
-      ...parsed.data,
       sequenceId,
+      intExt: parsed.data.intExt,
+      locationId: locationId ?? null,
+      timeOfDay: parsed.data.timeOfDay,
     });
 
     return NextResponse.json(scene, { status: 201 });

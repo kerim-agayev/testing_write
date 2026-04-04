@@ -13,6 +13,7 @@ import {
   Dialogue,
   Parenthetical,
   Transition,
+  ScreenplayShortcuts,
 } from '@/lib/editor/extensions';
 import { ElementToolbar } from './ElementToolbar';
 
@@ -74,6 +75,7 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent }: Scre
       Dialogue,
       Parenthetical,
       Transition,
+      ScreenplayShortcuts,
     ],
     content: initialContent ?? DEFAULT_CONTENT,
     onUpdate: ({ editor: ed }) => {
@@ -101,18 +103,8 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent }: Scre
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId]);
 
-  // Tab key cycles element types
+  // Ctrl/Cmd+S force save (Tab/shortcuts handled by ScreenplayShortcuts extension)
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Tab' && editor) {
-      e.preventDefault();
-      const { $from } = editor.state.selection;
-      const nodeName = $from.parent.type.name;
-      const cycle = ['sceneHeading', 'actionLine', 'characterName', 'dialogue', 'parenthetical', 'transition'];
-      const current = cycle.indexOf(nodeName);
-      const next = cycle[(current + 1) % cycle.length];
-      editor.chain().focus().setNode(next).run();
-    }
-    // Ctrl/Cmd+S force save
     if ((e.ctrlKey || e.metaKey) && e.key === 's' && editor) {
       e.preventDefault();
       debouncedSave.flush();
@@ -120,11 +112,7 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent }: Scre
       saveScene.mutate(
         { sceneId, data: { content: editor.getJSON() } },
         {
-          onSuccess: () => {
-            setSaving(false);
-            setDirty(false);
-            setLastSavedAt(new Date());
-          },
+          onSuccess: () => { setSaving(false); setDirty(false); setLastSavedAt(new Date()); },
           onError: () => setSaving(false),
         }
       );

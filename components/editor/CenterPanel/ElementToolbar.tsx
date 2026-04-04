@@ -22,7 +22,7 @@ export function ElementToolbar({ editor }: { editor: Editor }) {
         <button
           key={el.type}
           title={`${el.label} (${el.shortcut})`}
-          onClick={() => editor.chain().focus().setNode(el.type).run()}
+          onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().setNode(el.type).run(); }}
           className={`px-2.5 py-1 text-xs rounded transition-colors ${
             currentType === el.type
               ? 'bg-[var(--color-primary)] text-white font-medium'

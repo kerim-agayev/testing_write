@@ -55,8 +55,10 @@ export async function getStoryGridData(screenplayId: string): Promise<StoryGridR
 export type StoryArcPoint = {
   sceneId: string;
   sceneNumber: number;
-  storyValueScore: number;
-  synopsis: string | null;
+  score: number | null;
+  storyEvent: string | null;
+  turningPoint: boolean;
+  location: string | null;
 };
 
 export async function getStoryArcData(screenplayId: string): Promise<StoryArcPoint[]> {
@@ -67,23 +69,24 @@ export async function getStoryArcData(screenplayId: string): Promise<StoryArcPoi
           act: { screenplayId },
         },
       },
-      storyValueScore: { not: null },
     },
     select: {
       id: true,
       sceneNumber: true,
       storyValueScore: true,
-      synopsis: true,
+      storyEvent: true,
+      turningPoint: true,
+      location: { select: { name: true } },
     },
     orderBy: { sceneNumber: 'asc' },
   });
 
-  return scenes
-    .filter((s) => s.storyValueScore !== null)
-    .map((s) => ({
-      sceneId: s.id,
-      sceneNumber: s.sceneNumber,
-      storyValueScore: s.storyValueScore!,
-      synopsis: s.synopsis,
-    }));
+  return scenes.map((s) => ({
+    sceneId: s.id,
+    sceneNumber: s.sceneNumber,
+    score: s.storyValueScore,
+    storyEvent: s.storyEvent,
+    turningPoint: s.turningPoint,
+    location: s.location?.name ?? null,
+  }));
 }

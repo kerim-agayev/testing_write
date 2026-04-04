@@ -1,14 +1,17 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
-import { useScreenplay, useScenes, useCreateScene, useSaveScene, useScene, useDeleteScene, useCharacters, useMentorNotes } from '@/lib/api/hooks';
+import { useScreenplay, useScenes, useSaveScene, useDeleteScene, useCharacters, useMentorNotes } from '@/lib/api/hooks';
+import { useSceneData } from '@/hooks/useSceneData';
 import { useEditorStore } from '@/store/editorStore';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
+import { SceneHeadingBar } from '@/components/editor/CenterPanel/SceneHeadingBar';
+import { AddSceneModal } from '@/components/editor/AddSceneModal';
 import { useDebouncedCallback } from 'use-debounce';
 import type { ScreenplayFull } from '@/types/api';
 
@@ -43,6 +46,7 @@ type CharacterItem = {
 
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const t = useTranslations('editor');
   const tc = useTranslations('common');
   const { data: screenplayData } = useScreenplay(id);
@@ -52,9 +56,9 @@ export default function EditorPage() {
   const { data: charsData } = useCharacters(id);
   const characters = (charsData || []) as CharacterItem[];
 
-  const createScene = useCreateScene(id);
   const saveScene = useSaveScene(id);
   const deleteSceneMutation = useDeleteScene(id);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const {
     activeSceneId, setActiveScene, setScreenplayId,
@@ -62,10 +66,16 @@ export default function EditorPage() {
     rightPanelTab, setRightPanelTab, isSaving, lastSavedAt,
   } = useEditorStore();
 
-  // Fetch full scene data (with content) for active scene
-  const { data: activeSceneData } = useScene(id, activeSceneId);
-  const activeScene = activeSceneData as SceneFull | undefined;
+  // Fetch full scene data via useSceneData (persists across scene switches)
+  const { data: activeSceneRaw } = useSceneData(id);
+  const activeScene = activeSceneRaw as SceneFull | undefined;
   const activeSceneListItem = scenes.find(s => s.id === activeSceneId);
+
+  // Query param navigation from analytics chart clicks
+  useEffect(() => {
+    const targetScene = searchParams.get('scene');
+    if (targetScene) setActiveScene(targetScene);
+  }, [searchParams, setActiveScene]);
 
   // Story data form state
   const [storyEvent, setStoryEvent] = useState('');
@@ -126,12 +136,7 @@ export default function EditorPage() {
   };
 
   const handleAddScene = () => {
-    createScene.mutate({}, {
-      onSuccess: (data: unknown) => {
-        const scene = data as { id: string };
-        setActiveScene(scene.id);
-      },
-    });
+    setShowAddModal(true);
   };
 
   const handleDeleteScene = (sceneId: string) => {
@@ -232,8 +237,7 @@ export default function EditorPage() {
               <div className="mb-3">
                 <button
                   onClick={handleAddScene}
-                  disabled={createScene.isPending}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary-dark transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t('leftPanel.addScene')}
@@ -339,12 +343,15 @@ export default function EditorPage() {
         {/* ─── CENTER PANEL (Tiptap Editor) ─── */}
         <div className="flex-1 bg-surface-base overflow-y-auto p-8">
           {activeSceneId && activeScene ? (
-            <ScreenplayEditor
-              key={activeSceneId}
-              sceneId={activeSceneId}
-              screenplayId={id}
-              initialContent={activeScene.content}
-            />
+            <div>
+              <SceneHeadingBar screenplayId={id} />
+              <ScreenplayEditor
+                key={activeSceneId}
+                sceneId={activeSceneId}
+                screenplayId={id}
+                initialContent={activeScene.content}
+              />
+            </div>
           ) : (
             <div className="max-w-[680px] mx-auto bg-[var(--screenplay-page-bg)] shadow-1 rounded min-h-[800px] p-16 flex items-center justify-center">
               <p className="text-txt-muted text-center">
@@ -361,13 +368,13 @@ export default function EditorPage() {
           'bg-surface-panel overflow-y-auto transition-all duration-250 shrink-0',
           rightPanelOpen ? 'w-[260px]' : 'w-12'
         )}>
-          <div className="p-3 flex items-center justify-end">
+          <div className="p-3 flex items-center justify-end flex-shrink-0">
             <button onClick={toggleRightPanel} className="text-txt-muted hover:text-txt-primary">
               <PanelRight className="w-4 h-4" />
             </button>
           </div>
           {rightPanelOpen && (
-            <div className="px-3 pb-4">
+            <div className="flex-1 overflow-y-auto min-h-0 px-3 pb-4">
               <div className="flex gap-1 mb-4">
                 {(['story', 'notes', 'mentor'] as const).map((tab) => (
                   <button
@@ -445,8 +452,10 @@ export default function EditorPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-medium uppercase tracking-wide text-txt-muted">{t('rightPanel.turningPoint')}</label>
+                  <div className="flex items-center justify-between py-2 border-t border-border">
+                    <div className="flex-1 mr-4">
+                      <label className="text-[11px] font-medium uppercase tracking-wide text-txt-muted">{t('rightPanel.turningPoint')}</label>
+                    </div>
                     <button
                       onClick={() => { setTurningPoint(!turningPoint); handleSaveStoryData('turningPoint', !turningPoint); }}
                       className={cn(
@@ -576,6 +585,11 @@ export default function EditorPage() {
         <span className="text-[11px] font-mono text-txt-muted truncate max-w-[200px]">{screenplay?.title}</span>
         <span className="text-[11px] font-mono text-txt-muted">{formatSavedTime()}</span>
       </div>
+
+      {/* Add Scene Modal */}
+      {showAddModal && (
+        <AddSceneModal screenplayId={id} onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   );
 }

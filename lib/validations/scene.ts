@@ -5,6 +5,7 @@ export const CreateSceneSchema = z.object({
   sceneNumber: z.number().int().min(1).optional(),
   intExt: z.enum(['INT', 'EXT', 'INT_EXT']).optional(),
   locationId: z.string().optional().nullable(),
+  locationName: z.string().max(200).optional(),
   timeOfDay: z.string().max(50).optional().nullable(),
 });
 

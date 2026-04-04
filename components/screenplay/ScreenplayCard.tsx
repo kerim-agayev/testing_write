@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { MoreVertical, Pencil, BarChart3, Share2, Download, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, BarChart3, Share2, Download, Trash2, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 type ScreenplayCardProps = {
   id: string;
@@ -46,6 +46,14 @@ export function ScreenplayCard({ screenplay }: { screenplay: ScreenplayCardProps
         <p className="text-[13px] text-txt-secondary line-clamp-2 mb-3">
           {screenplay.logline}
         </p>
+      )}
+
+      {/* Collaboration badge */}
+      {screenplay._count.collaborators > 0 && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-panel border border-border rounded-full text-xs text-txt-secondary mb-2">
+          <Users className="w-3 h-3" />
+          {screenplay._count.collaborators} co-writer{screenplay._count.collaborators > 1 ? 's' : ''}
+        </span>
       )}
 
       {/* Bottom row */}
