@@ -43,12 +43,18 @@ export async function POST(req: Request, { params }: Params) {
       return NextResponse.json({ error: 'Missing sceneId or structureStageId' }, { status: 400 });
     }
 
-    const existing = await prisma.structureAssignment.findFirst({
+    // Check if same scene is already in this exact stage
+    const existingSameStage = await prisma.structureAssignment.findFirst({
       where: { screenplayStructureId: id, sceneId, structureStageId },
     });
-    if (existing) {
+    if (existingSameStage) {
       return NextResponse.json({ error: 'Already assigned' }, { status: 409 });
     }
+
+    // If scene is assigned to a DIFFERENT stage, delete the old one (move it)
+    await prisma.structureAssignment.deleteMany({
+      where: { screenplayStructureId: id, sceneId },
+    });
 
     const assignment = await prisma.structureAssignment.create({
       data: {
