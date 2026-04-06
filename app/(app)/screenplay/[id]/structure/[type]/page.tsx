@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { STRUCTURE_DEFINITIONS, type StructureTypeId } from '@/lib/structure/data';
 import { DraggableSceneItem } from '@/components/structure/StructureSceneList';
@@ -27,6 +27,7 @@ export default function StructureWorkspacePage() {
 
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'workspace' | 'analysis'>('workspace');
+  const [activeDragScene, setActiveDragScene] = useState<any>(null);
 
   const structureDef = STRUCTURE_DEFINITIONS[type as StructureTypeId];
 
@@ -75,7 +76,14 @@ export default function StructureWorkspacePage() {
       qc.invalidateQueries({ queryKey: ['structure-assignments', screenplayStructure?.id] }),
   });
 
+  const handleDragStart = (event: DragStartEvent) => {
+    const sceneId = event.active.data.current?.sceneId;
+    const scene = scenes.find((s: any) => s.id === sceneId);
+    setActiveDragScene(scene ?? null);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDragScene(null);
     const { active, over } = event;
     if (!over || !screenplayStructure) return;
     if (active.data.current?.type === 'scene' && over.data.current?.type === 'stage') {
@@ -115,7 +123,7 @@ export default function StructureWorkspacePage() {
       case 'save_the_cat':
         return <SaveTheCatView {...commonProps} />;
       case 'dan_harmon':
-        return <DanHarmonCircleView {...commonProps} />;
+        return <DanHarmonCircleView {...commonProps} scenes={scenes} onAssign={handleAssign} />;
       case 'vogler':
         return <VoglerJourneyView {...commonProps} />;
       case 'john_truby':
@@ -162,7 +170,7 @@ export default function StructureWorkspacePage() {
       </div>
 
       {activeTab === 'workspace' && (
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <div className="flex flex-1 overflow-hidden">
             {/* Left panel — scenes */}
             <div className="w-60 flex-shrink-0 border-r border-[var(--border-color)] overflow-y-auto p-3 space-y-1.5">
@@ -197,6 +205,20 @@ export default function StructureWorkspacePage() {
               />
             </div>
           </div>
+
+          {/* Drag overlay — shows scene card while dragging */}
+          <DragOverlay dropAnimation={null}>
+            {activeDragScene ? (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-[var(--color-primary)] bg-[var(--surface-card)] shadow-lg min-w-[160px] opacity-90">
+                <span className="text-xs font-mono font-bold text-[var(--color-primary)]">
+                  {activeDragScene.sceneNumber}
+                </span>
+                <span className="text-xs text-[var(--text-primary)] truncate">
+                  {activeDragScene.intExt}. {activeDragScene.location?.name ?? '—'}
+                </span>
+              </div>
+            ) : null}
+          </DragOverlay>
         </DndContext>
       )}
 

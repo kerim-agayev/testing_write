@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useDroppable } from '@dnd-kit/core';
+import { Plus, X } from 'lucide-react';
 import * as d3 from 'd3';
 import type { StructureStage } from '@/lib/structure/data';
 import { AssignedSceneChip } from '../AssignedSceneChip';
@@ -9,62 +9,26 @@ import { AssignedSceneChip } from '../AssignedSceneChip';
 interface DanHarmonCircleViewProps {
   stages: StructureStage[];
   assignments: any[];
+  scenes: any[];
   locale: 'az' | 'en' | 'ru';
   onRemove: (id: string) => void;
+  onAssign: (sceneId: string, stageId: string) => void;
   onStageClick: (stageId: string) => void;
 }
 
 function toRad(deg: number) { return (deg * Math.PI) / 180; }
 
-function HarmonDropZone({ stage, assignments, isActive, locale, onRemove, onClick }: {
-  stage: StructureStage;
-  assignments: any[];
-  isActive: boolean;
-  locale: 'az' | 'en' | 'ru';
-  onRemove: (id: string) => void;
-  onClick: () => void;
-}) {
-  const { isOver, setNodeRef } = useDroppable({
-    id: `stage-${stage.id}`,
-    data: { type: 'stage', stageId: stage.id },
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      onClick={onClick}
-      className={`p-2.5 rounded-lg border-2 cursor-pointer min-h-[80px] transition-all
-        ${isOver ? 'border-dashed scale-[1.02]' : isActive ? 'border-solid' : 'border-[var(--border-color)]'}`}
-      style={{
-        borderColor: isOver || isActive ? stage.color : undefined,
-        background: isOver ? `${stage.color}15` : isActive ? stage.colorLight : 'var(--surface-card)',
-      }}
-    >
-      <p className="text-[10px] font-semibold mb-1.5" style={{ color: stage.color }}>
-        {stage.name[locale]}
-      </p>
-      <div className="space-y-1">
-        {assignments.map((a: any) => (
-          <AssignedSceneChip key={a.id} assignment={a} stageColor={stage.color} onRemove={() => onRemove(a.id)} />
-        ))}
-        {assignments.length === 0 && !isOver && (
-          <p className="text-[10px] text-[var(--text-muted)] italic">
-            {locale === 'az' ? 'sürüklə...' : locale === 'ru' ? 'перетащите...' : 'drag...'}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-export function DanHarmonCircleView({ stages, assignments, locale, onRemove, onStageClick }: DanHarmonCircleViewProps) {
+export function DanHarmonCircleView({ stages, assignments, scenes, locale, onRemove, onAssign, onStageClick }: DanHarmonCircleViewProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [activeStage, setActiveStage] = useState<string | null>(null);
-  const size = 560;
+  const [modalStageId, setModalStageId] = useState<string | null>(null);
+  const size = 500;
   const cx = size / 2;
   const cy = size / 2;
-  const outerR = 220;
-  const innerR = 110;
+  const outerR = 200;
+  const innerR = 100;
+
+  const assignedSceneIds = new Set(assignments.map((a: any) => a.sceneId));
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -91,6 +55,7 @@ export function DanHarmonCircleView({ stages, assignments, locale, onRemove, onS
       const hasScenes = assignments.some((a: any) => a.structureStageId === stage.id);
       const scenesCount = assignments.filter((a: any) => a.structureStageId === stage.id).length;
 
+      // Slice
       g.append('path')
         .attr('d', arcPath)
         .attr('fill', `${stage.color}${isActive ? 'FF' : hasScenes ? 'CC' : '40'}`)
@@ -101,30 +66,30 @@ export function DanHarmonCircleView({ stages, assignments, locale, onRemove, onS
           setActiveStage(stage.id);
           onStageClick(stage.id);
         })
-        .on('mouseover', function () { d3.select(this).attr('fill', stage.color); })
+        .on('mouseover', function () { d3.select(this).attr('fill', `${stage.color}DD`); })
         .on('mouseout', function () {
           d3.select(this).attr('fill', `${stage.color}${isActive ? 'FF' : hasScenes ? 'CC' : '40'}`);
         });
 
       // Label outside
-      const labelR = outerR + 32;
+      const labelR = outerR + 28;
       g.append('text')
         .attr('x', Math.cos(midRad) * labelR)
         .attr('y', Math.sin(midRad) * labelR + 4)
         .attr('text-anchor', 'middle')
-        .attr('font-size', 11)
+        .attr('font-size', 10)
         .attr('font-weight', '600')
         .attr('fill', stage.color)
         .attr('pointer-events', 'none')
         .text(stage.name[locale].split(' — ')[0]);
 
-      // Scene count inside slice
+      // Scene count badge inside slice
       if (scenesCount > 0) {
         const countR = (innerR + outerR) / 2;
         g.append('circle')
           .attr('cx', Math.cos(midRad) * countR)
           .attr('cy', Math.sin(midRad) * countR)
-          .attr('r', 12)
+          .attr('r', 13)
           .attr('fill', 'white')
           .attr('opacity', 0.9)
           .attr('pointer-events', 'none');
@@ -153,30 +118,101 @@ export function DanHarmonCircleView({ stages, assignments, locale, onRemove, onS
   }, [stages, assignments, activeStage, locale]);
 
   return (
-    <div className="flex flex-col items-center">
-      <svg ref={svgRef} width={size} height={size} className="overflow-visible" />
-
-      <div className="mt-6 w-full max-w-2xl">
-        <p className="text-xs text-[var(--text-muted)] text-center mb-3">
-          {locale === 'az' ? 'Dairəyə sürüklə ya da aşağıdan seç' : locale === 'ru' ? 'Перетащите на круг или выберите ниже' : 'Drag to circle or select below'}
-        </p>
-        <div className="grid grid-cols-4 gap-2">
-          {stages.map((stage) => (
-            <HarmonDropZone
-              key={stage.id}
-              stage={stage}
-              assignments={assignments.filter((a: any) => a.structureStageId === stage.id)}
-              isActive={activeStage === stage.id}
-              locale={locale}
-              onRemove={onRemove}
-              onClick={() => {
-                setActiveStage(stage.id);
-                onStageClick(stage.id);
-              }}
-            />
-          ))}
-        </div>
+    <div className="flex gap-6 items-start">
+      {/* Left: D3 Circle */}
+      <div className="flex-shrink-0">
+        <svg ref={svgRef} width={size} height={size} className="overflow-visible" />
       </div>
+
+      {/* Right: Stage cards with scene assignments */}
+      <div className="flex-1 min-w-[260px] space-y-2 overflow-y-auto max-h-[500px] pr-1">
+        <p className="text-xs text-[var(--text-muted)] mb-2">
+          {locale === 'az' ? 'Dairədən bir dilim seçin, sonra "+" ilə səhnə əlavə edin' : locale === 'ru' ? 'Выберите сектор на круге, затем добавьте сцену через "+"' : 'Click a slice on the circle, then add scenes with "+"'}
+        </p>
+        {stages.map((stage) => {
+          const stageAssignments = assignments.filter((a: any) => a.structureStageId === stage.id);
+          const isActive = activeStage === stage.id;
+
+          return (
+            <div
+              key={stage.id}
+              className={`rounded-lg border-2 transition-all ${isActive ? 'border-solid shadow-sm' : 'border-[var(--border-color)]'}`}
+              style={{ borderColor: isActive ? stage.color : undefined }}
+            >
+              <div
+                className="flex items-center justify-between p-2.5 cursor-pointer"
+                style={{ background: isActive ? stage.colorLight : undefined }}
+                onClick={() => { setActiveStage(stage.id); onStageClick(stage.id); }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: stage.color }} />
+                  <span className="text-xs font-semibold" style={{ color: stage.color }}>
+                    {stage.name[locale]}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">{stageAssignments.length}</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setModalStageId(stage.id); setActiveStage(stage.id); onStageClick(stage.id); }}
+                    className="w-5 h-5 flex items-center justify-center rounded hover:bg-[var(--surface-hover)] transition-colors"
+                    style={{ color: stage.color }}
+                  >
+                    <Plus size={12} />
+                  </button>
+                </div>
+              </div>
+
+              {stageAssignments.length > 0 && (
+                <div className="px-2.5 pb-2 space-y-1">
+                  {stageAssignments.map((a: any) => (
+                    <AssignedSceneChip key={a.id} assignment={a} stageColor={stage.color} onRemove={() => onRemove(a.id)} />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Scene selection modal */}
+      {modalStageId && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setModalStageId(null)}>
+          <div className="bg-[var(--surface-card)] rounded-xl border border-[var(--border-color)] shadow-lg w-80 max-h-96 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-3 border-b border-[var(--border-color)]">
+              <div>
+                <p className="text-sm font-semibold text-[var(--text-primary)]">
+                  {locale === 'az' ? 'Səhnə seçin' : locale === 'ru' ? 'Выберите сцену' : 'Select scene'}
+                </p>
+                <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                  {stages.find((s) => s.id === modalStageId)?.name[locale]}
+                </p>
+              </div>
+              <button onClick={() => setModalStageId(null)}>
+                <X size={14} className="text-[var(--text-muted)]" />
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-72 p-2 space-y-1">
+              {scenes.filter((s: any) => !assignedSceneIds.has(s.id)).map((scene: any) => (
+                <button
+                  key={scene.id}
+                  onClick={() => { onAssign(scene.id, modalStageId); setModalStageId(null); }}
+                  className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left"
+                >
+                  <span className="text-xs font-mono font-bold text-[var(--text-muted)] w-5">{scene.sceneNumber}</span>
+                  <span className="text-xs text-[var(--text-primary)] truncate">
+                    {scene.intExt}. {scene.location?.name ?? '—'}
+                  </span>
+                </button>
+              ))}
+              {scenes.filter((s: any) => !assignedSceneIds.has(s.id)).length === 0 && (
+                <p className="text-xs text-[var(--text-muted)] text-center py-4 italic">
+                  {locale === 'az' ? 'Bütün səhnələr atanıb' : locale === 'ru' ? 'Все сцены назначены' : 'All scenes assigned'}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
