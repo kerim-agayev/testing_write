@@ -15,7 +15,8 @@ export function SceneKronotopBadges({ sceneId, screenplayId }: Props) {
     queryFn: async () => {
       if (!sceneId) return [];
       const res = await fetch(`/api/screenplays/${screenplayId}/kronotop?sceneId=${sceneId}`);
-      return res.json();
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
     },
     enabled: !!sceneId,
   });

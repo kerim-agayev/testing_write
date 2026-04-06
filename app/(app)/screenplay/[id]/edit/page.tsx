@@ -207,6 +207,7 @@ export default function EditorPage() {
             { href: `/screenplay/${id}/edit`, label: t('toolbar.action'), icon: BookOpen },
             { href: `/screenplay/${id}/characters`, label: 'Characters', icon: Users },
             { href: `/screenplay/${id}/analytics`, label: 'Analytics', icon: BarChart3 },
+            { href: `/screenplay/${id}/structure`, label: 'Structure', icon: Film },
             { href: `/screenplay/${id}/kronotop`, label: 'Xronotop', icon: MapPin },
             { href: `/screenplay/${id}/share`, label: 'Share', icon: Share2 },
             { href: `/screenplay/${id}/export`, label: 'Export', icon: Download },

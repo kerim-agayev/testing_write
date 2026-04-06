@@ -26,7 +26,11 @@ export default function KronotopPage() {
 
   const { data: assignments = [] } = useQuery({
     queryKey: ['kronotop-assignments', id],
-    queryFn: () => fetch(`/api/screenplays/${id}/kronotop`).then(r => r.json()),
+    queryFn: async () => {
+      const res = await fetch(`/api/screenplays/${id}/kronotop`);
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
   });
 
   const { data: stats } = useQuery({

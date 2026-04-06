@@ -252,5 +252,61 @@
     "tabs": { "atama": "Assign Chronotopes", "xerite": "Chronotope Map", "statistika": "Statistics" },
     "stats": { "title": "Chronotope Distribution", "totalAssignments": "Total Chronotopes", "withKronotop": "Scenes with Chronotope", "withoutKronotop": "Scenes without Chronotope", "avgPerScene": "Average / Scene", "noData": "No chronotopes assigned yet.", "emptyHint": "Start from the Assignment tab." },
     "map": { "title": "Chronotope Map", "description": "Chronotopes assigned to each scene." }
+  },
+  "storyStructure": {
+    "title": "Story Structure",
+    "selectTitle": "Choose a Structure",
+    "selectSubtitle": "Which narrative framework fits your story?",
+    "wizard": {
+      "format": "What is your screenplay format?",
+      "focus": "What is in the foreground of the story?",
+      "experience": "Your screenwriting experience?",
+      "feature": "Feature film",
+      "tv": "TV/Series episode",
+      "short": "Short film",
+      "characterDriven": "Character's internal transformation",
+      "commercial": "Mission / External goal",
+      "mythology": "Mythological / Epic journey",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "skipWizard": "Browse without recommendation"
+    },
+    "card": {
+      "recommended": "Recommended",
+      "bestFor": "Best for:",
+      "difficulty": "Difficulty"
+    },
+    "workspace": {
+      "title": "Workspace",
+      "analysis": "Analysis",
+      "scenes": "Scenes",
+      "back": "Back",
+      "dragHint": "Drag scenes here...",
+      "dropHere": "+ Drop here",
+      "dragFromLeft": "drag",
+      "unassigned": "Unassigned"
+    },
+    "stageDetail": {
+      "clickStage": "Click a stage",
+      "keyQuestion": "Key question",
+      "inThisStage": "In this stage",
+      "scenes": "scenes"
+    },
+    "analysis": {
+      "structureScore": "Structure Score",
+      "assignedScenes": "Assigned Scenes",
+      "criticalEmpty": "Critical Empty Stages",
+      "rhythmMap": "Rhythm Map",
+      "redCritical": "Red = critical empty stage",
+      "emptyStages": "Empty Stages",
+      "critical": "critical",
+      "allFilled": "All stages filled — structure complete!",
+      "stageFull": "scenes — check rhythm.",
+      "stageEmpty": "stage is empty — critical gap!"
+    },
+    "nav": {
+      "structure": "Structure"
+    }
   }
 }

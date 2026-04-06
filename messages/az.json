@@ -311,5 +311,61 @@
       "title": "Xronotop Xəritəsi",
       "description": "Hər səhnə üçün atanmış xronotoplar."
     }
+  },
+  "storyStructure": {
+    "title": "Hekayə Quruluşu",
+    "selectTitle": "Quruluş Seçin",
+    "selectSubtitle": "Hansı hekayə quruluşu ssenariyə uyğundur?",
+    "wizard": {
+      "format": "Ssenarinin formatı nədir?",
+      "focus": "Hekayənin ön planında nə var?",
+      "experience": "Ssenari yazma təcrübən?",
+      "feature": "Uzun metraj film",
+      "tv": "TV/Seriya epizodu",
+      "short": "Qısa film",
+      "characterDriven": "Personajın daxili dönüşümü",
+      "commercial": "Vəzifə / Xarici məqsəd",
+      "mythology": "Mifoloji / Epik yolçuluq",
+      "beginner": "Başlanğıc",
+      "intermediate": "Orta",
+      "advanced": "Təcrübəli",
+      "skipWizard": "Tövsiyəsiz baxmaq istəyirəm →"
+    },
+    "card": {
+      "recommended": "Tövsiyə olunur",
+      "bestFor": "Kimler üçün:",
+      "difficulty": "Çətinlik"
+    },
+    "workspace": {
+      "title": "Çalışma Sahəsi",
+      "analysis": "Analiz",
+      "scenes": "Səhnələr",
+      "back": "Geri",
+      "dragHint": "Səhnə sürükləyin...",
+      "dropHere": "+ Bura burax",
+      "dragFromLeft": "sürüklə",
+      "unassigned": "Atanmamış"
+    },
+    "stageDetail": {
+      "clickStage": "Mərhələyə klikləyin",
+      "keyQuestion": "Bu mərhələnin sualı",
+      "inThisStage": "Bu mərhələdə",
+      "scenes": "səhnə"
+    },
+    "analysis": {
+      "structureScore": "Struktur Skoru",
+      "assignedScenes": "Atanmış Səhnə",
+      "criticalEmpty": "Kritik Boş Mərhələ",
+      "rhythmMap": "Ritim Xəritəsi",
+      "redCritical": "Qırmızı = kritik boş mərhələ",
+      "emptyStages": "Boş Mərhələlər",
+      "critical": "kritik",
+      "allFilled": "Bütün mərhələlər doldurulub — struktur tamamdır!",
+      "stageFull": "səhnə var, ritm yoxlanılsın.",
+      "stageEmpty": "mərhələsi boşdur — kritik boşluq!"
+    },
+    "nav": {
+      "structure": "Quruluş"
+    }
   }
 }

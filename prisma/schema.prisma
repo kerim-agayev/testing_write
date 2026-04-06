@@ -61,6 +61,7 @@ model Screenplay {
   collaborators     ScreenplayCollaborator[]
   mentorAssignments MentorAssignment[]
   locations         Location[]
+  structures        ScreenplayStructure[]
 
   @@index([ownerId])
   @@index([isDemo])
@@ -154,7 +155,8 @@ model Scene {
   sceneCharacters SceneCharacter[]
   characterArcs   CharacterArc[]
   mentorNotes     MentorNote[]
-  kronotoplar     SceneKronotop[]
+  kronotoplar            SceneKronotop[]
+  structureAssignments   StructureAssignment[]
 
   @@index([sequenceId])
   @@index([sceneNumber])
@@ -358,4 +360,48 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead])
+}
+
+// ─────────────────────────────────────────────
+// STORY STRUCTURE (Narrative Frameworks)
+// ─────────────────────────────────────────────
+
+enum StructureType {
+  THREE_ACT
+  SAVE_THE_CAT
+  DAN_HARMON
+  VOGLER
+  JOHN_TRUBY
+  EIGHT_SEQUENCE
+}
+
+model ScreenplayStructure {
+  id            String        @id @default(cuid())
+  screenplayId  String
+  structureType StructureType
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  screenplay  Screenplay            @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  assignments StructureAssignment[]
+
+  @@unique([screenplayId, structureType])
+  @@index([screenplayId])
+}
+
+model StructureAssignment {
+  id                    String   @id @default(cuid())
+  screenplayStructureId String
+  sceneId               String
+  structureStageId      String
+  note                  String?
+  order                 Int      @default(0)
+  createdAt             DateTime @default(now())
+
+  screenplayStructure ScreenplayStructure @relation(fields: [screenplayStructureId], references: [id], onDelete: Cascade)
+  scene               Scene               @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+
+  @@unique([screenplayStructureId, sceneId, structureStageId])
+  @@index([screenplayStructureId])
+  @@index([sceneId])
 }
