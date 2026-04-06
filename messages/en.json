@@ -234,6 +234,23 @@
     "confirm": "Confirm",
     "search": "Search",
     "noResults": "No results found",
-    "actions": "Actions"
+    "actions": "Actions",
+    "mobileWarning": {
+      "title": "Desktop recommended",
+      "message": "ScriptFlow is a professional screenwriting platform. For the best experience, use a laptop or desktop computer.",
+      "continue": "Continue anyway"
+    }
+  },
+  "kronotop": {
+    "title": "Chronotope (Time-Space)",
+    "subtitle": "Mikhail Bakhtin's time-space theory",
+    "intro1": "For a screenwriter, space is not just a backdrop and time is not just a clock. The chronotope is the materialization of time in space — and space gaining meaning through time and events.",
+    "intro2": "Chronotopes don't exist within scenes; they make scenes possible. When you build a Threshold chronotope, time stops, space narrows, and the character is forced to make a decision.",
+    "categories": { "all": "All", "klasik": "Classic Bakhtin", "tematik": "Thematic", "mikro": "Micro", "muasir": "Modern & Cinema" },
+    "detail": { "whatItIs": "What is this chronotope?", "whatItIsNot": "What is it NOT?", "howToUse": "How to use it?", "importance": "Dramatic importance", "tip": "Screenwriter Tip", "examples": "Film Examples", "close": "Close" },
+    "assign": { "title": "Chronotope Assignment", "paletteTitle": "Chronotope Palette", "search": "Search...", "dragHint": "Drag chronotopes and drop them onto scenes", "dropHint": "Drag a chronotope...", "dropActive": "+ Drop here", "removeTooltip": "Remove chronotope", "noResults": "No results found" },
+    "tabs": { "atama": "Assign Chronotopes", "xerite": "Chronotope Map", "statistika": "Statistics" },
+    "stats": { "title": "Chronotope Distribution", "totalAssignments": "Total Chronotopes", "withKronotop": "Scenes with Chronotope", "withoutKronotop": "Scenes without Chronotope", "avgPerScene": "Average / Scene", "noData": "No chronotopes assigned yet.", "emptyHint": "Start from the Assignment tab." },
+    "map": { "title": "Chronotope Map", "description": "Chronotopes assigned to each scene." }
   }
 }

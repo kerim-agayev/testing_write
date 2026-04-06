@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#717D7E"/>
+  <!-- Passport rectangle -->
+  <rect x="130" y="60" width="140" height="190" rx="6" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
+  <!-- Passport inner details -->
+  <rect x="155" y="90" width="90" height="70" rx="3" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Photo placeholder -->
+  <circle cx="200" cy="115" r="15" fill="rgba(255,255,255,0.2)"/>
+  <rect x="188" y="132" width="24" height="18" rx="2" fill="rgba(255,255,255,0.15)"/>
+  <!-- Passport lines -->
+  <line x1="155" y1="180" x2="245" y2="180" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <line x1="155" y1="195" x2="245" y2="195" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <line x1="155" y1="210" x2="245" y2="210" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <line x1="155" y1="225" x2="220" y2="225" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <!-- Airplane silhouette -->
+  <g fill="rgba(255,255,255,0.45)" transform="translate(200,310) rotate(-15)">
+    <ellipse cx="0" cy="0" rx="40" ry="6"/>
+    <polygon points="-10,-6 -25,-25 -5,-8"/>
+    <polygon points="-10,6 -25,25 -5,8"/>
+    <polygon points="25,-4 35,-15 30,-3"/>
+    <polygon points="25,4 35,15 30,3"/>
+  </g>
+  <!-- Gate/passage point -->
+  <rect x="70" y="360" width="60" height="30" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <rect x="270" y="360" width="60" height="30" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <line x1="130" y1="375" x2="270" y2="375" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+</svg>

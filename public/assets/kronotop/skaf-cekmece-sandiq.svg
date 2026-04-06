@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#795548"/>
+  <!-- Chest/trunk -->
+  <rect x="80" y="200" width="240" height="140" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- Chest lid (half open) -->
+  <path d="M80,200 L80,170 Q200,100 320,170 L320,200" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- Clasp -->
+  <rect x="190" y="195" width="20" height="12" rx="2" fill="rgba(255,255,255,0.35)"/>
+  <!-- Light beam rising from inside -->
+  <polygon points="160,170 200,40 240,170" fill="rgba(255,255,255,0.1)"/>
+  <polygon points="175,170 200,60 225,170" fill="rgba(255,255,255,0.08)"/>
+  <!-- Glow -->
+  <circle cx="200" cy="140" r="50" fill="rgba(255,255,255,0.06)"/>
+  <circle cx="200" cy="100" r="25" fill="rgba(255,255,255,0.05)"/>
+  <!-- Key silhouettes -->
+  <g fill="rgba(255,255,255,0.4)">
+    <!-- Key 1 -->
+    <circle cx="100" cy="100" r="10" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <line x1="110" y1="100" x2="140" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <line x1="135" y1="100" x2="135" y2="108" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <line x1="128" y1="100" x2="128" y2="106" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    <!-- Key 2 -->
+    <circle cx="310" cy="120" r="8" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    <line x1="318" y1="120" x2="345" y2="120" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    <line x1="340" y1="120" x2="340" y2="127" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+  </g>
+  <!-- Chest details -->
+  <line x1="80" y1="270" x2="320" y2="270" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+</svg>

@@ -255,6 +255,61 @@
     "confirm": "Təsdiq et",
     "search": "Axtar",
     "noResults": "Nəticə tapılmadı",
-    "actions": "Əməliyyatlar"
+    "actions": "Əməliyyatlar",
+    "mobileWarning": {
+      "title": "Masaüstü tövsiyə olunur",
+      "message": "ScriptFlow peşəkar ssenari yazma platformudur. Ən yaxşı təcrübə üçün noutbuk və ya masaüstü kompüterdən istifadə edin.",
+      "continue": "Yenə də davam et"
+    }
+  },
+  "kronotop": {
+    "title": "Xronotop (Zaman-Məkan)",
+    "subtitle": "Mikhail Bakhtin'in zaman-uzam kuramı",
+    "intro1": "Ssenari yazarı üçün məkan yalnız bir dekor, zaman isə yalnız bir saat deyildir. Xronotop (Zaman-Məkan), zamanın məkanda görünür hala gəlməsidir.",
+    "intro2": "Xronotoplar sahnelerde bulunmaz; sahneleri mümkün kılarlar. Bir \"Eşik\" xronotopu qurduğunuzda zaman dayanır, məkan daralır, personaj qərar verməyə məcbur edilir.",
+    "categories": {
+      "all": "Hamısı",
+      "klasik": "Klassik Bahtin",
+      "tematik": "Tematik",
+      "mikro": "Mikro",
+      "muasir": "Müasir və Kinema"
+    },
+    "detail": {
+      "whatItIs": "Bu xronotop nədir?",
+      "whatItIsNot": "Bu nə deyil?",
+      "howToUse": "Ssenarinizdə necə istifadə edirsiniz?",
+      "importance": "Dramatik əhəmiyyəti",
+      "tip": "Sssenarist Məsləhəti",
+      "examples": "Film Nümunələri",
+      "close": "Bağla"
+    },
+    "assign": {
+      "title": "Xronotop Atama",
+      "paletteTitle": "Xronotop Paleti",
+      "search": "Axtarış...",
+      "dragHint": "Xronotopları sürükləyib səhnəyə buraxın",
+      "dropHint": "Xronotop sürükləyin...",
+      "dropActive": "+ Buraya burax",
+      "removeTooltip": "Xronotopun silin",
+      "noResults": "Nəticə tapılmadı"
+    },
+    "tabs": {
+      "atama": "Xronotop Atama",
+      "xerite": "Xronotop Xəritəsi",
+      "statistika": "Statistika"
+    },
+    "stats": {
+      "title": "Xronotop Paylanması",
+      "totalAssignments": "Ümumi Xronotop",
+      "withKronotop": "Xronotoplu Səhnə",
+      "withoutKronotop": "Xronotopsuz Səhnə",
+      "avgPerScene": "Ortalama / Səhnə",
+      "noData": "Hələ heç bir xronotop atanmayıb.",
+      "emptyHint": "Atama sekmesinden başlayın."
+    },
+    "map": {
+      "title": "Xronotop Xəritəsi",
+      "description": "Hər səhnə üçün atanmış xronotoplar."
+    }
   }
 }

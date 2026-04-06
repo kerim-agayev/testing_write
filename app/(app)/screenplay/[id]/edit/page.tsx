@@ -7,7 +7,8 @@ import { useSceneData } from '@/hooks/useSceneData';
 import { useEditorStore } from '@/store/editorStore';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare } from 'lucide-react';
+import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare, MapPin } from 'lucide-react';
+import { SceneKronotopBadges } from '@/components/editor/LeftPanel/SceneKronotopBadges';
 import { cn } from '@/lib/utils/cn';
 import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
 import { SceneHeadingBar } from '@/components/editor/CenterPanel/SceneHeadingBar';
@@ -206,6 +207,7 @@ export default function EditorPage() {
             { href: `/screenplay/${id}/edit`, label: t('toolbar.action'), icon: BookOpen },
             { href: `/screenplay/${id}/characters`, label: 'Characters', icon: Users },
             { href: `/screenplay/${id}/analytics`, label: 'Analytics', icon: BarChart3 },
+            { href: `/screenplay/${id}/kronotop`, label: 'Xronotop', icon: MapPin },
             { href: `/screenplay/${id}/share`, label: 'Share', icon: Share2 },
             { href: `/screenplay/${id}/export`, label: 'Export', icon: Download },
           ].map((item) => (
@@ -338,6 +340,9 @@ export default function EditorPage() {
                   <p className="text-[10px] text-txt-muted mt-1">{t('leftPanel.dramaticCharge')}</p>
                 </div>
               )}
+
+              {/* ─── KRONOTOP BADGES ─── */}
+              <SceneKronotopBadges sceneId={activeSceneId} screenplayId={id} />
             </div>
           )}
         </div>

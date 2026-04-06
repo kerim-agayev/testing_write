@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#2980B9"/>
+  <!-- Chandelier -->
+  <line x1="200" y1="40" x2="200" y2="90" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+  <path d="M170,90 Q200,110 230,90" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+  <line x1="175" y1="92" x2="175" y2="108" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <line x1="200" y1="105" x2="200" y2="118" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <line x1="225" y1="92" x2="225" y2="108" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <circle cx="175" cy="110" r="3" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="200" cy="120" r="3" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="225" cy="110" r="3" fill="rgba(255,255,255,0.6)"/>
+  <!-- Light glow -->
+  <circle cx="200" cy="110" r="40" fill="rgba(255,255,255,0.06)"/>
+  <!-- Left chair -->
+  <path d="M80,280 L80,220 Q80,200 95,200 L110,200 Q125,200 125,220 L125,280" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+  <line x1="80" y1="250" x2="125" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <!-- Right chair -->
+  <path d="M275,280 L275,220 Q275,200 290,200 L305,200 Q320,200 320,220 L320,280" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5"/>
+  <line x1="275" y1="250" x2="320" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <!-- Comedy mask -->
+  <path d="M155,310 Q155,290 175,285 Q195,290 195,310 Q175,325 155,310 Z" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+  <circle cx="167" cy="300" r="3" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="183" cy="300" r="3" fill="rgba(255,255,255,0.5)"/>
+  <path d="M165,312 Q175,320 185,312" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <!-- Tragedy mask -->
+  <path d="M205,310 Q205,290 225,285 Q245,290 245,310 Q225,325 205,310 Z" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+  <circle cx="217" cy="300" r="3" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="233" cy="300" r="3" fill="rgba(255,255,255,0.5)"/>
+  <path d="M215,316 Q225,308 235,316" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <!-- Floor -->
+  <line x1="40" y1="280" x2="360" y2="280" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+</svg>

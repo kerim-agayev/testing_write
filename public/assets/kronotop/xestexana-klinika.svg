@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#138D75"/>
+  <!-- Bed silhouette -->
+  <rect x="60" y="240" width="240" height="15" rx="3" fill="rgba(255,255,255,0.3)"/>
+  <!-- Bed legs -->
+  <rect x="60" y="255" width="8" height="40" fill="rgba(255,255,255,0.25)"/>
+  <rect x="292" y="255" width="8" height="40" fill="rgba(255,255,255,0.25)"/>
+  <!-- Headboard -->
+  <rect x="55" y="190" width="12" height="65" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <!-- Pillow -->
+  <ellipse cx="90" cy="235" rx="25" ry="10" fill="rgba(255,255,255,0.2)"/>
+  <!-- Blanket -->
+  <path d="M80,240 Q180,220 300,240" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- ECG heartbeat line -->
+  <polyline points="40,150 80,150 100,150 120,150 135,150 140,120 148,170 155,130 162,155 170,145 180,150 220,150 260,150 280,150 295,150 300,120 308,170 315,130 322,155 330,145 340,150 380,150" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+  <!-- IV drip -->
+  <line x1="330" y1="80" x2="330" y2="220" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <rect x="320" y="80" width="20" height="35" rx="2" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+  <!-- IV drip line to bed -->
+  <path d="M330,115 Q335,170 300,235" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <!-- Drip drop -->
+  <ellipse cx="330" cy="122" rx="2" ry="3" fill="rgba(255,255,255,0.5)"/>
+</svg>

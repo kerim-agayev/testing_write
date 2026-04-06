@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#7F8C8D"/>
+  <!-- Castle wall -->
+  <rect x="60" y="180" width="280" height="180" fill="rgba(255,255,255,0.15)"/>
+  <!-- Battlements -->
+  <g fill="rgba(255,255,255,0.25)">
+    <rect x="60" y="165" width="25" height="20"/>
+    <rect x="110" y="165" width="25" height="20"/>
+    <rect x="160" y="165" width="25" height="20"/>
+    <rect x="210" y="165" width="25" height="20"/>
+    <rect x="260" y="165" width="25" height="20"/>
+    <rect x="310" y="165" width="25" height="20"/>
+  </g>
+  <!-- Tower -->
+  <rect x="155" y="80" width="90" height="100" fill="rgba(255,255,255,0.2)"/>
+  <polygon points="155,80 200,45 245,80" fill="rgba(255,255,255,0.3)"/>
+  <!-- Tower window -->
+  <path d="M190,110 Q200,100 210,110 L210,135 L190,135 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+  <!-- Heavy gate -->
+  <path d="M165,360 L165,270 Q200,245 235,270 L235,360 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
+  <!-- Gate bars -->
+  <line x1="185" y1="260" x2="185" y2="360" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+  <line x1="200" y1="250" x2="200" y2="360" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+  <line x1="215" y1="260" x2="215" y2="360" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+  <!-- Spiral time ring -->
+  <circle cx="320" cy="100" r="35" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <path d="M320,65 A20,20 0 1,1 300,85 A12,12 0 1,0 312,73" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+</svg>

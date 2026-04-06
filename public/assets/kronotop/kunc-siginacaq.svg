@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#616161"/>
+  <!-- Two walls meeting (corner) -->
+  <line x1="200" y1="40" x2="200" y2="400" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <line x1="200" y1="250" x2="400" y2="250" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+  <!-- Wall shading -->
+  <rect x="200" y="40" width="200" height="210" fill="rgba(255,255,255,0.04)"/>
+  <rect x="0" y="40" width="200" height="360" fill="rgba(255,255,255,0.02)"/>
+  <!-- Floor -->
+  <polygon points="0,400 200,250 400,250 400,400" fill="rgba(255,255,255,0.05)"/>
+  <!-- Curled figure in corner -->
+  <circle cx="220" cy="290" r="18" fill="rgba(255,255,255,0.3)"/>
+  <ellipse cx="225" cy="320" rx="22" ry="15" fill="rgba(255,255,255,0.2)"/>
+  <path d="M210,305 Q205,330 215,340" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  <!-- Minimal space feeling - close walls -->
+  <line x1="280" y1="40" x2="280" y2="250" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3,6"/>
+</svg>

@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Providers } from '@/components/providers/Providers';
+import { MobileWarning } from '@/components/ui/MobileWarning';
 import './globals.css';
 
 const inter = Inter({
@@ -59,6 +60,7 @@ export default async function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <MobileWarning />
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
       </body>

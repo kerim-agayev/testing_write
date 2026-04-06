@@ -154,10 +154,26 @@ model Scene {
   sceneCharacters SceneCharacter[]
   characterArcs   CharacterArc[]
   mentorNotes     MentorNote[]
+  kronotoplar     SceneKronotop[]
 
   @@index([sequenceId])
   @@index([sceneNumber])
   @@index([turningPoint])
+}
+
+model SceneKronotop {
+  id         String   @id @default(cuid())
+  sceneId    String
+  kronotopId String
+  note       String?
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  scene Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+
+  @@unique([sceneId, kronotopId])
+  @@index([sceneId])
+  @@index([kronotopId])
 }
 
 enum IntExt {

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#8E44AD"/>
+  <!-- Door frame -->
+  <rect x="120" y="60" width="160" height="300" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
+  <!-- Half-open door -->
+  <path d="M280,60 L240,80 L240,340 L280,360 Z" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+  <!-- Light spilling through -->
+  <path d="M120,60 L40,20 L40,400 L120,360 Z" fill="rgba(255,255,255,0.08)"/>
+  <path d="M120,120 L60,90 L60,380 L120,350 Z" fill="rgba(255,255,255,0.06)"/>
+  <!-- Light beam from crack -->
+  <polygon points="240,100 120,60 120,360 240,340" fill="rgba(255,255,255,0.12)"/>
+  <!-- Doorknob -->
+  <circle cx="250" cy="220" r="6" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="250" cy="220" r="3" fill="rgba(255,255,255,0.8)"/>
+  <!-- Light glow inside -->
+  <circle cx="180" cy="200" r="60" fill="rgba(255,255,255,0.07)"/>
+</svg>

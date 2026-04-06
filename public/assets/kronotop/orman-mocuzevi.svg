@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#1E8449"/>
+  <!-- Tree canopy -->
+  <path d="M40,180 Q100,40 200,60 Q300,40 360,180" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  <path d="M70,180 Q120,80 200,90 Q280,80 330,180" fill="rgba(255,255,255,0.1)"/>
+  <!-- Tree trunks -->
+  <line x1="100" y1="180" x2="100" y2="340" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <line x1="200" y1="160" x2="200" y2="340" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <line x1="300" y1="180" x2="300" y2="340" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <!-- Branches -->
+  <line x1="100" y1="220" x2="75" y2="190" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <line x1="100" y1="250" x2="130" y2="220" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <line x1="300" y1="230" x2="325" y2="200" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <line x1="300" y1="260" x2="275" y2="230" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- Small figure in center -->
+  <circle cx="200" cy="300" r="6" fill="rgba(255,255,255,0.6)"/>
+  <rect x="196" y="306" width="8" height="20" rx="2" fill="rgba(255,255,255,0.5)"/>
+  <!-- Scattered stars -->
+  <g fill="rgba(255,255,255,0.5)">
+    <circle cx="150" cy="120" r="2"/>
+    <circle cx="250" cy="100" r="2"/>
+    <circle cx="180" cy="80" r="1.5"/>
+    <circle cx="230" cy="130" r="1.5"/>
+    <circle cx="130" cy="150" r="2"/>
+    <circle cx="280" cy="140" r="1.5"/>
+    <circle cx="200" cy="45" r="2.5"/>
+    <circle cx="160" cy="55" r="1.5"/>
+    <circle cx="270" cy="65" r="2"/>
+  </g>
+  <!-- Ground -->
+  <line x1="40" y1="340" x2="360" y2="340" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+</svg>

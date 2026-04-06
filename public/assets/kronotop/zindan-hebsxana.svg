@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#2C3E50"/>
+  <!-- Prison bars -->
+  <g stroke="rgba(255,255,255,0.45)" stroke-width="4">
+    <line x1="100" y1="60" x2="100" y2="340"/>
+    <line x1="150" y1="60" x2="150" y2="340"/>
+    <line x1="200" y1="60" x2="200" y2="340"/>
+    <line x1="250" y1="60" x2="250" y2="340"/>
+    <line x1="300" y1="60" x2="300" y2="340"/>
+  </g>
+  <!-- Horizontal bars -->
+  <line x1="80" y1="100" x2="320" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <line x1="80" y1="300" x2="320" y2="300" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <!-- Shadow silhouette behind bars -->
+  <circle cx="200" cy="180" r="18" fill="rgba(255,255,255,0.15)"/>
+  <rect x="188" y="198" width="24" height="50" rx="4" fill="rgba(255,255,255,0.12)"/>
+  <line x1="188" y1="248" x2="182" y2="290" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+  <line x1="212" y1="248" x2="218" y2="290" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+  <!-- Small light point -->
+  <circle cx="330" cy="80" r="8" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="330" cy="80" r="20" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="330" cy="80" r="35" fill="rgba(255,255,255,0.04)"/>
+</svg>

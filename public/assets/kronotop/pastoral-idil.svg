@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#27AE60"/>
+  <!-- Sun arc across top -->
+  <path d="M60,200 Q200,20 340,200" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Sun -->
+  <circle cx="120" cy="100" r="22" fill="rgba(255,255,255,0.5)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+  <!-- Sun rays -->
+  <g stroke="rgba(255,255,255,0.3)" stroke-width="1">
+    <line x1="120" y1="72" x2="120" y2="62"/>
+    <line x1="142" y1="80" x2="150" y2="72"/>
+    <line x1="148" y1="100" x2="158" y2="100"/>
+    <line x1="92" y1="100" x2="82" y2="100"/>
+  </g>
+  <!-- Leaf (autumn) -->
+  <path d="M210,90 Q225,70 240,90 Q225,95 210,90 Z" fill="rgba(255,255,255,0.45)"/>
+  <line x1="225" y1="90" x2="225" y2="105" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+  <!-- Snowflake (winter) -->
+  <g stroke="rgba(255,255,255,0.5)" stroke-width="1.5" transform="translate(300,90)">
+    <line x1="0" y1="-12" x2="0" y2="12"/>
+    <line x1="-10" y1="-6" x2="10" y2="6"/>
+    <line x1="-10" y1="6" x2="10" y2="-6"/>
+  </g>
+  <!-- Flower (spring) -->
+  <g fill="rgba(255,255,255,0.4)" transform="translate(80,160)">
+    <circle cx="0" cy="-8" r="5"/>
+    <circle cx="7" cy="-3" r="5"/>
+    <circle cx="5" cy="5" r="5"/>
+    <circle cx="-5" cy="5" r="5"/>
+    <circle cx="-7" cy="-3" r="5"/>
+    <circle cx="0" cy="0" r="4" fill="rgba(255,255,255,0.6)"/>
+  </g>
+  <!-- Field lines -->
+  <g stroke="rgba(255,255,255,0.2)" stroke-width="1">
+    <line x1="0" y1="300" x2="400" y2="280"/>
+    <line x1="0" y1="330" x2="400" y2="310"/>
+    <line x1="0" y1="360" x2="400" y2="340"/>
+  </g>
+  <!-- Rolling hills -->
+  <path d="M0,280 Q100,240 200,270 Q300,240 400,260 L400,400 L0,400 Z" fill="rgba(255,255,255,0.1)"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#E67E22"/>
+  <!-- Road converging to horizon -->
+  <line x1="0" y1="400" x2="200" y2="180" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <line x1="400" y1="400" x2="200" y2="180" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- Horizon line -->
+  <line x1="0" y1="180" x2="400" y2="180" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <!-- Dashed center line -->
+  <line x1="200" y1="400" x2="200" y2="180" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-dasharray="12,8"/>
+  <!-- Road surface hint -->
+  <line x1="60" y1="350" x2="200" y2="180" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <line x1="340" y1="350" x2="200" y2="180" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <!-- Two silhouettes at horizon -->
+  <ellipse cx="185" cy="168" rx="6" ry="6" fill="rgba(255,255,255,0.7)"/>
+  <rect x="181" y="174" width="8" height="18" rx="2" fill="rgba(255,255,255,0.6)"/>
+  <ellipse cx="215" cy="168" rx="6" ry="6" fill="rgba(255,255,255,0.7)"/>
+  <rect x="211" y="174" width="8" height="18" rx="2" fill="rgba(255,255,255,0.6)"/>
+  <!-- Sun glow at vanishing point -->
+  <circle cx="200" cy="150" r="40" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="200" cy="150" r="20" fill="rgba(255,255,255,0.15)"/>
+</svg>

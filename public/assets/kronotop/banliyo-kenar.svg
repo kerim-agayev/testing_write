@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#A04000"/>
+  <!-- Repeating identical houses -->
+  <g fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.35)" stroke-width="1">
+    <path d="M30,280 L30,240 L55,220 L80,240 L80,280 Z"/>
+    <path d="M95,280 L95,240 L120,220 L145,240 L145,280 Z"/>
+    <path d="M160,280 L160,240 L185,220 L210,240 L210,280 Z"/>
+    <path d="M225,280 L225,240 L250,220 L275,240 L275,280 Z"/>
+    <path d="M290,280 L290,240 L315,220 L340,240 L340,280 Z"/>
+  </g>
+  <!-- Windows on houses -->
+  <g fill="rgba(255,255,255,0.35)">
+    <rect x="45" y="250" width="8" height="8"/>
+    <rect x="110" y="250" width="8" height="8"/>
+    <rect x="175" y="250" width="8" height="8"/>
+    <rect x="240" y="250" width="8" height="8"/>
+    <rect x="305" y="250" width="8" height="8"/>
+  </g>
+  <!-- Doors -->
+  <g fill="rgba(255,255,255,0.2)">
+    <rect x="52" y="262" width="8" height="18"/>
+    <rect x="117" y="262" width="8" height="18"/>
+    <rect x="182" y="262" width="8" height="18"/>
+    <rect x="247" y="262" width="8" height="18"/>
+    <rect x="312" y="262" width="8" height="18"/>
+  </g>
+  <!-- Ground -->
+  <line x1="0" y1="280" x2="400" y2="280" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <!-- Distant city lights (small dots) -->
+  <g fill="rgba(255,255,255,0.5)">
+    <circle cx="80" cy="160" r="1.5"/>
+    <circle cx="110" cy="155" r="2"/>
+    <circle cx="140" cy="152" r="1.5"/>
+    <circle cx="170" cy="148" r="2.5"/>
+    <circle cx="195" cy="145" r="2"/>
+    <circle cx="220" cy="147" r="1.5"/>
+    <circle cx="250" cy="150" r="2"/>
+    <circle cx="280" cy="153" r="1.5"/>
+    <circle cx="310" cy="158" r="2"/>
+  </g>
+  <!-- Distant skyline hint -->
+  <g fill="rgba(255,255,255,0.1)">
+    <rect x="160" y="140" width="8" height="20"/>
+    <rect x="175" y="135" width="12" height="25"/>
+    <rect x="195" y="130" width="10" height="30"/>
+    <rect x="215" y="138" width="8" height="22"/>
+    <rect x="240" y="142" width="10" height="18"/>
+  </g>
+</svg>

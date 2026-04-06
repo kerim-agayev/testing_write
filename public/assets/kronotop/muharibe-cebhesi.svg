@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#922B21"/>
+  <!-- Burned horizon line -->
+  <path d="M0,200 Q50,190 100,205 Q150,195 200,200 Q250,192 300,202 Q350,195 400,200" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <!-- Smoke/haze above horizon -->
+  <circle cx="120" cy="180" r="25" fill="rgba(255,255,255,0.06)"/>
+  <circle cx="280" cy="175" r="30" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="200" cy="170" r="20" fill="rgba(255,255,255,0.07)"/>
+  <!-- Silhouettes on ground -->
+  <g fill="rgba(255,255,255,0.3)">
+    <circle cx="100" cy="240" r="8"/>
+    <rect x="94" y="248" width="12" height="25" rx="2"/>
+    <circle cx="160" cy="245" r="8"/>
+    <rect x="154" y="253" width="12" height="25" rx="2"/>
+    <circle cx="300" cy="238" r="8"/>
+    <rect x="294" y="246" width="12" height="25" rx="2"/>
+  </g>
+  <!-- Broken weapon silhouette -->
+  <g stroke="rgba(255,255,255,0.35)" stroke-width="2" fill="none">
+    <line x1="220" y1="280" x2="260" y2="210"/>
+    <line x1="260" y1="210" x2="265" y2="215"/>
+    <!-- Broken part -->
+    <line x1="245" y1="240" x2="270" y2="250"/>
+  </g>
+  <!-- Ground texture -->
+  <g stroke="rgba(255,255,255,0.1)" stroke-width="1">
+    <line x1="0" y1="300" x2="400" y2="295"/>
+    <line x1="0" y1="330" x2="400" y2="325"/>
+    <line x1="0" y1="360" x2="400" y2="358"/>
+  </g>
+</svg>

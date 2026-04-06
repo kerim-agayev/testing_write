@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F1C40F"/>
+  <!-- Crowd silhouettes -->
+  <g fill="rgba(255,255,255,0.4)">
+    <circle cx="60" cy="280" r="8"/><rect x="52" y="288" width="16" height="24" rx="3"/>
+    <circle cx="100" cy="275" r="8"/><rect x="92" y="283" width="16" height="24" rx="3"/>
+    <circle cx="145" cy="282" r="8"/><rect x="137" y="290" width="16" height="24" rx="3"/>
+    <circle cx="190" cy="270" r="8"/><rect x="182" y="278" width="16" height="24" rx="3"/>
+    <circle cx="235" cy="278" r="8"/><rect x="227" y="286" width="16" height="24" rx="3"/>
+    <circle cx="280" cy="274" r="8"/><rect x="272" y="282" width="16" height="24" rx="3"/>
+    <circle cx="325" cy="280" r="8"/><rect x="317" y="288" width="16" height="24" rx="3"/>
+  </g>
+  <!-- Upside-down crown -->
+  <path d="M150,130 L170,170 L190,140 L210,170 L230,140 L250,170 L250,180 L150,180 Z" fill="rgba(255,255,255,0.35)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" transform="rotate(180,200,155)"/>
+  <!-- Confetti dots -->
+  <g fill="rgba(255,255,255,0.5)">
+    <circle cx="80" cy="60" r="3"/>
+    <circle cx="150" cy="40" r="2"/>
+    <circle cx="220" cy="55" r="3"/>
+    <circle cx="310" cy="45" r="2.5"/>
+    <circle cx="350" cy="80" r="2"/>
+    <circle cx="60" cy="120" r="2.5"/>
+    <circle cx="130" cy="100" r="2"/>
+    <circle cx="270" cy="90" r="3"/>
+    <circle cx="340" cy="130" r="2"/>
+    <circle cx="90" cy="180" r="2"/>
+    <circle cx="310" cy="190" r="2.5"/>
+    <circle cx="180" cy="210" r="2"/>
+    <circle cx="50" cy="220" r="3"/>
+    <circle cx="350" cy="230" r="2"/>
+  </g>
+  <!-- Confetti rectangles -->
+  <g fill="rgba(255,255,255,0.3)">
+    <rect x="100" y="70" width="6" height="3" transform="rotate(30,103,71)"/>
+    <rect x="250" y="60" width="6" height="3" transform="rotate(-20,253,61)"/>
+    <rect x="170" y="160" width="6" height="3" transform="rotate(45,173,161)"/>
+    <rect x="320" y="150" width="6" height="3" transform="rotate(-15,323,151)"/>
+  </g>
+</svg>

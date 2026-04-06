@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#1B4F72"/>
+  <!-- Ocean horizon -->
+  <line x1="0" y1="160" x2="400" y2="160" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+  <!-- Sky glow -->
+  <circle cx="200" cy="160" r="60" fill="rgba(255,255,255,0.06)"/>
+  <!-- Layered waves -->
+  <path d="M0,220 Q50,200 100,220 Q150,240 200,220 Q250,200 300,220 Q350,240 400,220" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <path d="M0,260 Q50,240 100,260 Q150,280 200,260 Q250,240 300,260 Q350,280 400,260" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  <path d="M0,300 Q50,282 100,300 Q150,318 200,300 Q250,282 300,300 Q350,318 400,300" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <path d="M0,340 Q50,325 100,340 Q150,355 200,340 Q250,325 300,340 Q350,355 400,340" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <!-- Wave fills -->
+  <path d="M0,220 Q50,200 100,220 Q150,240 200,220 Q250,200 300,220 Q350,240 400,220 L400,260 Q350,240 300,260 Q250,280 200,260 Q150,240 100,260 Q50,280 0,260 Z" fill="rgba(255,255,255,0.05)"/>
+  <!-- Small boat in center -->
+  <path d="M175,190 Q200,200 225,190" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+  <path d="M180,190 Q200,198 220,190" fill="rgba(255,255,255,0.15)"/>
+  <!-- Mast -->
+  <line x1="200" y1="190" x2="200" y2="165" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
+  <!-- Sail -->
+  <path d="M200,165 L200,182 L212,180 Z" fill="rgba(255,255,255,0.3)"/>
+</svg>

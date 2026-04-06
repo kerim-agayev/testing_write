@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#34495E"/>
+  <!-- Building skyline -->
+  <g fill="rgba(255,255,255,0.2)">
+    <rect x="30" y="140" width="40" height="220"/>
+    <rect x="80" y="100" width="35" height="260"/>
+    <rect x="125" y="160" width="30" height="200"/>
+    <rect x="165" y="80" width="45" height="280"/>
+    <rect x="220" y="120" width="35" height="240"/>
+    <rect x="265" y="150" width="30" height="210"/>
+    <rect x="305" y="90" width="40" height="270"/>
+    <rect x="350" y="170" width="30" height="190"/>
+  </g>
+  <!-- Windows -->
+  <g fill="rgba(255,255,255,0.35)">
+    <rect x="175" y="100" width="6" height="6"/><rect x="190" y="100" width="6" height="6"/>
+    <rect x="175" y="120" width="6" height="6"/><rect x="190" y="120" width="6" height="6"/>
+    <rect x="175" y="140" width="6" height="6"/><rect x="190" y="140" width="6" height="6"/>
+    <rect x="88" y="120" width="5" height="5"/><rect x="100" y="120" width="5" height="5"/>
+    <rect x="88" y="140" width="5" height="5"/><rect x="100" y="140" width="5" height="5"/>
+    <rect x="315" y="110" width="6" height="6"/><rect x="328" y="110" width="6" height="6"/>
+    <rect x="315" y="130" width="6" height="6"/><rect x="328" y="130" width="6" height="6"/>
+  </g>
+  <!-- Street lights -->
+  <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5">
+    <line x1="60" y1="360" x2="60" y2="320"/>
+    <circle cx="60" cy="318" r="4" fill="rgba(255,255,255,0.5)"/>
+    <line x1="200" y1="360" x2="200" y2="310"/>
+    <circle cx="200" cy="308" r="4" fill="rgba(255,255,255,0.5)"/>
+    <line x1="340" y1="360" x2="340" y2="325"/>
+    <circle cx="340" cy="323" r="4" fill="rgba(255,255,255,0.5)"/>
+  </g>
+  <!-- Intersecting paths -->
+  <line x1="0" y1="360" x2="400" y2="360" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <line x1="100" y1="400" x2="250" y2="300" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="300" y1="400" x2="150" y2="300" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+</svg>

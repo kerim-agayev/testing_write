@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F39C12"/>
+  <!-- Circular arrow -->
+  <path d="M200,80 A120,120 0 1,1 80,200" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
+  <polygon points="80,190 80,215 60,200" fill="rgba(255,255,255,0.5)"/>
+  <!-- Repeating house silhouettes -->
+  <g fill="rgba(255,255,255,0.5)">
+    <path d="M60,280 L60,250 L80,235 L100,250 L100,280 Z"/>
+    <path d="M120,280 L120,250 L140,235 L160,250 L160,280 Z"/>
+    <path d="M180,280 L180,250 L200,235 L220,250 L220,280 Z"/>
+    <path d="M240,280 L240,250 L260,235 L280,250 L280,280 Z"/>
+    <path d="M300,280 L300,250 L320,235 L340,250 L340,280 Z"/>
+  </g>
+  <!-- Ground line -->
+  <line x1="40" y1="280" x2="360" y2="280" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <!-- Clock dial -->
+  <circle cx="200" cy="150" r="40" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <line x1="200" y1="150" x2="200" y2="118" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+  <line x1="200" y1="150" x2="220" y2="145" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+  <circle cx="200" cy="150" r="3" fill="rgba(255,255,255,0.7)"/>
+  <!-- Clock tick marks -->
+  <g stroke="rgba(255,255,255,0.3)" stroke-width="1">
+    <line x1="200" y1="112" x2="200" y2="116"/>
+    <line x1="200" y1="184" x2="200" y2="188"/>
+    <line x1="162" y1="150" x2="166" y2="150"/>
+    <line x1="234" y1="150" x2="238" y2="150"/>
+  </g>
+</svg>

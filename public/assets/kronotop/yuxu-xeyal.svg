@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#9B59B6"/>
+  <!-- Spiral -->
+  <path d="M200,200 Q200,160 240,160 Q280,160 280,200 Q280,250 230,250 Q180,250 180,190 Q180,130 250,130 Q310,130 310,200 Q310,280 220,280 Q140,280 140,190" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <!-- Moon -->
+  <circle cx="290" cy="90" r="35" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="305" cy="80" r="28" fill="#9B59B6"/>
+  <!-- Sun overlapping -->
+  <circle cx="120" cy="100" r="28" fill="rgba(255,255,255,0.3)"/>
+  <g stroke="rgba(255,255,255,0.25)" stroke-width="1">
+    <line x1="120" y1="65" x2="120" y2="55"/>
+    <line x1="120" y1="135" x2="120" y2="145"/>
+    <line x1="85" y1="100" x2="75" y2="100"/>
+    <line x1="155" y1="100" x2="165" y2="100"/>
+    <line x1="96" y1="76" x2="89" y2="69"/>
+    <line x1="144" y1="76" x2="151" y2="69"/>
+  </g>
+  <!-- Broken mirror shards -->
+  <g fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.45)" stroke-width="1">
+    <polygon points="70,250 95,230 110,260 80,275"/>
+    <polygon points="115,245 140,225 150,255 125,265"/>
+    <polygon points="90,280 115,270 125,300 95,305"/>
+    <polygon points="300,280 325,260 340,290 310,300"/>
+    <polygon points="320,300 345,285 355,310 330,320"/>
+  </g>
+</svg>

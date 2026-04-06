@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#1D8348"/>
+  <!-- Garden wall -->
+  <rect x="60" y="150" width="280" height="200" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5"/>
+  <!-- Wall fill -->
+  <rect x="60" y="150" width="280" height="200" fill="rgba(255,255,255,0.05)"/>
+  <!-- Sheltered trees inside -->
+  <g>
+    <circle cx="140" cy="220" r="30" fill="rgba(255,255,255,0.2)"/>
+    <rect x="136" y="250" width="8" height="50" fill="rgba(255,255,255,0.2)"/>
+    <circle cx="220" cy="210" r="35" fill="rgba(255,255,255,0.18)"/>
+    <rect x="216" y="245" width="8" height="55" fill="rgba(255,255,255,0.2)"/>
+    <circle cx="290" cy="225" r="25" fill="rgba(255,255,255,0.2)"/>
+    <rect x="286" y="250" width="8" height="45" fill="rgba(255,255,255,0.2)"/>
+  </g>
+  <!-- Storm lines outside the wall -->
+  <g stroke="rgba(255,255,255,0.3)" stroke-width="1.5">
+    <line x1="10" y1="60" x2="50" y2="100"/>
+    <line x1="25" y1="50" x2="65" y2="90"/>
+    <line x1="5" y1="90" x2="45" y2="130"/>
+    <line x1="350" y1="55" x2="390" y2="95"/>
+    <line x1="360" y1="80" x2="400" y2="120"/>
+    <line x1="345" y1="110" x2="385" y2="150"/>
+    <!-- Rain above -->
+    <line x1="100" y1="30" x2="95" y2="55"/>
+    <line x1="160" y1="20" x2="155" y2="45"/>
+    <line x1="230" y1="25" x2="225" y2="50"/>
+    <line x1="300" y1="30" x2="295" y2="55"/>
+  </g>
+  <!-- Ground -->
+  <line x1="60" y1="350" x2="340" y2="350" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+</svg>
