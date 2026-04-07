@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { StoryArcChart } from '@/components/charts/StoryArcChart';
 import { CharacterArcChart } from '@/components/charts/CharacterArcChart';
+import { EmotionalEKGChart } from '@/components/charts/EmotionalEKGChart';
+import { ArcComparisonChart } from '@/components/charts/ArcComparisonChart';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useTranslations } from 'next-intl';
 
@@ -91,6 +93,23 @@ export default function AnalyticsPage() {
         ) : (
           <p className="text-txt-muted">No major characters to display.</p>
         )}
+      </section>
+
+      {/* Arc Comparison Chart */}
+      {analytics.characterArcs.length >= 2 && (
+        <section className="mb-12">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">Güc Balansı</h2>
+          <ArcComparisonChart
+            screenplayId={id}
+            characters={analytics.characterArcs.map(({ character }) => character)}
+          />
+        </section>
+      )}
+
+      {/* Emotional EKG Chart */}
+      <section className="mb-12">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">Dramatik EKG</h2>
+        <EmotionalEKGChart scenes={analytics.storyArc.map((p) => ({ sceneNumber: p.sceneNumber, storyValueScore: p.score, turningPoint: p.turningPoint }))} />
       </section>
 
       {/* Story Grid Table */}

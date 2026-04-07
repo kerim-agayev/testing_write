@@ -181,7 +181,7 @@ export const DAN_HARMON: StructureDefinition = {
       description: { az: 'Axtardığını tapır — amma qiymət var.', en: 'Finds what they were looking for — but at a cost.', ru: 'Находит искомое — но есть цена.' },
       keyQuestion: { az: 'Tapılan şeyin gizli qiyməti nədir?', en: 'What is the hidden cost of what was found?', ru: 'Какова скрытая цена находки?' } },
     { id: 'take', order: 6, color: '#C0392B', colorLight: '#FDEDEC', arcStart: 22.5, arcEnd: 67.5,
-      name: { az: 'ÖDƏN — Ağır qiymət', en: 'TAKE — Heavy Price', ru: 'ПЛАТА — Тяжёлая цена' },
+      name: { az: 'Götürmək — Ağır qiymət', en: 'TAKE — Heavy Price', ru: 'ПЛАТА — Тяжёлая цена' },
       description: { az: 'Ağır bir qiymət ödəyir.', en: 'Pays a heavy price.', ru: 'Платит тяжёлую цену.' },
       keyQuestion: { az: 'Qiymət qəhrəmanı necə dəyişdirir?', en: 'How does the price change the hero?', ru: 'Как цена меняет героя?' } },
     { id: 'return', order: 7, color: '#1ABC9C', colorLight: '#E8F8F5', arcStart: 67.5, arcEnd: 112.5,

@@ -146,6 +146,8 @@ model Scene {
   turnOn          TurnOn?
   turningPoint    Boolean @default(false)
   storyValueScore Int?    @db.SmallInt
+  emotionStart    String?  // EmotionId — e.g. 'joy', 'fear'
+  emotionEnd      String?  // EmotionId — e.g. 'grief', 'hope'
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

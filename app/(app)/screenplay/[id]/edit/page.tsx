@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare, MapPin } from 'lucide-react';
 import { SceneKronotopBadges } from '@/components/editor/LeftPanel/SceneKronotopBadges';
+import { SceneEmotionSelector } from '@/components/editor/LeftPanel/SceneEmotionSelector';
 import { cn } from '@/lib/utils/cn';
 import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
 import { SceneHeadingBar } from '@/components/editor/CenterPanel/SceneHeadingBar';
@@ -86,6 +87,8 @@ export default function EditorPage() {
   const [turningPoint, setTurningPoint] = useState(false);
   const [notes, setNotes] = useState('');
   const [sceneValue, setSceneValue] = useState(50);
+  const [emotionStart, setEmotionStart] = useState<string | null>(null);
+  const [emotionEnd, setEmotionEnd] = useState<string | null>(null);
 
   // Arc scores state
   const [arcScores, setArcScores] = useState<Record<string, { ext: number; int: number }>>({});
@@ -107,6 +110,8 @@ export default function EditorPage() {
       setTurningPoint(activeScene.turningPoint || false);
       setNotes(activeScene.synopsis || '');
       setSceneValue(activeScene.storyValueScore ?? 50);
+      setEmotionStart((activeScene as { emotionStart?: string | null }).emotionStart ?? null);
+      setEmotionEnd((activeScene as { emotionEnd?: string | null }).emotionEnd ?? null);
       const scores: Record<string, { ext: number; int: number }> = {};
       activeScene.characterArcs?.forEach(a => {
         scores[a.characterId] = { ext: a.externalScore, int: a.internalScore };
@@ -115,7 +120,7 @@ export default function EditorPage() {
     } else {
       setStoryEvent(''); setValueShift(''); setPolarityShift('');
       setTurnOn(''); setTurningPoint(false); setNotes('');
-      setSceneValue(50); setArcScores({});
+      setSceneValue(50); setArcScores({}); setEmotionStart(null); setEmotionEnd(null);
     }
   }, [activeSceneId, activeScene]);
 
@@ -412,6 +417,16 @@ export default function EditorPage() {
                       className="w-full px-2.5 py-2 border border-border rounded bg-surface-card text-sm text-txt-primary resize-none outline-none focus:border-primary"
                     />
                   </div>
+                  {/* Emotion Selector */}
+                  <SceneEmotionSelector
+                    emotionStart={emotionStart}
+                    emotionEnd={emotionEnd}
+                    onUpdate={(data) => {
+                      if (data.emotionStart !== undefined) { setEmotionStart(data.emotionStart); handleSaveStoryData('emotionStart', data.emotionStart); }
+                      if (data.emotionEnd !== undefined) { setEmotionEnd(data.emotionEnd); handleSaveStoryData('emotionEnd', data.emotionEnd); }
+                    }}
+                  />
+
                   <div>
                     <label className="block text-[11px] font-medium uppercase tracking-wide text-txt-muted mb-1">{t('rightPanel.valueShift')}</label>
                     <input
@@ -460,9 +475,9 @@ export default function EditorPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between py-2 border-t border-border">
-                    <div className="flex-1 mr-4">
-                      <label className="text-[11px] font-medium uppercase tracking-wide text-txt-muted">{t('rightPanel.turningPoint')}</label>
+                  <div className="flex items-center justify-between py-2 border-t border-border min-w-0">
+                    <div className="flex-1 min-w-0 mr-2">
+                      <label className="text-[11px] font-medium uppercase tracking-wide text-txt-muted truncate block">{t('rightPanel.turningPoint')}</label>
                     </div>
                     <button
                       onClick={() => { setTurningPoint(!turningPoint); handleSaveStoryData('turningPoint', !turningPoint); }}

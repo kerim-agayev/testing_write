@@ -5,9 +5,20 @@ import { useTranslations } from 'next-intl';
 import { useMentorAssignments, useCreateMentorNote, useScreenplayScenes } from '@/lib/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Flag, MessageSquare, Send } from 'lucide-react';
+import { Flag, MessageSquare, Send, Eye } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils/cn';
+import { SceneReadModal } from '@/components/mentor/SceneReadModal';
+
+type SceneWithContent = {
+  id: string;
+  sceneNumber: number;
+  intExt: string;
+  synopsis: string | null;
+  timeOfDay: string | null;
+  location: { name: string } | null;
+  content: unknown;
+};
 
 export default function MentorPage() {
   const t = useTranslations('mentor');
@@ -24,14 +35,13 @@ export default function MentorPage() {
   const [noteContent, setNoteContent] = useState('');
   const [noteType, setNoteType] = useState<'NOTE' | 'FLAG'>('NOTE');
   const [flagReason, setFlagReason] = useState('');
+  const [modalScene, setModalScene] = useState<SceneWithContent | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const selected = assignments.find((a) => a.screenplayId === selectedId);
 
-  // Fetch scenes for selected screenplay
   const { data: scenesData } = useScreenplayScenes(selectedId || '');
-  const scenes = (scenesData || []) as Array<{
-    id: string; sceneNumber: number; intExt: string; synopsis: string | null;
-  }>;
+  const scenes = (scenesData || []) as SceneWithContent[];
 
   const handleSubmitNote = async () => {
     if (!noteContent.trim() || !selectedSceneId) {
@@ -51,6 +61,12 @@ export default function MentorPage() {
     } catch {
       addToast('Failed to add note', 'error');
     }
+  };
+
+  const handleViewScene = (scene: SceneWithContent, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setModalScene(scene);
+    setModalOpen(true);
   };
 
   return (
@@ -106,21 +122,29 @@ export default function MentorPage() {
               {scenes.length === 0 ? (
                 <p className="text-sm text-txt-muted">{tc('loading')}</p>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[240px] overflow-y-auto">
                   {scenes.map((scene) => (
-                    <button
+                    <div
                       key={scene.id}
-                      onClick={() => setSelectedSceneId(scene.id)}
                       className={cn(
-                        'text-left p-2 rounded border text-sm transition-all',
+                        'relative group text-left p-2 rounded border text-sm transition-all cursor-pointer',
                         selectedSceneId === scene.id
                           ? 'border-primary bg-primary/5 text-primary'
                           : 'border-border text-txt-secondary hover:border-txt-muted'
                       )}
+                      onClick={() => setSelectedSceneId(scene.id)}
                     >
                       <span className="font-mono text-xs">#{scene.sceneNumber}</span>{' '}
                       <span className="text-xs">{scene.intExt}. {scene.synopsis || 'Untitled'}</span>
-                    </button>
+                      {/* View content button */}
+                      <button
+                        onClick={(e) => handleViewScene(scene, e)}
+                        className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-panel"
+                        title="Sahnəyə bax"
+                      >
+                        <Eye size={11} className="text-txt-muted" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -188,6 +212,13 @@ export default function MentorPage() {
           </div>
         )}
       </div>
+
+      {/* Scene Read Modal */}
+      <SceneReadModal
+        scene={modalScene}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }

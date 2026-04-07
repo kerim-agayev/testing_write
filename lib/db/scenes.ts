@@ -21,6 +21,7 @@ export async function listScenes(screenplayId: string) {
       storyValueScore: true,
       locationId: true,
       location: { select: { name: true } },
+      content: true,
       turningPoint: true,
       sceneCharacters: {
         select: {

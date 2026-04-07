@@ -1,8 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { useTransition } from 'react';
 import { cn } from '@/lib/utils/cn';
 
 const LANGUAGES = [
@@ -13,8 +11,6 @@ const LANGUAGES = [
 
 export function LanguageSwitcher() {
   const currentLocale = useLocale();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
   const handleChange = async (code: string) => {
     if (code === currentLocale) return;
@@ -26,7 +22,8 @@ export function LanguageSwitcher() {
         body: JSON.stringify({ locale: code }),
       });
     } catch {}
-    startTransition(() => router.refresh());
+    // Hard navigation clears Next.js RSC cache and fully re-renders with new locale
+    window.location.reload();
   };
 
   return (
@@ -35,13 +32,11 @@ export function LanguageSwitcher() {
         <button
           key={lang.code}
           onClick={() => handleChange(lang.code)}
-          disabled={isPending}
-          className={cn(
+              className={cn(
             'px-2 py-1 text-xs font-mono font-semibold rounded transition-all duration-150',
             currentLocale === lang.code
               ? 'bg-primary text-txt-on-primary shadow-sm'
               : 'text-txt-secondary hover:text-txt-primary hover:bg-surface-card',
-            isPending && 'opacity-50 cursor-wait'
           )}
         >
           {lang.label}

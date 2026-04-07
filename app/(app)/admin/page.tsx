@@ -14,6 +14,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { useUIStore } from '@/store/uiStore';
 import { Check, X } from 'lucide-react';
 import type { AdminStats } from '@/types/api';
+import { useQuery } from '@tanstack/react-query';
 
 export default function AdminPage() {
   const t = useTranslations('admin');
@@ -80,6 +81,7 @@ export default function AdminPage() {
           { key: 'mentors', label: t('mentors') || 'Mentors' },
           { key: 'requests', label: `${t('mentorRequests') || 'Mentor Requests'}${pendingRequests.length ? ` (${pendingRequests.length})` : ''}` },
           { key: 'users', label: t('users') || 'Users' },
+          { key: 'screenwriters', label: 'Ssenaristlər' },
           { key: 'demo', label: t('demoScreenplay') || 'Demo Screenplay' },
         ]}
         activeTab={activeTab}
@@ -244,6 +246,9 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Screenwriters Tab */}
+      {activeTab === 'screenwriters' && <ScreenwritersTab />}
+
       {/* Demo Tab */}
       {activeTab === 'demo' && (
         <div className="bg-surface-card border border-border rounded-lg p-6 max-w-lg">
@@ -254,6 +259,88 @@ export default function AdminPage() {
           <code className="text-xs bg-surface-panel rounded p-2 block text-txt-muted">npm run seed:demo</code>
         </div>
       )}
+    </div>
+  );
+}
+
+type ScreenwriterData = {
+  id: string; name: string; email: string;
+  screenplayCount: number; screenplayTitles: string[];
+  activityLabel: string; activityStatus: 'active' | 'idle' | 'lost';
+};
+
+function ScreenwritersTab() {
+  const { data: writers = [], isLoading } = useQuery<ScreenwriterData[]>({
+    queryKey: ['admin-screenwriters'],
+    queryFn: () => fetch('/api/admin/screenwriters').then((r) => r.json()),
+  });
+
+  const statusColors: Record<string, string> = {
+    active: 'bg-green-100 text-green-700',
+    idle: 'bg-yellow-100 text-yellow-700',
+    lost: 'bg-red-100 text-red-700',
+  };
+  const statusLabels: Record<string, string> = { active: 'Aktiv', idle: 'Passiv', lost: 'İtmiş' };
+
+  if (isLoading) return <div className="text-sm text-txt-muted py-8 text-center">Yüklənir...</div>;
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-lg font-bold font-mono text-green-700">{writers.filter((w) => w.activityStatus === 'active').length}</p>
+          <p className="text-xs text-green-600">Aktiv (7 gün)</p>
+        </div>
+        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-lg font-bold font-mono text-yellow-700">{writers.filter((w) => w.activityStatus === 'idle').length}</p>
+          <p className="text-xs text-yellow-600">Passiv (7-30 gün)</p>
+        </div>
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-lg font-bold font-mono text-red-700">{writers.filter((w) => w.activityStatus === 'lost').length}</p>
+          <p className="text-xs text-red-600">İtmiş (30+ gün)</p>
+        </div>
+      </div>
+
+      <div className="bg-surface-card border border-border rounded-xl overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-surface-panel">
+              <th className="text-left px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Ssenarist</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Email</th>
+              <th className="text-center px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Ssenarilər</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Ssenarilər Adları</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Son Aktivlik</th>
+              <th className="text-center px-4 py-3 text-xs font-medium text-txt-muted uppercase tracking-wide">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {writers.map((w) => (
+              <tr key={w.id} className="border-b border-border last:border-0 hover:bg-surface-hover transition-colors">
+                <td className="px-4 py-3 font-medium text-txt-primary">{w.name ?? '—'}</td>
+                <td className="px-4 py-3 text-txt-secondary text-xs">{w.email}</td>
+                <td className="px-4 py-3 text-center font-mono font-bold text-txt-primary">{w.screenplayCount}</td>
+                <td className="px-4 py-3 max-w-[200px]">
+                  <div className="flex flex-wrap gap-1">
+                    {w.screenplayTitles.slice(0, 3).map((title, i) => (
+                      <span key={i} className="text-xs px-1.5 py-0.5 bg-surface-panel border border-border rounded text-txt-secondary">{title}</span>
+                    ))}
+                    {w.screenplayTitles.length > 3 && <span className="text-xs text-txt-muted">+{w.screenplayTitles.length - 3}</span>}
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-xs text-txt-secondary">{w.activityLabel}</td>
+                <td className="px-4 py-3 text-center">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[w.activityStatus]}`}>
+                    {statusLabels[w.activityStatus]}
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {writers.length === 0 && (
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-txt-muted">Hələ heç bir ssenarist yoxdur.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

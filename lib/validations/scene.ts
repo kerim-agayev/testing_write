@@ -25,6 +25,8 @@ export const UpdateSceneSchema = z.object({
   turnOn: z.enum(['ACTION', 'REVELATION']).optional().nullable(),
   turningPoint: z.boolean().optional(),
   storyValueScore: z.number().int().min(0).max(100).optional().nullable(),
+  emotionStart: z.string().max(50).optional().nullable(),
+  emotionEnd: z.string().max(50).optional().nullable(),
   characterArcs: z
     .array(
       z.object({

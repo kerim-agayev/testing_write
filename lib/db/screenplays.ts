@@ -22,6 +22,7 @@ export async function listScreenplays(userId: string) {
       ownerId: true,
       owner: { select: { id: true, name: true } },
       _count: { select: { collaborators: true } },
+      collaborators: { select: { userId: true }, where: { acceptedAt: { not: null } } },
     },
     orderBy: { lastEditedAt: 'desc' },
   });

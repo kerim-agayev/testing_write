@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Plus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { PendingInvites } from '@/components/dashboard/PendingInvites';
+import { INSPIRATIONAL_QUOTES } from '@/lib/quotes';
 
 export const metadata: Metadata = { title: 'Dashboard — ScriptFlow' };
 
@@ -19,6 +20,9 @@ export default async function DashboardPage() {
 
   const screenplays = await listScreenplays(session.user.id);
   const t = await getTranslations('dashboard');
+  // Pick a quote based on day of year — deterministic on server
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+  const quote = INSPIRATIONAL_QUOTES[dayOfYear % INSPIRATIONAL_QUOTES.length];
 
   return (
     <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-10">
@@ -43,7 +47,7 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         <StatCard label={t('totalScreenplays')} value={screenplays.length} />
-        <StatCard label={t('activeCollaborations')} value={screenplays.reduce((sum: number, s: { _count: { collaborators: number } }) => sum + s._count.collaborators, 0)} />
+        <StatCard label={t('activeCollaborations')} value={Array.from(new Set(screenplays.flatMap((s: { collaborators?: { userId: string }[] }) => (s.collaborators || []).map((c) => c.userId)))).length} />
         <StatCard label="Film / Series" value={`${screenplays.filter((s: { type: string }) => s.type === 'FILM').length} / ${screenplays.filter((s: { type: string }) => s.type === 'SERIES').length}`} />
       </div>
 
@@ -58,6 +62,12 @@ export default async function DashboardPage() {
           <Link href="/screenplay/new">
             <Button variant="primary" size="lg">{t('emptyState.cta')}</Button>
           </Link>
+          <div className="mt-10 max-w-md mx-auto">
+            <p className="text-sm text-txt-secondary italic leading-relaxed">
+              &ldquo;{quote.text['az']}&rdquo;
+            </p>
+            <p className="text-xs text-txt-muted mt-2">— {quote.author}</p>
+          </div>
         </div>
       ) : (
         <>
