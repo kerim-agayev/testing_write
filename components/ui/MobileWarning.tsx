@@ -1,34 +1,47 @@
 'use client';
+
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { Monitor } from 'lucide-react';
 
 export function MobileWarning() {
-  const [show, setShow] = useState(false);
-  const t = useTranslations('common.mobileWarning');
+  const [isMobile, setIsMobile] = useState(false);
+  const [locale, setLocale] = useState<'az' | 'en' | 'ru'>('az');
 
   useEffect(() => {
-    if (window.innerWidth < 1024) setShow(true);
+    if (window.innerWidth < 768) setIsMobile(true);
+
+    // Read locale from cookie
+    const match = document.cookie.match(/scriptflow-locale=([^;]+)/);
+    const cookieLocale = match?.[1];
+    if (cookieLocale === 'en' || cookieLocale === 'ru') setLocale(cookieLocale);
   }, []);
 
-  if (!show) return null;
+  if (!isMobile) return null;
+
+  const messages = {
+    az: {
+      title: 'ScriptFlow kompüter üçündür',
+      body: 'Bu platforma telefon və ya planşetdən istifadəni dəstəkləmir. Zəhmət olmasa kompüterdən daxil olun.',
+    },
+    en: {
+      title: 'ScriptFlow is for desktop',
+      body: 'This platform does not support mobile or tablet access. Please use a desktop or laptop computer.',
+    },
+    ru: {
+      title: 'ScriptFlow предназначен для компьютера',
+      body: 'Эта платформа не поддерживает мобильные устройства. Пожалуйста, используйте компьютер или ноутбук.',
+    },
+  };
+
+  const msg = messages[locale];
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-6">
-      <div className="bg-[var(--surface-card)] border border-[var(--border-color)] rounded-xl p-8 max-w-sm w-full text-center">
-        <div className="text-5xl mb-5">💻</div>
-        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-3">
-          {t('title')}
-        </h2>
-        <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed">
-          {t('message')}
-        </p>
-        <button
-          onClick={() => setShow(false)}
-          className="w-full py-2.5 text-sm border border-[var(--border-color)] rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-panel)] transition-colors"
-        >
-          {t('continue')}
-        </button>
+    <div className="fixed inset-0 z-[9999] bg-[#F8F7F4] flex flex-col items-center justify-center p-8 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-[#2D2B6B]/10 flex items-center justify-center mb-6">
+        <Monitor className="w-8 h-8 text-[#2D2B6B]" />
       </div>
+      <h1 className="text-xl font-semibold text-[#1A1A1A] mb-3">{msg.title}</h1>
+      <p className="text-sm text-[#6B6960] max-w-xs leading-relaxed">{msg.body}</p>
     </div>
   );
 }

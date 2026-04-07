@@ -22,7 +22,7 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
   const [char2Id, setChar2Id] = useState('');
   const [arcType, setArcType] = useState<'external' | 'internal'>('external');
 
-  const { data = [] } = useQuery<ArcDataPoint[]>({
+  const { data = [], isLoading, isFetching } = useQuery<ArcDataPoint[]>({
     queryKey: ['arc-comparison', screenplayId, char1Id, char2Id, arcType],
     queryFn: () =>
       fetch(`/api/screenplays/${screenplayId}/arc-comparison?char1Id=${char1Id}&char2Id=${char2Id}&arcType=${arcType}`)
@@ -33,8 +33,15 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
   const char1 = characters.find((c) => c.id === char1Id);
   const char2 = characters.find((c) => c.id === char2Id);
 
+  // Check if each character actually has any arc data
+  const char1Data = data.filter((d) => d.char1Score !== null);
+  const char2Data = data.filter((d) => d.char2Score !== null);
+  const hasChar1Data = char1Data.length > 0;
+  const hasChar2Data = char2Data.length > 0;
+  const hasAnyData = hasChar1Data || hasChar2Data;
+
   useEffect(() => {
-    if (!svgRef.current || data.length === 0) return;
+    if (!svgRef.current || !hasAnyData) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -44,8 +51,6 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
     const height = 280 - margin.top - margin.bottom;
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-
-    const validData = data.filter((d) => d.char1Score !== null && d.char2Score !== null);
 
     const x = d3.scaleLinear()
       .domain([1, d3.max(data, (d) => d.sceneNumber) ?? 1])
@@ -60,15 +65,19 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
       .call((ag) => ag.selectAll('.tick line')
         .attr('stroke', 'var(--border-color)').attr('stroke-dasharray', '3,3').attr('opacity', 0.5));
 
-    // Crossover markers
-    for (let i = 0; i < validData.length - 1; i++) {
-      const a = validData[i];
-      const b = validData[i + 1];
-      if ((a.char1Score! - a.char2Score!) * (b.char1Score! - b.char2Score!) < 0) {
+    // Crossover markers — only when both characters have data at adjacent points
+    for (let i = 0; i < data.length - 1; i++) {
+      const a = data[i];
+      const b = data[i + 1];
+      if (
+        a.char1Score !== null && a.char2Score !== null &&
+        b.char1Score !== null && b.char2Score !== null &&
+        (a.char1Score - a.char2Score) * (b.char1Score - b.char2Score) < 0
+      ) {
         const crossX = a.sceneNumber + (b.sceneNumber - a.sceneNumber) *
-          Math.abs(a.char1Score! - a.char2Score!) /
-          (Math.abs(a.char1Score! - a.char2Score!) + Math.abs(b.char1Score! - b.char2Score!));
-        const crossY = (a.char1Score! + b.char1Score!) / 2;
+          Math.abs(a.char1Score - a.char2Score) /
+          (Math.abs(a.char1Score - a.char2Score) + Math.abs(b.char1Score - b.char2Score));
+        const crossY = (a.char1Score + b.char1Score) / 2;
 
         g.append('circle')
           .attr('cx', x(crossX)).attr('cy', y(crossY))
@@ -85,45 +94,45 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
       }
     }
 
-    // Character 1 line (Teal)
-    const line1 = d3.line<ArcDataPoint>()
-      .x((d) => x(d.sceneNumber))
-      .y((d) => y(d.char1Score!))
-      .curve(d3.curveMonotoneX)
-      .defined((d) => d.char1Score !== null);
+    // Character 1 line — draw only through points where char1 has data
+    if (hasChar1Data) {
+      const line1 = d3.line<ArcDataPoint>()
+        .x((d) => x(d.sceneNumber))
+        .y((d) => y(d.char1Score!))
+        .curve(d3.curveMonotoneX);
 
-    g.append('path')
-      .datum(validData)
-      .attr('fill', 'none')
-      .attr('stroke', '#1D9E75')
-      .attr('stroke-width', 2.5)
-      .attr('d', line1 as unknown as string);
+      g.append('path')
+        .datum(char1Data)           // filtered array — no gaps, no defined()
+        .attr('fill', 'none')
+        .attr('stroke', '#1D9E75')
+        .attr('stroke-width', 2.5)
+        .attr('d', line1 as unknown as string);
 
-    // Character 2 line (Orange)
-    const line2 = d3.line<ArcDataPoint>()
-      .x((d) => x(d.sceneNumber))
-      .y((d) => y(d.char2Score!))
-      .curve(d3.curveMonotoneX)
-      .defined((d) => d.char2Score !== null);
+      g.selectAll('.dot1').data(char1Data)
+        .join('circle').attr('class', 'dot1')
+        .attr('cx', (d) => x(d.sceneNumber)).attr('cy', (d) => y(d.char1Score!))
+        .attr('r', 3.5).attr('fill', '#1D9E75');
+    }
 
-    g.append('path')
-      .datum(validData)
-      .attr('fill', 'none')
-      .attr('stroke', '#E67E22')
-      .attr('stroke-width', 2.5)
-      .attr('d', line2 as unknown as string);
+    // Character 2 line — draw only through points where char2 has data
+    if (hasChar2Data) {
+      const line2 = d3.line<ArcDataPoint>()
+        .x((d) => x(d.sceneNumber))
+        .y((d) => y(d.char2Score!))
+        .curve(d3.curveMonotoneX);
 
-    // Dots char1
-    g.selectAll('.dot1').data(validData.filter((d) => d.char1Score !== null))
-      .join('circle').attr('class', 'dot1')
-      .attr('cx', (d) => x(d.sceneNumber)).attr('cy', (d) => y(d.char1Score!))
-      .attr('r', 3.5).attr('fill', '#1D9E75');
+      g.append('path')
+        .datum(char2Data)           // filtered array — no gaps, no defined()
+        .attr('fill', 'none')
+        .attr('stroke', '#E67E22')
+        .attr('stroke-width', 2.5)
+        .attr('d', line2 as unknown as string);
 
-    // Dots char2
-    g.selectAll('.dot2').data(validData.filter((d) => d.char2Score !== null))
-      .join('circle').attr('class', 'dot2')
-      .attr('cx', (d) => x(d.sceneNumber)).attr('cy', (d) => y(d.char2Score!))
-      .attr('r', 3.5).attr('fill', '#E67E22');
+      g.selectAll('.dot2').data(char2Data)
+        .join('circle').attr('class', 'dot2')
+        .attr('cx', (d) => x(d.sceneNumber)).attr('cy', (d) => y(d.char2Score!))
+        .attr('r', 3.5).attr('fill', '#E67E22');
+    }
 
     // Axes
     g.append('g').attr('transform', `translate(0,${height})`)
@@ -142,7 +151,12 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
       .attr('text-anchor', 'middle').attr('font-size', 11)
       .attr('fill', 'var(--text-muted)')
       .text(arcType === 'external' ? 'External Arc Skoru' : 'Internal Arc Skoru');
-  }, [data, arcType]);
+  }, [data, arcType, hasAnyData]);
+
+  const showChart = char1Id && char2Id;
+  const showLoading = showChart && (isLoading || isFetching);
+  const showNoData = showChart && !isLoading && !isFetching && !hasAnyData;
+  const showChartSvg = showChart && !isLoading && hasAnyData;
 
   return (
     <div className="bg-[var(--surface-card)] border border-[var(--border-color)] rounded-xl p-5">
@@ -205,34 +219,51 @@ export function ArcComparisonChart({ screenplayId, characters }: Props) {
       </div>
 
       {/* Legend */}
-      {char1 && char2 && (
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-0.5 bg-[#1D9E75] rounded" />
-            <span className="text-xs text-[var(--text-secondary)]">{char1.name}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-0.5 bg-[#E67E22] rounded" />
-            <span className="text-xs text-[var(--text-secondary)]">{char2.name}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-yellow-400 text-xs">⚡</span>
-            <span className="text-xs text-[var(--text-muted)]">Güc keçişi</span>
-          </div>
+      {char1 && char2 && !showLoading && hasAnyData && (
+        <div className="flex items-center gap-4 mb-4 flex-wrap">
+          {hasChar1Data && (
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-0.5 bg-[#1D9E75] rounded" />
+              <span className="text-xs text-[var(--text-secondary)]">{char1.name}</span>
+            </div>
+          )}
+          {hasChar2Data && (
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-0.5 bg-[#E67E22] rounded" />
+              <span className="text-xs text-[var(--text-secondary)]">{char2.name}</span>
+            </div>
+          )}
+          {hasChar1Data && hasChar2Data && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-yellow-400 text-xs">⚡</span>
+              <span className="text-xs text-[var(--text-muted)]">Güc keçişi</span>
+            </div>
+          )}
+          {hasChar1Data && !hasChar2Data && (
+            <span className="text-xs text-[var(--color-warning)]">{char2?.name} üçün arc məlumatı yoxdur</span>
+          )}
+          {!hasChar1Data && hasChar2Data && (
+            <span className="text-xs text-[var(--color-warning)]">{char1?.name} üçün arc məlumatı yoxdur</span>
+          )}
         </div>
       )}
 
-      {!char1Id || !char2Id ? (
+      {/* State display */}
+      {!showChart ? (
         <div className="h-[280px] flex items-center justify-center">
           <p className="text-sm text-[var(--text-muted)] italic">Müqayisə üçün iki personaj seçin</p>
         </div>
-      ) : data.length === 0 ? (
+      ) : showLoading ? (
+        <div className="h-[280px] flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-[var(--border-color)] border-t-primary rounded-full animate-spin" />
+        </div>
+      ) : showNoData ? (
         <div className="h-[280px] flex items-center justify-center">
           <p className="text-sm text-[var(--text-muted)] italic">Bu personajlar üçün arc məlumatı yoxdur</p>
         </div>
-      ) : (
+      ) : showChartSvg ? (
         <svg ref={svgRef} className="w-full" height={280} />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { StoryArcChart } from '@/components/charts/StoryArcChart';
 import { CharacterArcChart } from '@/components/charts/CharacterArcChart';
 import { EmotionalEKGChart } from '@/components/charts/EmotionalEKGChart';
 import { ArcComparisonChart } from '@/components/charts/ArcComparisonChart';
+import { EmotionAnalysisView } from '@/components/charts/EmotionAnalysisView';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useTranslations } from 'next-intl';
 
@@ -110,6 +111,14 @@ export default function AnalyticsPage() {
       <section className="mb-12">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">Dramatik EKG</h2>
         <EmotionalEKGChart scenes={analytics.storyArc.map((p) => ({ sceneNumber: p.sceneNumber, storyValueScore: p.score, turningPoint: p.turningPoint }))} />
+      </section>
+
+      {/* Emotional Transformation Analysis */}
+      <section className="mb-12">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-txt-muted mb-4">Emosional Dönüşüm Analizi</h2>
+        <div className="bg-surface-card border border-border rounded-lg p-6">
+          <EmotionAnalysisView screenplayId={id} />
+        </div>
       </section>
 
       {/* Story Grid Table */}

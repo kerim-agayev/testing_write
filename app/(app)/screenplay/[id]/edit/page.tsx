@@ -475,14 +475,14 @@ export default function EditorPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between py-2 border-t border-border min-w-0">
-                    <div className="flex-1 min-w-0 mr-2">
+                  <div className="flex items-center justify-between py-2 border-t border-border overflow-hidden">
+                    <div className="flex-1 min-w-0 mr-2 overflow-hidden">
                       <label className="text-[11px] font-medium uppercase tracking-wide text-txt-muted truncate block">{t('rightPanel.turningPoint')}</label>
                     </div>
                     <button
                       onClick={() => { setTurningPoint(!turningPoint); handleSaveStoryData('turningPoint', !turningPoint); }}
                       className={cn(
-                        'w-10 h-5 rounded-full transition-colors relative',
+                        'w-10 h-5 flex-shrink-0 rounded-full transition-colors relative',
                         turningPoint ? 'bg-primary' : 'bg-border'
                       )}
                     >

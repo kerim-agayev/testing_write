@@ -135,7 +135,7 @@ export default function MentorPage() {
                       onClick={() => setSelectedSceneId(scene.id)}
                     >
                       <span className="font-mono text-xs">#{scene.sceneNumber}</span>{' '}
-                      <span className="text-xs">{scene.intExt}. {scene.synopsis || 'Untitled'}</span>
+                      <span className="text-xs">{scene.intExt}. {scene.location?.name || scene.synopsis || 'Untitled'}</span>
                       {/* View content button */}
                       <button
                         onClick={(e) => handleViewScene(scene, e)}
