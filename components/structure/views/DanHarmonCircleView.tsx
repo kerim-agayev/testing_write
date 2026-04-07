@@ -16,8 +16,6 @@ interface DanHarmonCircleViewProps {
   onStageClick: (stageId: string) => void;
 }
 
-function toRad(deg: number) { return (deg * Math.PI) / 180; }
-
 export function DanHarmonCircleView({ stages, assignments, scenes, locale, onRemove, onAssign, onStageClick }: DanHarmonCircleViewProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [activeStage, setActiveStage] = useState<string | null>(null);
@@ -36,19 +34,27 @@ export function DanHarmonCircleView({ stages, assignments, scenes, locale, onRem
     svg.selectAll('*').remove();
     const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
 
-    stages.forEach((stage) => {
-      if (stage.arcStart === undefined || stage.arcEnd === undefined) return;
-      const startRad = toRad(stage.arcStart - 90);
-      const endRad = toRad(stage.arcEnd - 90);
-      const midAngle = (stage.arcStart + stage.arcEnd) / 2;
-      const midRad = toRad(midAngle - 90);
+    // Compute slice angles fresh from stage order — this ensures path & label
+    // use the SAME coordinate system. d3.arc convention: 0 rad = top (12 o'clock),
+    // increases clockwise. First stage centered at top.
+    const SLICE_COUNT = stages.length;
+    const SLICE_ANGLE = (Math.PI * 2) / SLICE_COUNT;
+    const arcGen = d3.arc<any>();
 
-      const arcGen = d3.arc<any>();
+    stages.forEach((stage, i) => {
+      const startAngle = i * SLICE_ANGLE - SLICE_ANGLE / 2;
+      const endAngle = startAngle + SLICE_ANGLE;
+      const midAngle = (startAngle + endAngle) / 2;
+
+      // SVG position from d3.arc angle: x = r*sin(a), y = -r*cos(a)
+      const sinMid = Math.sin(midAngle);
+      const cosMid = Math.cos(midAngle);
+
       const arcPath = arcGen({
         innerRadius: innerR,
         outerRadius: outerR,
-        startAngle: startRad,
-        endAngle: endRad < startRad ? endRad + Math.PI * 2 : endRad,
+        startAngle,
+        endAngle,
       });
 
       const isActive = activeStage === stage.id;
@@ -71,11 +77,11 @@ export function DanHarmonCircleView({ stages, assignments, scenes, locale, onRem
           d3.select(this).attr('fill', `${stage.color}${isActive ? 'FF' : hasScenes ? 'CC' : '40'}`);
         });
 
-      // Label outside
+      // Label outside the slice
       const labelR = outerR + 28;
       g.append('text')
-        .attr('x', Math.cos(midRad) * labelR)
-        .attr('y', Math.sin(midRad) * labelR + 4)
+        .attr('x', sinMid * labelR)
+        .attr('y', -cosMid * labelR + 4)
         .attr('text-anchor', 'middle')
         .attr('font-size', 10)
         .attr('font-weight', '600')
@@ -83,19 +89,19 @@ export function DanHarmonCircleView({ stages, assignments, scenes, locale, onRem
         .attr('pointer-events', 'none')
         .text(stage.name[locale].split(' — ')[0]);
 
-      // Scene count badge inside slice
+      // Scene count badge inside the slice
       if (scenesCount > 0) {
         const countR = (innerR + outerR) / 2;
         g.append('circle')
-          .attr('cx', Math.cos(midRad) * countR)
-          .attr('cy', Math.sin(midRad) * countR)
+          .attr('cx', sinMid * countR)
+          .attr('cy', -cosMid * countR)
           .attr('r', 13)
           .attr('fill', 'white')
           .attr('opacity', 0.9)
           .attr('pointer-events', 'none');
         g.append('text')
-          .attr('x', Math.cos(midRad) * countR)
-          .attr('y', Math.sin(midRad) * countR + 4)
+          .attr('x', sinMid * countR)
+          .attr('y', -cosMid * countR + 4)
           .attr('text-anchor', 'middle')
           .attr('font-size', 11)
           .attr('font-weight', 'bold')
