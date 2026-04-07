@@ -114,6 +114,8 @@ export async function updateScene(
     turnOn?: TurnOn | null;
     turningPoint?: boolean;
     storyValueScore?: number | null;
+    emotionStart?: string | null;
+    emotionEnd?: string | null;
     characterArcs?: Array<{
       characterId: string;
       externalScore: number;
