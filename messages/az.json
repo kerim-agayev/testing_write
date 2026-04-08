@@ -19,7 +19,7 @@
       "headline": "Hər şah əsər tək bir sətirdən başlayır.",
       "cta": "İlk ssenarinizi yazın"
     },
-    "recentScripts": "Son ssenariylər",
+    "recentScripts": "Son ssenarilər",
     "viewAll": "Hamısına bax"
   },
   "editor": {
@@ -39,9 +39,9 @@
       "storyEvent": "Hekayə hadisəsi",
       "valueShift": "Dəyər dəyişimi",
       "polarityShift": "Polarite dəyişimi",
-      "turnOn": "Tetikleyici",
+      "turnOn": "Təkanverici",
       "turningPoint": "Dönüm nöqtəsi",
-      "characterArcs": "KARAKTER ARKLARI",
+      "characterArcs": "XARAKTER ARKLARI",
       "externalScore": "Xarici",
       "internalScore": "Daxili",
       "action": "Hərəkət",
@@ -63,8 +63,8 @@
     }
   },
   "characters": {
-    "title": "Karakterlər",
-    "addCharacter": "Karakter əlavə et",
+    "title": "Personajlar",
+    "addCharacter": "Personaj əlavə et",
     "protagonist": "Baş qəhrəman",
     "antagonist": "Antaqonist",
     "supporting": "İkinci dərəcəli",
@@ -84,15 +84,15 @@
   "analytics": {
     "title": "Analitika",
     "storyArc": "Hekayə Arkı",
-    "characterJourneys": "KARAKTER YOLÇULUQLARİ",
+    "characterJourneys": "Qəhrəmanın Səyahəti",
     "storyGrid": "HEKAYƏ ŞƏBƏKƏSİ",
     "sceneNo": "SƏHNƏ №",
     "storyEvent": "HEKAYƏ HADİSƏSİ",
     "valueShift": "DƏYƏRİN DƏYİŞİMİ",
-    "polarityShift": "POLARİTE DƏYİŞİMİ",
-    "turnOn": "TETİKLƏYİCİ",
+    "polarityShift": "DƏYƏR DƏYİŞİMİ",
+    "turnOn": "Təkanverici Hadisə",
     "turningPoint": "DÖNÜM NÖQTƏSİ",
-    "onStageCharacters": "SƏHNƏ KARAKTERLƏRİ",
+    "onStageCharacters": "Səhnə Personajları",
     "exportCsv": "CSV Yüklə",
     "exportXlsx": "XLSX Yüklə",
     "downloadPng": "PNG Yüklə"
@@ -115,16 +115,16 @@
   "setup": {
     "step1": "Əsas məlumatlar",
     "step2": "Quruluş",
-    "step3": "Karakterlər",
+    "step3": "Personajlar",
     "titlePlaceholder": "Adsız Ssenari",
     "loglinePlaceholder": "Bir cümlə ilə hekayənizi izah edin...",
     "selectType": "Ssenari növünü seçin",
     "addStructureLater": "Quruluşu sonra da əlavə edə bilərsiniz",
-    "addCharactersLater": "Karakterləri sonra da əlavə edə bilərsiniz →"
+    "addCharactersLater": "Personajları sonra da əlavə edə bilərsiniz →"
   },
   "mentor": {
     "title": "Mentor Paneli",
-    "assignedScripts": "Təyin olunmuş ssenariylər",
+    "assignedScripts": "Təyin olunmuş ssenarilər",
     "addNote": "Bu səhnəyə qeyd əlavə et",
     "flagScene": "Səhnəni işarələ",
     "messageAuthor": "Müəllifə mesaj göndər",
@@ -164,7 +164,7 @@
     "requestMentor": "Mentor tələb et",
     "requestSent": "Tələb göndərildi",
     "inviteSent": "Dəvət göndərildi!",
-    "requestMentorDesc": "Ssenariniziə baxmaq və rəy bildirmək üçün mentor tələb edin.",
+    "requestMentorDesc": "Ssenarinizə baxmaq və rəy bildirmək üçün mentor tələb edin.",
     "mentor": "Mentor",
     "coWriterInfo": "Həm-müəlliflər bu ssenarinin bütün səhnələrini oxuya və redaktə edə bilərlər.",
     "mentorInfo": "Mentorlar ssenarini görə və qeyd əlavə edə bilərlər, lakin redaktə edə bilməzlər."
@@ -179,7 +179,7 @@
     "formatNote": "WGA ssenari standartlarına uyğun formatlanmışdır. Courier Prime 12pt, standart kənarlar."
   },
   "profile": {
-    "title": "Profil Ayarları",
+    "title": "Hesabım",
     "account": "Hesab",
     "security": "Təhlükəsizlik",
     "notifications": "Bildirişlər",
@@ -222,7 +222,7 @@
     "demoBanner": "ScriptFlow ilə yazmağa başlamaq üçün daxil olun →",
     "features": {
       "storyAutomation": "Hekayə Avtomatlaşdırılması",
-      "characterArcTracking": "Karakter Arkı İzləmə",
+      "characterArcTracking": "Personaj Arkı İzləmə",
       "formatSupport": "Fayl və Format Dəstəyi"
     }
   },
@@ -264,15 +264,15 @@
   },
   "kronotop": {
     "title": "Xronotop (Zaman-Məkan)",
-    "subtitle": "Mikhail Bakhtin'in zaman-uzam kuramı",
+    "subtitle": "Mikhail Bakhtin'in zaman-uzam nəzəriyyəsi",
     "intro1": "Ssenari yazarı üçün məkan yalnız bir dekor, zaman isə yalnız bir saat deyildir. Xronotop (Zaman-Məkan), zamanın məkanda görünür hala gəlməsidir.",
-    "intro2": "Xronotoplar sahnelerde bulunmaz; sahneleri mümkün kılarlar. Bir \"Eşik\" xronotopu qurduğunuzda zaman dayanır, məkan daralır, personaj qərar verməyə məcbur edilir.",
+    "intro2": "Xronotoplar səhnələrdə bulunmaz; səhnələri mümkün edərlər. Bir \"Eşik\" xronotopu qurduğunuzda zaman dayanır, məkan daralır, personaj qərar verməyə məcbur edilir.",
     "categories": {
       "all": "Hamısı",
       "klasik": "Klassik Bahtin",
       "tematik": "Tematik",
       "mikro": "Mikro",
-      "muasir": "Müasir və Kinema"
+      "muasir": "Müasir və Sinema"
     },
     "detail": {
       "whatItIs": "Bu xronotop nədir?",
@@ -284,7 +284,7 @@
       "close": "Bağla"
     },
     "assign": {
-      "title": "Xronotop Atama",
+      "title": "Xronotop təyin etmek",
       "paletteTitle": "Xronotop Paleti",
       "search": "Axtarış...",
       "dragHint": "Xronotopları sürükləyib səhnəyə buraxın",
@@ -294,7 +294,7 @@
       "noResults": "Nəticə tapılmadı"
     },
     "tabs": {
-      "atama": "Xronotop Atama",
+      "atama": "Xronotop təyin etmək",
       "xerite": "Xronotop Xəritəsi",
       "statistika": "Statistika"
     },
@@ -304,12 +304,12 @@
       "withKronotop": "Xronotoplu Səhnə",
       "withoutKronotop": "Xronotopsuz Səhnə",
       "avgPerScene": "Ortalama / Səhnə",
-      "noData": "Hələ heç bir xronotop atanmayıb.",
-      "emptyHint": "Atama sekmesinden başlayın."
+      "noData": "Hələ heç bir xronotop təyin edilməyib.",
+      "emptyHint": "Təyin etmə tabından başlayın."
     },
     "map": {
       "title": "Xronotop Xəritəsi",
-      "description": "Hər səhnə üçün atanmış xronotoplar."
+      "description": "Hər səhnə üçün təyin edilmiş xronotoplar."
     }
   },
   "storyStructure": {
@@ -333,7 +333,7 @@
     },
     "card": {
       "recommended": "Tövsiyə olunur",
-      "bestFor": "Kimler üçün:",
+      "bestFor": "Kimlər üçün:",
       "difficulty": "Çətinlik"
     },
     "workspace": {
@@ -344,7 +344,7 @@
       "dragHint": "Səhnə sürükləyin...",
       "dropHere": "+ Bura burax",
       "dragFromLeft": "sürüklə",
-      "unassigned": "Atanmamış"
+      "unassigned": "Təyin edilməmiş"
     },
     "stageDetail": {
       "clickStage": "Mərhələyə klikləyin",
@@ -353,8 +353,8 @@
       "scenes": "səhnə"
     },
     "analysis": {
-      "structureScore": "Struktur Skoru",
-      "assignedScenes": "Atanmış Səhnə",
+      "structureScore": "Struktur göstəricisi",
+      "assignedScenes": "Təyin edilmiş səhnə",
       "criticalEmpty": "Kritik Boş Mərhələ",
       "rhythmMap": "Ritim Xəritəsi",
       "redCritical": "Qırmızı = kritik boş mərhələ",

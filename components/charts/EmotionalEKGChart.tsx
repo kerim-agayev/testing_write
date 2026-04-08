@@ -101,7 +101,7 @@ export function EmotionalEKGChart({ scenes }: { scenes: SceneValue[] }) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">Dramatik EKG</h3>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Hekayə dəyəri — bütün ssenarist boyunca</p>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">Hekayə dəyəri — bütün ssenari boyunca</p>
         </div>
         <div className="flex items-center gap-3 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-1.5">

@@ -291,7 +291,7 @@ export const KRONOTOPLAR: KronotopData[] = [
     id: 'orman-mocuzevi', category: 'tematik', order: 8,
     color: '#1E8449', colorLight: '#E9F7EF', icon: '🌲',
     svgPath: '/assets/kronotop/orman-mocuzevi.svg',
-    name: { az: 'Orman / Möcüzəvi Dünya', en: 'Forest / Magical World', ru: 'Лес / Волшебный Мир' },
+    name: { az: 'Meşə / Möcüzəvi Dünya', en: 'Forest / Magical World', ru: 'Лес / Волшебный Мир' },
     shortDesc: {
       az: 'Zaman qaydalarının yumşadığı, personajın daxili "canavar"ı ilə sınandığı möcüzəvi dünya.',
       en: 'Where time rules soften, the character is tested by supernatural forces or their inner beast.',
@@ -318,7 +318,7 @@ export const KRONOTOPLAR: KronotopData[] = [
       ru: 'Единственное место, где правила общества приостановлены.'
     },
     scenaristTip: {
-      az: '"Orman" xronotopuna saldığınız personaj rasional qərarlar verə bilmir.',
+      az: '"Meşə" xronotopuna saldığınız personaj rasional qərarlar verə bilmir.',
       en: 'A character in the Forest cannot make rational decisions.',
       ru: 'Персонаж в лесу не может принимать рациональные решения.'
     },
@@ -328,7 +328,7 @@ export const KRONOTOPLAR: KronotopData[] = [
     id: 'fabrika-istehsal', category: 'tematik', order: 9,
     color: '#C0392B', colorLight: '#FDEDEC', icon: '🏭',
     svgPath: '/assets/kronotop/fabrika-istehsal.svg',
-    name: { az: 'Fabrika / İstehsal', en: 'Factory / Production', ru: 'Фабрика / Производство' },
+    name: { az: 'Fabrik / İstehsal', en: 'Factory / Production', ru: 'Фабрика / Производство' },
     shortDesc: {
       az: 'Sosial hiyerarxiyanın personajın davranışlarını müəyyən etdiyi iqtisadi zaman-məkandır.',
       en: 'Economic time-space where social hierarchy determines character behavior.',
@@ -577,7 +577,7 @@ export const KRONOTOPLAR: KronotopData[] = [
     id: 'skaf-cekmece-sandiq', category: 'mikro', order: 17,
     color: '#795548', colorLight: '#EFEBE9', icon: '📦',
     svgPath: '/assets/kronotop/skaf-cekmece-sandiq.svg',
-    name: { az: 'Şkaf / Çekmece / Sandıq', en: 'Cabinet / Drawer / Chest', ru: 'Шкаф / Ящик / Сундук' },
+    name: { az: 'Şkaf / Siyirtmə / Sandıq', en: 'Cabinet / Drawer / Chest', ru: 'Шкаф / Ящик / Сундук' },
     shortDesc: { az: 'Keçmişin saxlandığı "yaddaş məkanları"dır. Açılması donmuş xatirenin bugünə sızmasıdır.', en: 'Memory spaces. Opening one is a frozen memory seeping into the present.', ru: 'Пространства памяти. Открыть — впустить прошлое в настоящее.' },
     whatItIs: { az: 'Fiziki olaraq kiçikdir lakin zaman baxımından nəhəngdir.', en: 'Physically small but temporally enormous.', ru: 'Физически мал, но огромен во времени.' },
     whatItIsNot: { az: 'Sadəcə əşyanın saxlandığı hər dolap sahnəsi deyil.', en: 'Not every storage scene. The object must carry dramatic weight.', ru: 'Не каждая сцена с хранилищем.' },
@@ -590,7 +590,7 @@ export const KRONOTOPLAR: KronotopData[] = [
     id: 'kunc-siginacaq', category: 'mikro', order: 18,
     color: '#616161', colorLight: '#F5F5F5', icon: '🕯️',
     svgPath: '/assets/kronotop/kunc-siginacaq.svg',
-    name: { az: 'Küncə / Sığınacaq', en: 'Corner / Refuge', ru: 'Угол / Убежище' },
+    name: { az: 'Künc / Sığınacaq', en: 'Corner / Refuge', ru: 'Угол / Убежище' },
     shortDesc: { az: 'Personajın dünyadan soyutlandığı sığınma nöqtəsidir.', en: 'The withdrawal point where the character isolates from the world.', ru: 'Точка ухода от мира.' },
     whatItIs: { az: 'Küncü fiziki olaraq kiçik, psikoloji olaraq nəhəngdir. Gizlənmə özü bir itirafdir.', en: 'Physically small but psychologically enormous. Hiding itself is a confession.', ru: 'Физически мал, психологически огромен. Укрытие — признание.' },
     whatItIsNot: { az: 'Sadəcə küncde oturan hər personaj sahnəsi deyil.', en: 'Not every scene of a character sitting in a corner.', ru: 'Не каждая сцена в углу.' },
@@ -695,7 +695,7 @@ export const KRONOTOPLAR: KronotopData[] = [
     id: 'banliyo-kenar', category: 'muasir', order: 26,
     color: '#A04000', colorLight: '#FBEEE6', icon: '🏡',
     svgPath: '/assets/kronotop/banliyo-kenar.svg',
-    name: { az: 'Banliyö / Kənar Məhəllə', en: 'Suburb / Periphery', ru: 'Пригород / Окраина' },
+    name: { az: 'Qəsəbə / Kənar Məhəllə', en: 'Suburb / Periphery', ru: 'Пригород / Окраина' },
     shortDesc: { az: 'Kənd xronotopunun müasir versiyası. Eyni evlər, eyni həyatlar, eyni boğuculuq.', en: 'Modern provincial chronotope. Same houses, same lives, same suffocation.', ru: 'Современная провинция. Одинаковые дома, то же удушье.' },
     whatItIs: { az: 'Nə tam şəhər, nə tam kənd — bu "arada qalma" dramın özüdür.', en: 'Neither city nor village — this in-betweenness is the drama itself.', ru: 'Ни город, ни деревня — "между" и есть драма.' },
     whatItIsNot: { az: 'Sadəcə şəhər kənarında baş verən hər sahne deyil.', en: 'Not every suburban scene.', ru: 'Не каждая пригородная сцена.' },

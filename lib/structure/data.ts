@@ -41,7 +41,7 @@ export const THREE_ACT: StructureDefinition = {
   filmExamples: [
     { title: 'Casablanca', year: 1942, why: 'Klassik 3 pərdə — hər aşama mükəmməl tarazlıqda' },
     { title: 'The Godfather', year: 1972, why: "Michael'in dönüşümü 3 pərdə boyunca izlənir" },
-    { title: 'A Separation', year: 2011, why: 'Bağımsız sinemada 3 pərdə sadeliyi' },
+    { title: 'A Separation', year: 2011, why: 'Müstəqil kinoda 3 pərdə sadeliyi' },
   ],
   stages: [
     { id: 'act1', order: 1, color: '#2D2B6B', colorLight: '#EEF0FF',
@@ -202,8 +202,8 @@ export const VOGLER: StructureDefinition = {
   filterTags: ['feature', 'fantasy', 'adventure', 'epic', 'mythology'],
   name: { az: 'Vogler Qəhrəmanın Yolçuluğu', en: "Vogler Hero's Journey", ru: 'Путешествие Героя Воглера' },
   shortDesc: { az: 'Campbell\'ın mif quruluşunun Vogler uyarlaması. 12 universal addım.', en: "Vogler's adaptation of Campbell's mythic structure. 12 universal steps.", ru: 'Адаптация Воглером мифической структуры. 12 шагов.' },
-  fullDesc: { az: 'Fantezi, macəra və epik hekayələr üçün mükəmməl. Hər addım arxetipal.', en: 'Perfect for fantasy, adventure, and epic stories. Every step is archetypal.', ru: 'Идеально для фэнтези, приключений и эпических историй.' },
-  bestFor: { az: 'Fantezi, macəra, epik, mifoloji hekayələr.', en: 'Fantasy, adventure, epic, mythological stories.', ru: 'Фэнтези, приключения, эпические, мифологические истории.' },
+  fullDesc: { az: 'Fantaziya, macəra və epik hekayələr üçün mükəmməl. Hər addım arxetipal.', en: 'Perfect for fantasy, adventure, and epic stories. Every step is archetypal.', ru: 'Идеально для фэнтези, приключений и эпических историй.' },
+  bestFor: { az: 'Fantaziya, macəra, epik, mifoloji hekayələr.', en: 'Fantasy, adventure, epic, mythological stories.', ru: 'Фэнтези, приключения, эпические, мифологические истории.' },
   filmExamples: [
     { title: 'Star Wars: A New Hope', year: 1977, why: 'Mükəmməl Vogler xəritəsi — hər addım dəqiq yerindədir' },
     { title: 'The Lion King', year: 1994, why: 'Simba\'nın yolçuluğu — Return of the Elixir güclü' },
@@ -269,7 +269,7 @@ export const JOHN_TRUBY: StructureDefinition = {
   name: { az: 'John Truby — 22 Addım', en: 'John Truby — 22 Steps', ru: 'Джон Труби — 22 Шага' },
   shortDesc: { az: 'Ən kapsamlı sistem. Personaj nöqsanı + əxlaqi arqument + rəqib münasibəti.', en: 'Most comprehensive system. Character flaw + moral argument + opponent.', ru: 'Самая комплексная система. Изъян + моральный аргумент + оппонент.' },
   fullDesc: { az: 'Dərin personaj təhlili üçün. 22 addım ilə hər aspekti əhatə edir.', en: 'For deep character analysis. Covers every aspect in 22 steps.', ru: 'Для глубокого анализа персонажей. 22 шага охватывают всё.' },
-  bestFor: { az: 'Bağımsız sinema, drama, personaj dərinliyi istəyən ssenaristlər.', en: 'Independent cinema, drama, character-driven screenwriters.', ru: 'Независимое кино, драма, характерные сценарии.' },
+  bestFor: { az: 'Müstəqil kino, drama, personaj dərinliyi istəyən ssenaristlər.', en: 'Independent cinema, drama, character-driven screenwriters.', ru: 'Независимое кино, драма, характерные сценарии.' },
   filmExamples: [
     { title: 'Chinatown', year: 1974, why: "Truby'nin sevdiyi film — moral argument mükemmel" },
     { title: 'The Godfather', year: 1972, why: "Michael'in weakness-to-desire arc'ı 22 adımla izlenir" },

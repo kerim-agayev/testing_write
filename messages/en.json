@@ -13,7 +13,7 @@
     "totalScreenplays": "Total Screenplays",
     "totalScenes": "Total Scenes",
     "activeCollaborations": "Active Collaborations",
-    "newScreenplay": "+ New Screenplay",
+    "newScreenplay": " New Screenplay",
     "continueWriting": "Continue Writing →",
     "emptyState": {
       "headline": "Every masterpiece starts with a single line.",
@@ -28,7 +28,7 @@
       "inThisScene": "IN THIS SCENE",
       "sceneValue": "SCENE VALUE",
       "dramaticCharge": "Dramatic Charge",
-      "addScene": "+ Add Scene",
+      "addScene": " Add Scene",
       "noScenes": "No scenes yet. Add your first scene to start writing."
     },
     "rightPanel": {

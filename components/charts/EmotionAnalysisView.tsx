@@ -146,10 +146,10 @@ export function EmotionAnalysisView({ screenplayId }: { screenplayId: string }) 
     <div className="space-y-5">
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4">
-        <StatCard label="Analiz edilən sahne" value={data.scenesWithEmotions} />
+        <StatCard label="Analiz edilən səhnə" value={data.scenesWithEmotions} />
         <StatCard label="Unikal dönüşüm cütü" value={Object.keys(data.transitionCounts).length} />
         <StatCard
-          label="Çeşitlilik skoru"
+          label="Müxtəliflik göstəricisi"
           value={`${data.diversityScore}/100`}
           color={data.diversityScore < 30 ? 'warning' : 'success'}
         />
@@ -180,7 +180,7 @@ export function EmotionAnalysisView({ screenplayId }: { screenplayId: string }) 
                     {endEmo?.az ?? end}
                   </span>
                   <span className="text-orange-600 font-mono font-bold">{count}×</span>
-                  <span className="text-orange-500 text-xs">— ritim tekrara düşmüş ola bilər</span>
+                  <span className="text-orange-500 text-xs">— ritim təkrara düşmüş ola bilər</span>
                 </div>
               );
             })}

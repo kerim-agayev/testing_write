@@ -13,7 +13,7 @@
     "totalScreenplays": "Всего сценариев",
     "totalScenes": "Всего сцен",
     "activeCollaborations": "Активные коллаборации",
-    "newScreenplay": "+ Новый сценарий",
+    "newScreenplay": " Новый сценарий",
     "continueWriting": "Продолжить писать →",
     "emptyState": {
       "headline": "Каждый шедевр начинается с одной строки.",
@@ -28,7 +28,7 @@
       "inThisScene": "В ЭТОЙ СЦЕНЕ",
       "sceneValue": "ЦЕННОСТЬ СЦЕНЫ",
       "dramaticCharge": "Драматический заряд",
-      "addScene": "+ Добавить сцену",
+      "addScene": "  Добавить сцену",
       "noScenes": "Пока нет сцен. Добавьте первую сцену, чтобы начать."
     },
     "rightPanel": {
