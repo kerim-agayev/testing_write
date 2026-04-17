@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Mail, UserCheck, Clock, X } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -14,12 +14,14 @@ import {
   useActiveMentors, useMentorRequest, useRequestMentor, useCancelMentorRequest,
 } from '@/lib/api/hooks';
 import { useUIStore } from '@/store/uiStore';
+import { ApiError } from '@/lib/api/client';
 
 export default function SharePage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const t = useTranslations('share');
   const tc = useTranslations('common');
-  const { data: collaboratorsData } = useCollaborators(id);
+  const { data: collaboratorsData, error: collabError } = useCollaborators(id);
   const collaborators = (collaboratorsData || []) as Array<{
     userId: string; role: string; acceptedAt: string | null;
     user: { id: string; name: string; email: string };
@@ -37,6 +39,12 @@ export default function SharePage() {
   const requestMentor = useRequestMentor(id);
   const cancelRequest = useCancelMentorRequest(id);
   const addToast = useUIStore((s) => s.addToast);
+
+  useEffect(() => {
+    if (collabError instanceof ApiError && (collabError.status === 404 || collabError.status === 403)) {
+      router.replace('/dashboard');
+    }
+  }, [collabError, router]);
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteError, setInviteError] = useState<string | null>(null);

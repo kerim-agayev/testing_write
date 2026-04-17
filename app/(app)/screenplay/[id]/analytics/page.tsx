@@ -1,7 +1,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useAnalytics } from '@/lib/api/hooks';
+import { ApiError } from '@/lib/api/client';
 import { ArrowLeft, Download } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -27,9 +29,15 @@ type AnalyticsResp = {
 export default function AnalyticsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data, isLoading } = useAnalytics(id);
+  const { data, isLoading, error } = useAnalytics(id);
   const analytics = data as AnalyticsResp | undefined;
   const t = useTranslations('analytics');
+
+  useEffect(() => {
+    if (error instanceof ApiError && (error.status === 404 || error.status === 403)) {
+      router.replace('/dashboard');
+    }
+  }, [error, router]);
 
   if (isLoading) {
     return (

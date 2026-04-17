@@ -1,8 +1,9 @@
 'use client';
 
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useScreenplay, useScenes, useSaveScene, useDeleteScene, useCharacters, useMentorNotes } from '@/lib/api/hooks';
+import { ApiError } from '@/lib/api/client';
 import { useSceneData } from '@/hooks/useSceneData';
 import { useEditorStore } from '@/store/editorStore';
 import { useTranslations } from 'next-intl';
@@ -49,14 +50,22 @@ type CharacterItem = {
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const t = useTranslations('editor');
   const tc = useTranslations('common');
-  const { data: screenplayData } = useScreenplay(id);
+  const { data: screenplayData, error: screenplayError } = useScreenplay(id);
   const screenplay = screenplayData as ScreenplayFull | undefined;
   const { data: scenesData } = useScenes(id);
   const scenes = (scenesData || []) as SceneListItem[];
   const { data: charsData } = useCharacters(id);
   const characters = (charsData || []) as CharacterItem[];
+
+  // Redirect if unauthorized
+  useEffect(() => {
+    if (screenplayError instanceof ApiError && (screenplayError.status === 404 || screenplayError.status === 403)) {
+      router.replace('/dashboard');
+    }
+  }, [screenplayError, router]);
 
   const saveScene = useSaveScene(id);
   const deleteSceneMutation = useDeleteScene(id);

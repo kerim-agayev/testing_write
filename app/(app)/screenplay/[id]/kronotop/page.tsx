@@ -1,10 +1,11 @@
 'use client';
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { DndContext, DragEndEvent, DragOverlay } from '@dnd-kit/core';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { KRONOTOPLAR } from '@/lib/kronotop/data';
+import { ApiError } from '@/lib/api/client';
 import { KronotopPalette } from '@/components/kronotop/KronotopPalette';
 import { SceneDropCard } from '@/components/kronotop/SceneDropCard';
 import { KronotopStatsView } from '@/components/kronotop/KronotopStatsView';
@@ -14,24 +15,43 @@ type PageTab = 'atama' | 'xerite' | 'statistika';
 
 export default function KronotopPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<PageTab>('atama');
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const qc = useQueryClient();
   const t = useTranslations('kronotop');
 
-  const { data: scenes = [] } = useQuery({
+  const { data: scenes = [], error: scenesError } = useQuery({
     queryKey: ['scenes', id],
-    queryFn: () => fetch(`/api/screenplays/${id}/scenes`).then(r => r.json()),
+    queryFn: async () => {
+      const res = await fetch(`/api/screenplays/${id}/scenes`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({ error: 'Request failed' }));
+        throw new ApiError(res.status, body.error || 'Request failed', body.code || 'UNKNOWN');
+      }
+      return res.json();
+    },
   });
 
-  const { data: assignments = [] } = useQuery({
+  const { data: assignments = [], error: assignError } = useQuery({
     queryKey: ['kronotop-assignments', id],
     queryFn: async () => {
       const res = await fetch(`/api/screenplays/${id}/kronotop`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({ error: 'Request failed' }));
+        throw new ApiError(res.status, body.error || 'Request failed', body.code || 'UNKNOWN');
+      }
       const data = await res.json();
       return Array.isArray(data) ? data : [];
     },
   });
+
+  useEffect(() => {
+    const error = scenesError || assignError;
+    if (error instanceof ApiError && (error.status === 404 || error.status === 403)) {
+      router.replace('/dashboard');
+    }
+  }, [scenesError, assignError, router]);
 
   const { data: stats } = useQuery({
     queryKey: ['kronotop-stats', id],

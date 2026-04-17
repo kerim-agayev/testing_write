@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { Plus, ArrowLeft, X } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useCharacters, useCreateCharacter, useUpdateCharacter, useAnalytics } from '@/lib/api/hooks';
+import { ApiError } from '@/lib/api/client';
 import { CharacterArcChart } from '@/components/charts/CharacterArcChart';
 import type { ReactElement } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -19,9 +20,10 @@ import type { CharacterRole } from '@/types/api';
 
 export default function CharactersPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const t = useTranslations('characters');
   const tc = useTranslations('common');
-  const { data: characters = [], isLoading } = useCharacters(id);
+  const { data: characters = [], isLoading, error: charsError } = useCharacters(id);
   const createMutation = useCreateCharacter(id);
   const updateMutation = useUpdateCharacter(id);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -31,6 +33,13 @@ export default function CharactersPage() {
   const [detailTab, setDetailTab] = useState('profile');
   const [addingTrait, setAddingTrait] = useState(false);
   const [newTrait, setNewTrait] = useState('');
+
+  // Redirect if unauthorized
+  useEffect(() => {
+    if (charsError instanceof ApiError && (charsError.status === 404 || charsError.status === 403)) {
+      router.replace('/dashboard');
+    }
+  }, [charsError, router]);
 
   const ROLE_LABELS: Record<CharacterRole, string> = {
     PROTAGONIST: t('protagonist'), ANTAGONIST: t('antagonist'), SUPPORTING: t('supporting'), MINOR: t('minor'),
