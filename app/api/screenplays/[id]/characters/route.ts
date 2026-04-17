@@ -9,8 +9,17 @@ type Params = { params: Promise<{ id: string }> };
 // GET /api/screenplays/:id/characters
 export async function GET(_req: Request, { params }: Params) {
   try {
-    await requireAuth();
+    const user = await requireAuth();
     const { id } = await params;
+
+    const canEdit = await canEditScreenplay(id, user.id);
+    if (!canEdit) {
+      return NextResponse.json(
+        { error: 'Not found', code: 'NOT_FOUND' },
+        { status: 404 }
+      );
+    }
+
     const characters = await listCharacters(id);
     return NextResponse.json(characters);
   } catch (error) {

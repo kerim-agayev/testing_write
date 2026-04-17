@@ -22,12 +22,12 @@ export function ScreenplayCard({ screenplay }: { screenplay: ScreenplayCardProps
 
   return (
     <div
-      className="relative bg-surface-card border border-border rounded-lg p-5 shadow-1 hover:shadow-2 transition-all duration-200 group"
+      className="relative bg-surface-card border border-border rounded-lg p-5 shadow-1 hover:shadow-2 transition-all duration-200 group flex flex-col h-full"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => { setHovered(false); setMenuOpen(false); }}
     >
       {/* Type & Genre badges */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 flex-shrink-0">
         <Badge variant={screenplay.type === 'FILM' ? 'film' : 'series'}>
           {screenplay.type === 'FILM' ? 'Film' : 'TV Series'}
         </Badge>
@@ -36,28 +36,31 @@ export function ScreenplayCard({ screenplay }: { screenplay: ScreenplayCardProps
         )}
       </div>
 
-      {/* Title */}
-      <h3 className="text-lg font-semibold text-txt-primary line-clamp-2 mb-1">
-        {screenplay.title}
-      </h3>
+      {/* Content wrapper — grows to fill space */}
+      <div className="flex-1 flex flex-col">
+        {/* Title */}
+        <h3 className="text-lg font-semibold text-txt-primary line-clamp-2 mb-1">
+          {screenplay.title}
+        </h3>
 
-      {/* Logline */}
-      {screenplay.logline && (
-        <p className="text-[13px] text-txt-secondary line-clamp-2 mb-3">
-          {screenplay.logline}
-        </p>
-      )}
+        {/* Logline */}
+        {screenplay.logline && (
+          <p className="text-[13px] text-txt-secondary line-clamp-2 mb-3">
+            {screenplay.logline}
+          </p>
+        )}
 
-      {/* Collaboration badge */}
-      {screenplay._count.collaborators > 0 && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-panel border border-border rounded-full text-xs text-txt-secondary mb-2">
-          <Users className="w-3 h-3" />
-          {screenplay._count.collaborators} co-writer{screenplay._count.collaborators > 1 ? 's' : ''}
-        </span>
-      )}
+        {/* Collaboration badge */}
+        {screenplay._count.collaborators > 0 && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-panel border border-border rounded-full text-xs text-txt-secondary mb-2">
+            <Users className="w-3 h-3" />
+            {screenplay._count.collaborators} co-writer{screenplay._count.collaborators > 1 ? 's' : ''}
+          </span>
+        )}
+      </div>
 
-      {/* Bottom row */}
-      <div className="flex items-center justify-between mt-4 pt-3">
+      {/* Bottom row — stays at bottom */}
+      <div className="flex items-center justify-between mt-4 pt-3 flex-shrink-0">
         <span className="text-[13px] text-txt-muted">{timeAgo}</span>
 
         {/* Continue writing link on hover */}

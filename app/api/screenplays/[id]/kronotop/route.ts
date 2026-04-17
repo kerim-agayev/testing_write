@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAuth, handleAuthError } from '@/lib/auth-utils';
+import { canEditScreenplay } from '@/lib/db/screenplays';
 import { prisma } from '@/lib/prisma';
 import { KRONOTOPLAR } from '@/lib/kronotop/data';
 
@@ -7,8 +8,17 @@ type Params = { params: Promise<{ id: string }> };
 
 export async function GET(req: Request, { params }: Params) {
   try {
-    await requireAuth();
+    const user = await requireAuth();
     const { id } = await params;
+
+    const canEdit = await canEditScreenplay(id, user.id);
+    if (!canEdit) {
+      return NextResponse.json(
+        { error: 'Not found', code: 'NOT_FOUND' },
+        { status: 404 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const sceneId = searchParams.get('sceneId');
 

@@ -74,7 +74,7 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-medium uppercase tracking-wide text-txt-muted mb-4">Recent Scripts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {screenplays.map((sp: { id: string; title: string; type: string; genre: string[]; logline: string | null; lastEditedAt: string | Date; _count: { collaborators: number } }, i: number) => (
-              <div key={sp.id} style={{ animationDelay: `${i * 60}ms` }} className="animate-fade-in">
+              <div key={sp.id} style={{ animationDelay: `${i * 60}ms` }} className="animate-fade-in h-full">
                 <ScreenplayCard screenplay={sp} />
               </div>
             ))}
