@@ -103,6 +103,83 @@ export function useUpdateCharacter(screenplayId: string) {
   });
 }
 
+// ─── Locations ───
+export function useLocations(screenplayId: string) {
+  return useQuery({
+    queryKey: ['locations', screenplayId],
+    queryFn: () => get(`/screenplays/${screenplayId}/locations`),
+    enabled: !!screenplayId,
+  });
+}
+
+export function useCreateLocation(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Record<string, unknown>) => post(`/screenplays/${screenplayId}/locations`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['locations', screenplayId] }),
+  });
+}
+
+export function useUpdateLocation(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
+      patch(`/screenplays/${screenplayId}/locations/${id}`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['locations', screenplayId] }),
+  });
+}
+
+export function useDeleteLocation(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => del(`/screenplays/${screenplayId}/locations/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['locations', screenplayId] }),
+  });
+}
+
+// ─── Cards ───
+export function useCards(screenplayId: string) {
+  return useQuery({
+    queryKey: ['cards', screenplayId],
+    queryFn: () => get(`/screenplays/${screenplayId}/cards`),
+    enabled: !!screenplayId,
+  });
+}
+
+export function useCreateCard(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Record<string, unknown>) => post(`/screenplays/${screenplayId}/cards`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['cards', screenplayId] }),
+  });
+}
+
+export function useUpdateCard(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
+      patch(`/screenplays/${screenplayId}/cards/${id}`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['cards', screenplayId] }),
+  });
+}
+
+export function useDeleteCard(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => del(`/screenplays/${screenplayId}/cards/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['cards', screenplayId] }),
+  });
+}
+
+export function useReorderCards(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (items: Array<{ id: string; order: number }>) =>
+      patch(`/screenplays/${screenplayId}/cards/reorder`, { items }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['cards', screenplayId] }),
+  });
+}
+
 // ─── Arcs ───
 export function useArcs(screenplayId: string) {
   return useQuery({
@@ -126,6 +203,17 @@ export function useAnalytics(screenplayId: string) {
     queryKey: ['analytics', screenplayId],
     queryFn: () => get(`/screenplays/${screenplayId}/analytics`),
     enabled: !!screenplayId,
+  });
+}
+
+// ─── Title Page ───
+export function useUpdateTitlePage(screenplayId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Record<string, unknown>) => patch(`/screenplays/${screenplayId}/titlepage`, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['screenplay', screenplayId] });
+    },
   });
 }
 

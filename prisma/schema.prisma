@@ -49,6 +49,10 @@ model Screenplay {
   type         ScreenplayType
   genre        String[]
   logline      String?
+  synopsis     String?
+  authorEmail  String?
+  authorPhone  String?
+  writtenDate  DateTime?
   isDemo       Boolean        @default(false)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -62,6 +66,7 @@ model Screenplay {
   mentorAssignments MentorAssignment[]
   locations         Location[]
   structures        ScreenplayStructure[]
+  cards             Card[]
 
   @@index([ownerId])
   @@index([isDemo])
@@ -159,6 +164,7 @@ model Scene {
   mentorNotes     MentorNote[]
   kronotoplar            SceneKronotop[]
   structureAssignments   StructureAssignment[]
+  card            Card?
 
   @@index([sequenceId])
   @@index([sceneNumber])
@@ -211,6 +217,24 @@ model Location {
 
   @@unique([screenplayId, name])
   @@index([screenplayId])
+}
+
+model Card {
+  id           String    @id @default(cuid())
+  screenplayId String
+  title        String
+  description  String?
+  color        String    @default("#6B7280")
+  order        Int       @default(0)
+  sceneId      String?   @unique
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  screenplay Screenplay @relation(fields: [screenplayId], references: [id], onDelete: Cascade)
+  scene      Scene?     @relation(fields: [sceneId], references: [id], onDelete: SetNull)
+
+  @@index([screenplayId])
+  @@index([order])
 }
 
 // ─────────────────────────────────────────────

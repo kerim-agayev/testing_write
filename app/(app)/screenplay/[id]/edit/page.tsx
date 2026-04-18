@@ -220,6 +220,9 @@ export default function EditorPage() {
           {[
             { href: `/screenplay/${id}/edit`, label: t('toolbar.action'), icon: BookOpen },
             { href: `/screenplay/${id}/characters`, label: 'Characters', icon: Users },
+            { href: `/screenplay/${id}/locations`, label: 'Locations', icon: MapPin },
+            { href: `/screenplay/${id}/cards`, label: 'Cards', icon: BookOpen },
+            { href: `/screenplay/${id}/titlepage`, label: 'Title Page', icon: BookOpen },
             { href: `/screenplay/${id}/analytics`, label: 'Analytics', icon: BarChart3 },
             { href: `/screenplay/${id}/structure`, label: 'Structure', icon: Film },
             { href: `/screenplay/${id}/kronotop`, label: 'Xronotop', icon: MapPin },
@@ -372,6 +375,8 @@ export default function EditorPage() {
                 sceneId={activeSceneId}
                 screenplayId={id}
                 initialContent={activeScene.content}
+                scenes={scenes}
+                onSceneNavigate={setActiveScene}
               />
             </div>
           ) : (

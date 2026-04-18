@@ -16,11 +16,21 @@ import {
   ScreenplayShortcuts,
 } from '@/lib/editor/extensions';
 import { ElementToolbar } from './ElementToolbar';
+import { SceneNavigationBar } from './SceneNavigationBar';
+
+interface SceneRef {
+  id: string;
+  sceneNumber: number;
+  intExt: string;
+  location?: { name: string } | null;
+}
 
 interface ScreenplayEditorProps {
   sceneId: string;
   screenplayId: string;
   initialContent: Record<string, unknown> | null;
+  scenes?: SceneRef[];
+  onSceneNavigate?: (id: string) => void;
 }
 
 const DEFAULT_CONTENT = {
@@ -37,7 +47,7 @@ const DEFAULT_CONTENT = {
   ],
 };
 
-export function ScreenplayEditor({ sceneId, screenplayId, initialContent }: ScreenplayEditorProps) {
+export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes = [], onSceneNavigate }: ScreenplayEditorProps) {
   const { setDirty, setSaving, setLastSavedAt } = useEditorStore();
   const saveScene = useSaveScene(screenplayId);
 
@@ -129,6 +139,9 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent }: Scre
 
   return (
     <div>
+      {scenes.length > 0 && onSceneNavigate && (
+        <SceneNavigationBar scenes={scenes} currentSceneId={sceneId} onNavigate={onSceneNavigate} />
+      )}
       <ElementToolbar editor={editor} />
       <div
         className="screenplay-page mx-auto shadow-1"
