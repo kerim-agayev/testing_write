@@ -1,18 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Plus, Trash2, Edit2, ChevronLeft } from 'lucide-react';
 import { useLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/lib/api/hooks';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export default function LocationsPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newType, setNewType] = useState('INT');
+  const [saved, setSaved] = useState(false);
 
   const { data: locations = [], isLoading } = useLocations(id);
   const create = useCreateLocation(id);
@@ -40,7 +42,11 @@ export default function LocationsPage() {
   const handleSave = () => {
     if (!editingId || !editForm.name.trim()) return;
     update.mutate({ id: editingId, data: editForm }, {
-      onSuccess: () => setEditingId(null)
+      onSuccess: () => {
+        setEditingId(null);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
     });
   };
 
@@ -49,14 +55,23 @@ export default function LocationsPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base p-8">
       <div className="max-w-4xl mx-auto">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Locations</h1>
             <p className="text-sm text-txt-muted mt-1">{locations.length} location{locations.length !== 1 ? 's' : ''}</p>
           </div>
-          <Button onClick={() => setShowAdd(true)} className="flex items-center gap-2">
-            <Plus size={16} /> Add Location
-          </Button>
+          <div className="flex items-center gap-3">
+            {saved && <span className="text-xs text-green-600">✓ Saved!</span>}
+            <Button onClick={() => setShowAdd(true)} className="flex items-center gap-2">
+              <Plus size={16} /> Add Location
+            </Button>
+          </div>
         </div>
 
         {showAdd && (

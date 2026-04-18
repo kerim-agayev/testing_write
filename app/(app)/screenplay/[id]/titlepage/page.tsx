@@ -1,21 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Save } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Save, ChevronLeft } from 'lucide-react';
 import { useScreenplay, useUpdateTitlePage } from '@/lib/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
 export default function TitlePagePage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { data: screenplay } = useScreenplay(id);
   const updateTitlePage = useUpdateTitlePage(id);
 
   const [form, setForm] = useState({
     title: '',
     logline: '',
-    synopsis: '',
     authorEmail: '',
     authorPhone: '',
     writtenDate: '',
@@ -26,7 +26,6 @@ export default function TitlePagePage() {
       setForm({
         title: screenplay.title || '',
         logline: screenplay.logline || '',
-        synopsis: screenplay.synopsis || '',
         authorEmail: screenplay.authorEmail || '',
         authorPhone: screenplay.authorPhone || '',
         writtenDate: screenplay.writtenDate
@@ -38,7 +37,6 @@ export default function TitlePagePage() {
 
   const handleSave = () => {
     updateTitlePage.mutate({
-      synopsis: form.synopsis,
       authorEmail: form.authorEmail,
       authorPhone: form.authorPhone,
       writtenDate: form.writtenDate,
@@ -48,6 +46,12 @@ export default function TitlePagePage() {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base">
       <div className="max-w-6xl mx-auto p-8">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Title Page</h1>
@@ -85,17 +89,6 @@ export default function TitlePagePage() {
                 className="w-full px-3 py-2 border border-border rounded bg-surface-card text-txt-primary text-sm resize-none opacity-50"
               />
               <p className="text-[11px] text-txt-muted mt-1">Set in screenplay settings</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-txt-muted uppercase mb-1.5">Synopsis</label>
-              <textarea
-                value={form.synopsis}
-                onChange={e => setForm({ ...form, synopsis: e.target.value })}
-                placeholder="Write the full story summary..."
-                rows={4}
-                className="w-full px-3 py-2 border border-border rounded bg-surface-base text-txt-primary text-sm resize-none focus:border-primary outline-none"
-              />
             </div>
 
             <hr className="border-border my-6" />
@@ -148,14 +141,6 @@ export default function TitlePagePage() {
                     {form.logline}
                   </div>
                 )}
-
-                <div className="my-12 w-full border-t border-b border-black py-8">
-                  {form.synopsis && (
-                    <p className="text-xs leading-relaxed whitespace-pre-wrap max-h-32 overflow-hidden">
-                      {form.synopsis}
-                    </p>
-                  )}
-                </div>
 
                 <div className="text-sm mt-auto">
                   {form.authorEmail && <div>{form.authorEmail}</div>}

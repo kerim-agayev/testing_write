@@ -28,7 +28,7 @@ export const ScreenplayShortcuts = Extension.create({
         if (cur === 'actionLine') {
           const isEmpty = this.editor.state.selection.$from.parent.textContent.trim() === '';
           if (!isEmpty) return false;
-          return this.editor.chain().focus().insertContentAt(this.editor.state.selection.$from.after(), { type: 'characterName' }).run();
+          return this.editor.chain().focus().setNode('characterName').run();
         }
 
         // Default: cycle

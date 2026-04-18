@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Plus, Trash2, Edit2, ChevronLeft } from 'lucide-react';
 import {
   DndContext, DragEndEvent, closestCenter,
 } from '@dnd-kit/core';
@@ -19,6 +19,7 @@ const COLORS = ['#6B7280', '#1D7A5A', '#C47A1B', '#B22222', '#1B2A6B', '#5C3178'
 
 export default function CardsPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { data: cards = [], isLoading } = useCards(id);
   const create = useCreateCard(id);
   const update = useUpdateCard(id);
@@ -61,6 +62,12 @@ export default function CardsPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base p-8">
       <div className="max-w-6xl mx-auto">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Cards</h1>
@@ -145,7 +152,7 @@ function CardItem({ card, idx, isEditing, form, setForm, onEdit, onDelete, onSav
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-surface-card border border-border rounded-lg overflow-hidden cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
+      className="relative bg-surface-card border border-border rounded-lg overflow-hidden cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
     >
       <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: card.color }} />
 

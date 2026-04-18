@@ -94,7 +94,7 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
     },
     editorProps: {
       attributes: {
-        class: 'screenplay-editor outline-none min-h-full',
+        class: 'outline-none min-h-full',
         spellcheck: 'true',
       },
     },
@@ -144,7 +144,7 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
       )}
       <ElementToolbar editor={editor} />
       <div
-        className="screenplay-page mx-auto shadow-1"
+        className="screenplay-page screenplay-editor mx-auto shadow-1"
         style={{
           width: '100%',
           maxWidth: '680px',
