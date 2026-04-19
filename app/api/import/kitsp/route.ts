@@ -8,6 +8,7 @@ import fs from 'fs';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
 
 const TAG_TO_NODE: Record<string, string> = {
   action: 'actionLine',
@@ -30,22 +31,27 @@ interface ParsedScene {
 }
 
 async function loadSqlJs() {
-  // Read WASM binary directly — avoids filesystem path issues on Vercel
+  // WASM is committed to public/_wasm/ — Next.js always includes public/ in serverless output
   const candidatePaths = [
+    path.join(process.cwd(), 'public', '_wasm', 'sql-wasm.wasm'),
     path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
-    path.join(process.cwd(), '.next', 'server', 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
+    path.join('/var/task', 'public', '_wasm', 'sql-wasm.wasm'),
   ];
+
   let wasmBinary: Buffer | null = null;
+  const errors: string[] = [];
   for (const p of candidatePaths) {
     try {
       wasmBinary = await fs.promises.readFile(p);
       break;
-    } catch {
-      /* try next */
+    } catch (e) {
+      errors.push(`${p}: ${(e as Error).message}`);
     }
   }
   if (!wasmBinary) {
-    throw new Error('sql-wasm.wasm not found in any of the candidate paths');
+    throw new Error(
+      `sql-wasm.wasm not found. Tried:\n${errors.join('\n')}\ncwd=${process.cwd()}`
+    );
   }
   const SQL = await initSqlJs({
     wasmBinary,
@@ -323,8 +329,12 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Import error';
+    const stack = error instanceof Error ? error.stack : undefined;
     console.error('KIT import error:', error);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json(
+      { error: msg, stack: process.env.NODE_ENV === 'production' ? stack?.split('\n').slice(0, 5).join('\n') : stack },
+      { status: 500 }
+    );
   } finally {
     if (tmpPath) {
       try {

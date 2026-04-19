@@ -29,10 +29,19 @@ export function KitImportButton() {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
+
+      let data: { error?: string; stack?: string; screenplayId?: string; scenesImported?: number; charactersImported?: number; locationsImported?: number } = {};
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text().catch(() => '');
+        data = { error: text || `HTTP ${res.status}` };
+      }
 
       if (!res.ok) {
-        throw new Error(data.error || `HTTP ${res.status}`);
+        const errMsg = data.error || `HTTP ${res.status}`;
+        if (data.stack) console.error('KIT import stack:', data.stack);
+        throw new Error(errMsg);
       }
 
       addToast(
