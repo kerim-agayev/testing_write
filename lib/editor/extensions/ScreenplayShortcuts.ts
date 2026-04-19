@@ -1,7 +1,5 @@
 import { Extension } from '@tiptap/core';
 
-const CYCLE = ['sceneHeading', 'actionLine', 'characterName', 'dialogue', 'parenthetical', 'transition'];
-
 export const ScreenplayShortcuts = Extension.create({
   name: 'screenplayShortcuts',
 
@@ -24,16 +22,62 @@ export const ScreenplayShortcuts = Extension.create({
       'Tab': () => {
         const cur = this.editor.state.selection.$from.parent.type.name;
 
-        // Action → Character (only on empty line)
-        if (cur === 'actionLine') {
-          const isEmpty = this.editor.state.selection.$from.parent.textContent.trim() === '';
-          if (!isEmpty) return false;
-          return this.editor.chain().focus().setNode('characterName').run();
-        }
+        switch (cur) {
+          case 'sceneHeading':
+            this.editor.chain().focus().setNode('actionLine').run();
+            return true;
 
-        // Default: cycle
-        const next = CYCLE[(CYCLE.indexOf(cur) + 1) % CYCLE.length];
-        return this.editor.chain().focus().setNode(next).run();
+          case 'actionLine': {
+            const isEmpty = this.editor.state.selection.$from.parent.textContent.trim() === '';
+            if (isEmpty) {
+              this.editor.chain().focus().setNode('characterName').run();
+            }
+            return true;
+          }
+
+          case 'characterName':
+            this.editor.chain().focus().setNode('parenthetical').run();
+            return true;
+
+          case 'dialogue':
+            this.editor.chain().focus().setNode('parenthetical').run();
+            return true;
+
+          case 'parenthetical':
+            this.editor.chain().focus().setNode('dialogue').run();
+            return true;
+
+          case 'transition':
+            this.editor.chain().focus().setNode('sceneHeading').run();
+            return true;
+
+          default:
+            return true;
+        }
+      },
+
+      'Shift-Tab': () => {
+        const cur = this.editor.state.selection.$from.parent.type.name;
+
+        switch (cur) {
+          case 'actionLine':
+            this.editor.chain().focus().setNode('sceneHeading').run();
+            return true;
+          case 'characterName':
+            this.editor.chain().focus().setNode('actionLine').run();
+            return true;
+          case 'dialogue':
+            this.editor.chain().focus().setNode('characterName').run();
+            return true;
+          case 'parenthetical':
+            this.editor.chain().focus().setNode('characterName').run();
+            return true;
+          case 'transition':
+            this.editor.chain().focus().setNode('actionLine').run();
+            return true;
+          default:
+            return true;
+        }
       },
 
       'Mod-1': () => this.editor.chain().focus().setNode('sceneHeading').run(),

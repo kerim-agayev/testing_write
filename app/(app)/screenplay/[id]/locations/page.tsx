@@ -6,15 +6,16 @@ import { Plus, Trash2, Edit2, ChevronLeft } from 'lucide-react';
 import { useLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/lib/api/hooks';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { useUIStore } from '@/store/uiStore';
 
 export default function LocationsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const addToast = useUIStore((s) => s.addToast);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newType, setNewType] = useState('INT');
-  const [saved, setSaved] = useState(false);
 
   const { data: locations = [], isLoading } = useLocations(id);
   const create = useCreateLocation(id);
@@ -35,7 +36,15 @@ export default function LocationsPage() {
   const handleAdd = () => {
     if (!newName.trim()) return;
     create.mutate({ name: newName, intExt: newType }, {
-      onSuccess: () => { setNewName(''); setShowAdd(false); }
+      onSuccess: () => {
+        setNewName('');
+        setShowAdd(false);
+        addToast('Məkan əlavə edildi', 'success');
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Əlavə uğursuz: ${msg}`, 'error');
+      },
     });
   };
 
@@ -44,9 +53,22 @@ export default function LocationsPage() {
     update.mutate({ id: editingId, data: editForm }, {
       onSuccess: () => {
         setEditingId(null);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-      }
+        addToast('Yadda saxlandı', 'success');
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Saxlama uğursuz: ${msg}`, 'error');
+      },
+    });
+  };
+
+  const handleDelete = (locId: string) => {
+    del.mutate(locId, {
+      onSuccess: () => addToast('Məkan silindi', 'info'),
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Silmə uğursuz: ${msg}`, 'error');
+      },
     });
   };
 
@@ -67,7 +89,6 @@ export default function LocationsPage() {
             <p className="text-sm text-txt-muted mt-1">{locations.length} location{locations.length !== 1 ? 's' : ''}</p>
           </div>
           <div className="flex items-center gap-3">
-            {saved && <span className="text-xs text-green-600">✓ Saved!</span>}
             <Button onClick={() => setShowAdd(true)} className="flex items-center gap-2">
               <Plus size={16} /> Add Location
             </Button>
@@ -147,7 +168,7 @@ export default function LocationsPage() {
                       <Edit2 size={14} />
                     </button>
                     <button
-                      onClick={() => del.mutate(loc.id)}
+                      onClick={() => handleDelete(loc.id)}
                       className="p-2 hover:bg-red-50 rounded text-txt-secondary hover:text-red-500 transition-colors"
                     >
                       <Trash2 size={14} />

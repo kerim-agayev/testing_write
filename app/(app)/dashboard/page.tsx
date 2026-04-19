@@ -9,6 +9,7 @@ import { Plus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { PendingInvites } from '@/components/dashboard/PendingInvites';
 import { INSPIRATIONAL_QUOTES } from '@/lib/quotes';
+import { KitImportButton } from '@/components/ui/KitImportButton';
 
 export const metadata: Metadata = { title: 'Dashboard — ScriptFlow' };
 
@@ -36,12 +37,15 @@ export default async function DashboardPage() {
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
-        <Link href="/screenplay/new">
-          <Button variant="primary" size="lg">
-            <Plus className="w-4 h-4" />
-            {t('newScreenplay')}
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <KitImportButton />
+          <Link href="/screenplay/new">
+            <Button variant="primary" size="lg">
+              <Plus className="w-4 h-4" />
+              {t('newScreenplay')}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}

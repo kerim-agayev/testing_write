@@ -4,8 +4,19 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   const { id } = params;
   try {
+    const screenplay = await prisma.screenplay.findUnique({
+      where: { id },
+      select: { ownerId: true },
+    });
+    if (!screenplay || screenplay.ownerId !== session.user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const locations = await prisma.location.findMany({
       where: { screenplayId: id },
       orderBy: [{ order: 'asc' }, { name: 'asc' }],

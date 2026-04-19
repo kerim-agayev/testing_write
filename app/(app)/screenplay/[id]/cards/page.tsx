@@ -14,12 +14,14 @@ import { useCards, useCreateCard, useUpdateCard, useDeleteCard, useReorderCards 
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useUIStore } from '@/store/uiStore';
 
 const COLORS = ['#6B7280', '#1D7A5A', '#C47A1B', '#B22222', '#1B2A6B', '#5C3178', '#1B4F72', '#D35400', '#138D75', '#2C3E50'];
 
 export default function CardsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const addToast = useUIStore((s) => s.addToast);
   const { data: cards = [], isLoading } = useCards(id);
   const create = useCreateCard(id);
   const update = useUpdateCard(id);
@@ -34,14 +36,39 @@ export default function CardsPage() {
   const handleAdd = () => {
     if (!form.title.trim()) return;
     create.mutate(form, {
-      onSuccess: () => { setForm({ title: '', description: '', color: '#6B7280' }); setShowAdd(false); }
+      onSuccess: () => {
+        setForm({ title: '', description: '', color: '#6B7280' });
+        setShowAdd(false);
+        addToast('Kart əlavə edildi', 'success');
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Əlavə uğursuz: ${msg}`, 'error');
+      },
     });
   };
 
   const handleSave = () => {
     if (!editingId) return;
     update.mutate({ id: editingId, data: form }, {
-      onSuccess: () => setEditingId(null)
+      onSuccess: () => {
+        setEditingId(null);
+        addToast('Yadda saxlandı', 'success');
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Saxlama uğursuz: ${msg}`, 'error');
+      },
+    });
+  };
+
+  const handleDelete = (cardId: string) => {
+    del.mutate(cardId, {
+      onSuccess: () => addToast('Kart silindi', 'info'),
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
+        addToast(`Silmə uğursuz: ${msg}`, 'error');
+      },
     });
   };
 
@@ -130,7 +157,7 @@ export default function CardsPage() {
                     form={form}
                     setForm={setForm}
                     onEdit={() => { setEditingId(card.id); setForm({ title: card.title, description: card.description || '', color: card.color }); }}
-                    onDelete={() => del.mutate(card.id)}
+                    onDelete={() => handleDelete(card.id)}
                     onSave={handleSave}
                     onCancel={() => setEditingId(null)}
                   />

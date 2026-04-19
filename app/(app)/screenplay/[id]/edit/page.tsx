@@ -13,7 +13,6 @@ import { SceneKronotopBadges } from '@/components/editor/LeftPanel/SceneKronotop
 import { SceneEmotionSelector } from '@/components/editor/LeftPanel/SceneEmotionSelector';
 import { cn } from '@/lib/utils/cn';
 import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
-import { SceneHeadingBar } from '@/components/editor/CenterPanel/SceneHeadingBar';
 import { AddSceneModal } from '@/components/editor/AddSceneModal';
 import { useDebouncedCallback } from 'use-debounce';
 import type { ScreenplayFull } from '@/types/api';
@@ -366,26 +365,25 @@ export default function EditorPage() {
         </div>
 
         {/* ─── CENTER PANEL (Tiptap Editor) ─── */}
-        <div className="flex-1 bg-surface-base overflow-y-auto p-8">
+        <div className="flex-1 bg-surface-base overflow-y-auto">
           {activeSceneId && activeScene ? (
-            <div>
-              <SceneHeadingBar screenplayId={id} />
-              <ScreenplayEditor
-                key={activeSceneId}
-                sceneId={activeSceneId}
-                screenplayId={id}
-                initialContent={activeScene.content}
-                scenes={scenes}
-                onSceneNavigate={setActiveScene}
-              />
-            </div>
+            <ScreenplayEditor
+              key={activeSceneId}
+              sceneId={activeSceneId}
+              screenplayId={id}
+              initialContent={activeScene.content}
+              scenes={scenes}
+              onSceneNavigate={setActiveScene}
+            />
           ) : (
-            <div className="max-w-[680px] mx-auto bg-[var(--screenplay-page-bg)] shadow-1 rounded min-h-[800px] p-16 flex items-center justify-center">
-              <p className="text-txt-muted text-center">
-                {scenes.length === 0
-                  ? 'Click "+ Add Scene" to start writing.'
-                  : 'Select a scene from the left panel to start editing.'}
-              </p>
+            <div className="p-8">
+              <div className="max-w-[680px] mx-auto bg-[var(--screenplay-page-bg)] shadow-1 rounded min-h-[800px] p-16 flex items-center justify-center">
+                <p className="text-txt-muted text-center">
+                  {scenes.length === 0
+                    ? 'Click "+ Add Scene" to start writing.'
+                    : 'Select a scene from the left panel to start editing.'}
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -406,6 +404,7 @@ export default function EditorPage() {
                 {(['story', 'notes', 'mentor'] as const).map((tab) => (
                   <button
                     key={tab}
+                    tabIndex={-1}
                     onClick={() => setRightPanelTab(tab)}
                     className={cn(
                       'px-3 py-1.5 rounded text-xs font-medium transition-all',

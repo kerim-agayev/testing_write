@@ -16,20 +16,26 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { synopsis, authorEmail, authorPhone, writtenDate } = await req.json();
+    const body = await req.json();
+    const { synopsis, authorEmail, authorPhone, writtenDate, genre, logline, title } = body;
+
+    const data: Record<string, unknown> = {};
+    if (synopsis !== undefined) data.synopsis = synopsis;
+    if (authorEmail !== undefined) data.authorEmail = authorEmail;
+    if (authorPhone !== undefined) data.authorPhone = authorPhone;
+    if (writtenDate !== undefined) data.writtenDate = writtenDate ? new Date(writtenDate) : null;
+    if (genre !== undefined) data.genre = Array.isArray(genre) ? genre : (genre ? [genre] : []);
+    if (logline !== undefined) data.logline = logline;
+    if (title !== undefined && typeof title === 'string' && title.trim()) data.title = title.trim();
 
     const updated = await prisma.screenplay.update({
       where: { id: params.id },
-      data: {
-        synopsis: synopsis !== undefined ? synopsis : undefined,
-        authorEmail: authorEmail !== undefined ? authorEmail : undefined,
-        authorPhone: authorPhone !== undefined ? authorPhone : undefined,
-        writtenDate: writtenDate ? new Date(writtenDate) : undefined,
-      },
+      data,
     });
 
     return NextResponse.json(updated);
-  } catch {
+  } catch (error) {
+    console.error('Title page update error:', error);
     return NextResponse.json({ error: 'Failed to update title page' }, { status: 500 });
   }
 }

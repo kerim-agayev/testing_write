@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useDebouncedCallback } from 'use-debounce';
+import { useQuery } from '@tanstack/react-query';
 import { useEditorStore } from '@/store/editorStore';
 import { useSaveScene } from '@/lib/api/hooks';
 import {
@@ -15,8 +16,11 @@ import {
   Transition,
   ScreenplayShortcuts,
 } from '@/lib/editor/extensions';
+import { createCharacterSuggestion } from '@/lib/editor/extensions/CharacterSuggestion';
+import { createSceneHeadingSuggestion } from '@/lib/editor/extensions/SceneHeadingSuggestion';
 import { ElementToolbar } from './ElementToolbar';
 import { SceneNavigationBar } from './SceneNavigationBar';
+import { SceneHeadingBar } from './SceneHeadingBar';
 
 interface SceneRef {
   id: string;
@@ -50,6 +54,29 @@ const DEFAULT_CONTENT = {
 export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes = [], onSceneNavigate }: ScreenplayEditorProps) {
   const { setDirty, setSaving, setLastSavedAt } = useEditorStore();
   const saveScene = useSaveScene(screenplayId);
+
+  const { data: characters = [] } = useQuery<string[]>({
+    queryKey: ['characters-names', screenplayId],
+    queryFn: () =>
+      fetch(`/api/screenplays/${screenplayId}/characters`)
+        .then((r) => r.ok ? r.json() : [])
+        .then((data: Array<{ name: string }>) => Array.isArray(data) ? data.map((c) => c.name) : []),
+    staleTime: 30_000,
+  });
+
+  const { data: locations = [] } = useQuery<string[]>({
+    queryKey: ['locations-names', screenplayId],
+    queryFn: () =>
+      fetch(`/api/screenplays/${screenplayId}/locations`)
+        .then((r) => r.ok ? r.json() : [])
+        .then((data: Array<{ name: string }>) => Array.isArray(data) ? data.map((l) => l.name) : []),
+    staleTime: 30_000,
+  });
+
+  const charactersRef = useRef<string[]>(characters);
+  const locationsRef = useRef<string[]>(locations);
+  useEffect(() => { charactersRef.current = characters; }, [characters]);
+  useEffect(() => { locationsRef.current = locations; }, [locations]);
 
   const debouncedSave = useDebouncedCallback((content: Record<string, unknown>) => {
     setSaving(true);
@@ -86,6 +113,8 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
       Parenthetical,
       Transition,
       ScreenplayShortcuts,
+      createCharacterSuggestion(() => charactersRef.current),
+      createSceneHeadingSuggestion(() => locationsRef.current),
     ],
     content: initialContent ?? DEFAULT_CONTENT,
     onUpdate: ({ editor: ed }) => {
@@ -101,7 +130,6 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
     immediatelyRender: false,
   });
 
-  // Update content when scene changes
   useEffect(() => {
     if (editor && initialContent) {
       const currentJSON = JSON.stringify(editor.getJSON());
@@ -113,8 +141,12 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId]);
 
-  // Ctrl/Cmd+S force save (Tab/shortcuts handled by ScreenplayShortcuts extension)
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     if ((e.ctrlKey || e.metaKey) && e.key === 's' && editor) {
       e.preventDefault();
       debouncedSave.flush();
@@ -138,22 +170,29 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
   }
 
   return (
-    <div>
-      {scenes.length > 0 && onSceneNavigate && (
-        <SceneNavigationBar scenes={scenes} currentSceneId={sceneId} onNavigate={onSceneNavigate} />
-      )}
-      <ElementToolbar editor={editor} />
-      <div
-        className="screenplay-page screenplay-editor mx-auto shadow-1"
-        style={{
-          width: '100%',
-          maxWidth: '680px',
-          minHeight: '11in',
-          padding: '72px 72px 72px 108px',
-        }}
-        onKeyDown={handleKeyDown}
-      >
-        <EditorContent editor={editor} />
+    <div className="min-h-full" onKeyDown={handleKeyDown}>
+      {/* Unified Sticky Header: SceneHeadingBar + SceneNavigationBar + ElementToolbar */}
+      <div className="sticky top-0 z-20 bg-[var(--surface-base)] border-b border-[var(--border-color)] shadow-sm">
+        <SceneHeadingBar screenplayId={screenplayId} />
+        {scenes.length > 0 && onSceneNavigate && (
+          <SceneNavigationBar scenes={scenes} currentSceneId={sceneId} onNavigate={onSceneNavigate} />
+        )}
+        <ElementToolbar editor={editor} />
+      </div>
+
+      {/* Editor content — scrollable area */}
+      <div className="px-8 py-6">
+        <div
+          className="screenplay-page screenplay-editor mx-auto shadow-1"
+          style={{
+            width: '100%',
+            maxWidth: '680px',
+            minHeight: '11in',
+            padding: '72px 72px 72px 108px',
+          }}
+        >
+          <EditorContent editor={editor} />
+        </div>
       </div>
     </div>
   );
