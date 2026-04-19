@@ -8,11 +8,9 @@ export const ScreenplayShortcuts = Extension.create({
       'Enter': () => {
         const cur = this.editor.state.selection.$from.parent.type.name;
 
-        // actionLine: let ProseMirror default split (creates new actionLine of same type)
-        if (cur === 'actionLine') return false;
-
         const map: Record<string, string> = {
           sceneHeading: 'actionLine',
+          actionLine: 'actionLine',
           characterName: 'dialogue',
           dialogue: 'actionLine',
           parenthetical: 'dialogue',

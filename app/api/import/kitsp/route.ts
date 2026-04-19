@@ -54,9 +54,11 @@ async function loadSqlJs() {
   }
   // Use createRequire so CJS sql.js is loaded natively without webpack ESM transform
   const { createRequire } = await import('module');
-  const req = createRequire(process.cwd() + '/');
+  const req = createRequire(path.join(process.cwd(), 'package.json'));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const initSqlJs = req('sql.js') as (opts: { wasmBinary: Buffer }) => Promise<any>;
+  const sqlMod = req('sql.js') as any;
+  // Handle both CJS (fn) and ESM-wrapped (module.default) export forms
+  const initSqlJs = typeof sqlMod === 'function' ? sqlMod : sqlMod.default;
   const SQL = await initSqlJs({ wasmBinary });
   return SQL;
 }

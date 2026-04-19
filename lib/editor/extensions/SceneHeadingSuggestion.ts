@@ -114,6 +114,12 @@ export function createSceneHeadingSuggestion(getLocations: () => string[]) {
                   popup?.[0]?.hide();
                   return true;
                 }
+                // Let Tab and Enter pass through to ScreenplayShortcuts
+                if (props.event.key === 'Tab' || props.event.key === 'Enter') {
+                  popup?.[0]?.hide();
+                  component?.destroy();
+                  return false;
+                }
                 const ref = component?.ref as
                   | { onKeyDown: (p: { event: KeyboardEvent }) => boolean }
                   | undefined;

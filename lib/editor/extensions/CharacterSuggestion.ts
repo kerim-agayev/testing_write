@@ -68,6 +68,12 @@ export function createCharacterSuggestion(getCharacters: () => string[]) {
                   popup?.[0]?.hide();
                   return true;
                 }
+                // Let Tab pass through to ScreenplayShortcuts for node type switching
+                if (props.event.key === 'Tab') {
+                  popup?.[0]?.hide();
+                  component?.destroy();
+                  return false;
+                }
                 const ref = component?.ref as
                   | { onKeyDown: (p: { event: KeyboardEvent }) => boolean }
                   | undefined;
