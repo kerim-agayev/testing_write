@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
     const screenplay = await prisma.screenplay.findUnique({
@@ -28,7 +27,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     );
 
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to reorder cards' }, { status: 500 });
+  } catch (error) {
+    console.error('Cards reorder error:', error);
+    const msg = error instanceof Error ? error.message : 'Failed to reorder cards';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

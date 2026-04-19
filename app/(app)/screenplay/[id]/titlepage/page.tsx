@@ -24,6 +24,7 @@ export default function TitlePagePage() {
   const { data: screenplay } = useScreenplay(id) as { data: ScreenplayWithOwner | undefined };
   const updateTitlePage = useUpdateTitlePage(id);
   const addToast = useUIStore((s) => s.addToast);
+  const [mounted, setMounted] = useState(false);
 
   const [form, setForm] = useState({
     title: '',
@@ -34,6 +35,10 @@ export default function TitlePagePage() {
     authorPhone: '',
     writtenDate: '',
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (screenplay) {
@@ -69,9 +74,12 @@ export default function TitlePagePage() {
     );
   };
 
-  const formattedDate = form.writtenDate
-    ? new Date(form.writtenDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-    : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  // Only format date on client to prevent SSR/CSR mismatch from timezone/locale differences
+  const formattedDate = mounted
+    ? (form.writtenDate
+        ? new Date(form.writtenDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : '')
+    : '';
 
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base">

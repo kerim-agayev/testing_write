@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = params;
@@ -24,13 +23,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json(locations);
   } catch (error) {
     console.error('Locations GET error:', error);
-    return NextResponse.json({ error: 'Failed to fetch locations' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Failed to fetch locations';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
     const { name, intExt, description } = await req.json();
@@ -60,7 +60,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
 
     return NextResponse.json(location, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: 'Failed to create location' }, { status: 500 });
+  } catch (error) {
+    console.error('Locations POST error:', error);
+    const msg = error instanceof Error ? error.message : 'Failed to create location';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
