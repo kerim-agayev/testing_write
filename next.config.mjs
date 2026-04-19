@@ -12,6 +12,10 @@ const nextConfig = {
     // Allow production builds to complete even with type errors
     ignoreBuildErrors: true,
   },
+  // Ensure sql.js WASM is bundled for serverless functions (KIT import route)
+  outputFileTracingIncludes: {
+    '/api/import/kitsp': ['./node_modules/sql.js/dist/sql-wasm.wasm'],
+  },
   webpack: (config) => {
     // Suppress pg-native optional dependency warning
     config.resolve.fallback = { ...config.resolve.fallback, 'pg-native': false };

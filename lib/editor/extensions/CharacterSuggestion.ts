@@ -1,8 +1,11 @@
 import { Extension } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion from '@tiptap/suggestion';
+import { PluginKey } from '@tiptap/pm/state';
 import tippy, { Instance } from 'tippy.js';
 import { SuggestionPopup, SuggestionItem } from '@/components/editor/ui/SuggestionPopup';
+
+const CharacterSuggestionPluginKey = new PluginKey('characterSuggestion');
 
 export function createCharacterSuggestion(getCharacters: () => string[]) {
   return Extension.create({
@@ -11,6 +14,7 @@ export function createCharacterSuggestion(getCharacters: () => string[]) {
     addProseMirrorPlugins() {
       return [
         Suggestion({
+          pluginKey: CharacterSuggestionPluginKey,
           editor: this.editor,
           char: '',
           startOfLine: true,

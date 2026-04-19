@@ -19,10 +19,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     const locations = await prisma.location.findMany({
       where: { screenplayId: id },
-      orderBy: [{ order: 'asc' }, { name: 'asc' }],
+      orderBy: { name: 'asc' },
     });
     return NextResponse.json(locations);
-  } catch {
+  } catch (error) {
+    console.error('Locations GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch locations' }, { status: 500 });
   }
 }

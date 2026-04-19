@@ -1,8 +1,11 @@
 import { Extension } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion from '@tiptap/suggestion';
+import { PluginKey } from '@tiptap/pm/state';
 import tippy, { Instance } from 'tippy.js';
 import { SuggestionPopup, SuggestionItem } from '@/components/editor/ui/SuggestionPopup';
+
+const SceneHeadingSuggestionPluginKey = new PluginKey('sceneHeadingSuggestion');
 
 const INT_EXT_OPTIONS: SuggestionItem[] = [
   { id: 'INT.', label: 'INT.' },
@@ -32,6 +35,7 @@ export function createSceneHeadingSuggestion(getLocations: () => string[]) {
     addProseMirrorPlugins() {
       return [
         Suggestion({
+          pluginKey: SceneHeadingSuggestionPluginKey,
           editor: this.editor,
           char: '',
           startOfLine: false,

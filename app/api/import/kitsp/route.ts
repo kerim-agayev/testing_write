@@ -30,10 +30,25 @@ interface ParsedScene {
 }
 
 async function loadSqlJs() {
-  // Locate sql-wasm.wasm file in node_modules for server-side use
-  const wasmPath = path.join(process.cwd(), 'node_modules', 'sql.js', 'dist');
+  // Read WASM binary directly — avoids filesystem path issues on Vercel
+  const candidatePaths = [
+    path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
+    path.join(process.cwd(), '.next', 'server', 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
+  ];
+  let wasmBinary: Buffer | null = null;
+  for (const p of candidatePaths) {
+    try {
+      wasmBinary = await fs.promises.readFile(p);
+      break;
+    } catch {
+      /* try next */
+    }
+  }
+  if (!wasmBinary) {
+    throw new Error('sql-wasm.wasm not found in any of the candidate paths');
+  }
   const SQL = await initSqlJs({
-    locateFile: (file) => path.join(wasmPath, file),
+    wasmBinary,
   });
   return SQL;
 }
