@@ -141,6 +141,15 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId]);
 
+  // Focus editor on mount/scene change so toolbar activeType syncs immediately
+  useEffect(() => {
+    if (!editor) return;
+    const timer = setTimeout(() => {
+      editor.commands.focus('start');
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [editor]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Tab') {
       e.preventDefault();

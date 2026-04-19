@@ -7,16 +7,26 @@ export const ScreenplayShortcuts = Extension.create({
     return {
       'Enter': () => {
         const cur = this.editor.state.selection.$from.parent.type.name;
+
+        // actionLine: let ProseMirror default split (creates new actionLine of same type)
+        if (cur === 'actionLine') return false;
+
         const map: Record<string, string> = {
-          'sceneHeading': 'actionLine',
-          'characterName': 'dialogue',
-          'dialogue': 'actionLine',
-          'parenthetical': 'dialogue',
-          'transition': 'sceneHeading',
+          sceneHeading: 'actionLine',
+          characterName: 'dialogue',
+          dialogue: 'actionLine',
+          parenthetical: 'dialogue',
+          transition: 'sceneHeading',
         };
         const next = map[cur];
         if (!next) return false;
-        return this.editor.chain().focus().insertContentAt(this.editor.state.selection.$from.after(), { type: next }).run();
+
+        const endPos = this.editor.state.selection.$from.after();
+        return this.editor
+          .chain()
+          .focus()
+          .insertContentAt(endPos, { type: next, content: [] })
+          .run();
       },
 
       'Tab': () => {
@@ -27,17 +37,25 @@ export const ScreenplayShortcuts = Extension.create({
             this.editor.chain().focus().setNode('actionLine').run();
             return true;
 
-          case 'actionLine': {
-            const isEmpty = this.editor.state.selection.$from.parent.textContent.trim() === '';
-            if (isEmpty) {
-              this.editor.chain().focus().setNode('characterName').run();
+          case 'actionLine':
+            this.editor.chain().focus().setNode('characterName').run();
+            return true;
+
+          case 'characterName': {
+            this.editor.chain().focus().setNode('parenthetical').run();
+            const pos = this.editor.state.selection.$from.start();
+            const nodeText = this.editor.state.selection.$from.parent.textContent;
+            if (!nodeText.startsWith('(')) {
+              this.editor
+                .chain()
+                .focus()
+                .setTextSelection(pos)
+                .insertContent('()')
+                .setTextSelection(pos + 1)
+                .run();
             }
             return true;
           }
-
-          case 'characterName':
-            this.editor.chain().focus().setNode('parenthetical').run();
-            return true;
 
           case 'dialogue':
             this.editor.chain().focus().setNode('parenthetical').run();
@@ -47,34 +65,6 @@ export const ScreenplayShortcuts = Extension.create({
             this.editor.chain().focus().setNode('dialogue').run();
             return true;
 
-          case 'transition':
-            this.editor.chain().focus().setNode('sceneHeading').run();
-            return true;
-
-          default:
-            return true;
-        }
-      },
-
-      'Shift-Tab': () => {
-        const cur = this.editor.state.selection.$from.parent.type.name;
-
-        switch (cur) {
-          case 'actionLine':
-            this.editor.chain().focus().setNode('sceneHeading').run();
-            return true;
-          case 'characterName':
-            this.editor.chain().focus().setNode('actionLine').run();
-            return true;
-          case 'dialogue':
-            this.editor.chain().focus().setNode('characterName').run();
-            return true;
-          case 'parenthetical':
-            this.editor.chain().focus().setNode('characterName').run();
-            return true;
-          case 'transition':
-            this.editor.chain().focus().setNode('actionLine').run();
-            return true;
           default:
             return true;
         }

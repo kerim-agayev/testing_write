@@ -18,9 +18,16 @@ const nextConfig = {
       '/api/import/kitsp': ['./node_modules/sql.js/dist/sql-wasm.wasm'],
     },
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Suppress pg-native optional dependency warning
     config.resolve.fallback = { ...config.resolve.fallback, 'pg-native': false };
+    // Externalize sql.js so webpack doesn't try to bundle its CJS exports
+    if (isServer) {
+      const existingExternals = config.externals || [];
+      config.externals = Array.isArray(existingExternals)
+        ? [...existingExternals, 'sql.js']
+        : [existingExternals, 'sql.js'];
+    }
     return config;
   },
 };

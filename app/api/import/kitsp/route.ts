@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import initSqlJs, { Database } from 'sql.js';
+import type { Database } from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -52,9 +52,12 @@ async function loadSqlJs() {
       `sql-wasm.wasm not found. Tried:\n${errors.join('\n')}\ncwd=${process.cwd()}`
     );
   }
-  const SQL = await initSqlJs({
-    wasmBinary,
-  });
+  // Use createRequire so CJS sql.js is loaded natively without webpack ESM transform
+  const { createRequire } = await import('module');
+  const req = createRequire(process.cwd() + '/');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const initSqlJs = req('sql.js') as (opts: { wasmBinary: Buffer }) => Promise<any>;
+  const SQL = await initSqlJs({ wasmBinary });
   return SQL;
 }
 
