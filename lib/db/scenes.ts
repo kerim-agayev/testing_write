@@ -56,6 +56,7 @@ export async function createScene(data: {
   intExt?: IntExt;
   locationId?: string | null;
   timeOfDay?: string | null;
+  content?: unknown;
 }) {
   // Auto-assign scene number if not provided
   let sceneNumber = data.sceneNumber;
@@ -95,7 +96,7 @@ export async function createScene(data: {
       intExt: data.intExt ?? 'INT',
       locationId: data.locationId,
       timeOfDay: data.timeOfDay,
-      content: { type: 'doc', content: [] },
+      content: data.content ?? { type: 'doc', content: [] },
     },
   });
 }

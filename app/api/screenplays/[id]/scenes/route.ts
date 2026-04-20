@@ -93,11 +93,27 @@ export async function POST(req: Request, { params }: Params) {
       locationId = loc.id;
     }
 
+    const intExtLabel =
+      parsed.data.intExt === 'EXT' ? 'EXT.' :
+      parsed.data.intExt === 'INT_EXT' ? 'INT./EXT.' :
+      'INT.';
+    const locationLabel = (parsed.data.locationName || 'LOCATION').toUpperCase();
+    const timeLabel = parsed.data.timeOfDay || 'DAY';
+    const headingText = `${intExtLabel} ${locationLabel} - ${timeLabel}`;
+    const initialContent = {
+      type: 'doc',
+      content: [
+        { type: 'sceneHeading', content: [{ type: 'text', text: headingText }] },
+        { type: 'actionLine', content: [] },
+      ],
+    };
+
     const scene = await createScene({
       sequenceId,
       intExt: parsed.data.intExt,
       locationId: locationId ?? null,
       timeOfDay: parsed.data.timeOfDay,
+      content: initialContent,
     });
 
     return NextResponse.json(scene, { status: 201 });

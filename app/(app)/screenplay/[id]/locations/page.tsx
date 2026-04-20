@@ -15,7 +15,8 @@ export default function LocationsPage() {
   const addToast = useUIStore((s) => s.addToast);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: locations = [], isLoading } = useLocations(id);
+  const { data: locationsRaw = [], isLoading } = useLocations(id);
+  const locations = locationsRaw as any[];
   const update = useUpdateLocation(id);
   const del = useDeleteLocation(id);
 
@@ -104,7 +105,7 @@ export default function LocationsPage() {
                   />
                   <div className="flex gap-2 pt-2">
                     <Button onClick={handleSave} size="sm">Save</Button>
-                    <Button onClick={() => setEditingId(null)} size="sm" variant="secondary">Cancel</Button>
+                    <Button onClick={() => setEditingId(null)} size="sm" variant="ghost">Cancel</Button>
                   </div>
                 </div>
               ) : (
