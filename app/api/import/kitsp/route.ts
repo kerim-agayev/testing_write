@@ -52,9 +52,9 @@ async function loadSqlJs() {
       `sql-wasm.wasm not found. Tried:\n${errors.join('\n')}\ncwd=${process.cwd()}`
     );
   }
-  // Use eval to bypass webpack static analysis — sql.js is CJS and must not be bundled
-  // eslint-disable-next-line no-eval
-  const sqlMod = eval('require')('sql.js');
+  // sql.js is CJS — use require (serverExternalPackages ensures it's available on Vercel)
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const sqlMod = require('sql.js');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initSqlJs = typeof sqlMod === 'function' ? sqlMod : (sqlMod as any).default;
   const SQL = await initSqlJs({ wasmBinary });
