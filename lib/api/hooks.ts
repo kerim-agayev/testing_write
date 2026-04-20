@@ -126,7 +126,10 @@ export function useUpdateLocation(screenplayId: string) {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
       patch(`/screenplays/${screenplayId}/locations/${id}`, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['locations', screenplayId] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['locations', screenplayId] });
+      qc.invalidateQueries({ queryKey: ['scenes', screenplayId] });
+    },
   });
 }
 

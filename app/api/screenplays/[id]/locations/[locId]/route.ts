@@ -28,6 +28,14 @@ export async function PATCH(
       },
     });
 
+    // Sync intExt to all scenes using this location
+    if (data.intExt) {
+      await prisma.scene.updateMany({
+        where: { locationId: params.locId },
+        data: { intExt: data.intExt },
+      });
+    }
+
     return NextResponse.json(location);
   } catch (error) {
     console.error('Location PATCH error:', error);

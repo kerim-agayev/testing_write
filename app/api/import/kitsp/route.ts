@@ -130,21 +130,22 @@ function parseSceneHeading(heading: string): {
   return { intExt, locationName: locationName || 'LOCATION', timeOfDay };
 }
 
-function buildTiptapJSON(elements: SceneElement[]): object {
-  const content = elements
+function buildTiptapJSON(heading: string | null, elements: SceneElement[]): object {
+  const nodes: object[] = [];
+  if (heading) {
+    nodes.push({ type: 'sceneHeading', content: [{ type: 'text', text: heading.trim().toUpperCase() }] });
+  }
+  const elementNodes = elements
     .filter((e) => e.text && e.text.trim())
     .map((e) => ({
       type: e.type,
-      content: [{ type: 'text', text: e.text }],
+      content: [{ type: 'text', text: e.type === 'parenthetical' ? e.text.replace(/^\(|\)$/g, '').trim() : e.text }],
     }));
-
-  return {
-    type: 'doc',
-    content:
-      content.length > 0
-        ? content
-        : [{ type: 'actionLine', content: [] }],
-  };
+  nodes.push(...elementNodes);
+  if (nodes.length === 0 || (nodes.length === 1 && !!heading)) {
+    nodes.push({ type: 'actionLine', content: [] });
+  }
+  return { type: 'doc', content: nodes };
 }
 
 function collectRows(db: Database, query: string): Record<string, unknown>[] {
@@ -203,6 +204,9 @@ export async function POST(req: Request) {
       db,
       'SELECT type, name FROM research WHERE name IS NOT NULL AND name != "" ORDER BY sort_order'
     );
+
+    // 3b. Cards (scenario_cards table — collectRows returns [] if table doesn't exist)
+    const cardRows = collectRows(db, 'SELECT title, description, stamp_color FROM scenario_cards ORDER BY id');
 
     db.close();
 
@@ -288,7 +292,7 @@ export async function POST(req: Request) {
       if (!scene.heading && scene.elements.length === 0) continue;
 
       const { intExt, locationName, timeOfDay } = parseSceneHeading(scene.heading ?? '');
-      const tiptapContent = buildTiptapJSON(scene.elements);
+      const tiptapContent = buildTiptapJSON(scene.heading, scene.elements);
 
       // Auto-create location if missing
       let locationId: string | null = locationByName.get(locationName) ?? null;
@@ -322,12 +326,33 @@ export async function POST(req: Request) {
       }
     }
 
+    // 10. Import Cards
+    let cardCount = 0;
+    for (let i = 0; i < cardRows.length; i++) {
+      const card = cardRows[i];
+      const title = (card.title as string | null)?.trim();
+      if (!title) continue;
+      try {
+        await prisma.card.create({
+          data: {
+            screenplayId: screenplay.id,
+            title,
+            description: (card.description as string | null) || undefined,
+            color: (card.stamp_color as string | null) || '#6B7280',
+            order: i,
+          },
+        });
+        cardCount++;
+      } catch { /* ignore */ }
+    }
+
     return NextResponse.json({
       success: true,
       screenplayId: screenplay.id,
       scenesImported: sceneCount,
       charactersImported: charCount,
       locationsImported: locCount,
+      cardsImported: cardCount,
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Import error';

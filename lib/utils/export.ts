@@ -410,7 +410,7 @@ export async function generatePDFHTML(screenplayId: string): Promise<string> {
 body{font-family:'Courier New',Courier,monospace;font-size:12pt;line-height:1.2;margin:0;color:#000;}
 .sh{text-transform:uppercase;font-weight:bold;margin-top:2em;margin-bottom:.5em;}
 .act{margin:.5em 0;}
-.char{text-align:center;text-transform:uppercase;margin-top:1em;margin-bottom:0;padding-left:1.5in;}
+.char{margin-left:2.2in;text-transform:uppercase;margin-top:1em;margin-bottom:0;}
 .dial{margin-left:1in;margin-right:1.5in;margin-bottom:.5em;}
 .paren{margin-left:1.3in;font-style:italic;}
 .trans{text-align:right;text-transform:uppercase;margin-top:1em;}
