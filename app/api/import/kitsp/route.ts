@@ -52,13 +52,11 @@ async function loadSqlJs() {
       `sql-wasm.wasm not found. Tried:\n${errors.join('\n')}\ncwd=${process.cwd()}`
     );
   }
-  // Use createRequire so CJS sql.js is loaded natively without webpack ESM transform
-  const { createRequire } = await import('module');
-  const req = createRequire(path.join(process.cwd(), 'package.json'));
+  // Use eval to bypass webpack static analysis — sql.js is CJS and must not be bundled
+  // eslint-disable-next-line no-eval
+  const sqlMod = eval('require')('sql.js');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sqlMod = req('sql.js') as any;
-  // Handle both CJS (fn) and ESM-wrapped (module.default) export forms
-  const initSqlJs = typeof sqlMod === 'function' ? sqlMod : sqlMod.default;
+  const initSqlJs = typeof sqlMod === 'function' ? sqlMod : (sqlMod as any).default;
   const SQL = await initSqlJs({ wasmBinary });
   return SQL;
 }

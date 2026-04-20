@@ -59,6 +59,8 @@ export default function TitlePagePage() {
   const handleSave = () => {
     updateTitlePage.mutate(
       {
+        title: form.title || undefined,
+        logline: form.logline || null,
         authorEmail: form.authorEmail,
         authorPhone: form.authorPhone,
         writtenDate: form.writtenDate || null,
@@ -110,18 +112,17 @@ export default function TitlePagePage() {
           <div className="space-y-5">
             <div>
               <label className="block text-xs font-medium text-txt-muted uppercase mb-1.5">Screenplay Title</label>
-              <Input value={form.title} disabled className="opacity-50" />
-              <p className="text-[11px] text-txt-muted mt-1">Set in screenplay settings</p>
+              <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-txt-muted uppercase mb-1.5">Author Name</label>
               <Input
                 value={form.authorName}
-                disabled
-                className="opacity-50"
+                onChange={(e) => setForm({ ...form, authorName: e.target.value })}
+                placeholder="Author name"
               />
-              <p className="text-[11px] text-txt-muted mt-1">From your account profile</p>
+              <p className="text-[11px] text-txt-muted mt-1">Displayed on title page only</p>
             </div>
 
             <div>
@@ -138,11 +139,10 @@ export default function TitlePagePage() {
               <label className="block text-xs font-medium text-txt-muted uppercase mb-1.5">Logline</label>
               <textarea
                 value={form.logline}
-                disabled
-                rows={2}
-                className="w-full px-3 py-2 border border-border rounded bg-surface-card text-txt-primary text-sm resize-none opacity-50"
+                onChange={(e) => setForm({ ...form, logline: e.target.value })}
+                rows={3}
+                className="w-full px-3 py-2 border border-border rounded bg-surface-card text-txt-primary text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary"
               />
-              <p className="text-[11px] text-txt-muted mt-1">Set in screenplay settings</p>
             </div>
 
             <hr className="border-border my-2" />

@@ -232,6 +232,25 @@ body {
   text-align: left;
 }
 
+/* Parenthetical () — shown via CSS, not inserted as text */
+.screenplay-editor .ProseMirror .parenthetical::before {
+  content: "(";
+}
+.screenplay-editor .ProseMirror .parenthetical::after {
+  content: ")";
+}
+/* Hide pseudo-elements when parenthetical is empty (placeholder visible) */
+.screenplay-editor .ProseMirror .parenthetical.is-empty::before,
+.screenplay-editor .ProseMirror .parenthetical.is-empty::after {
+  content: none;
+}
+
+/* ə character fix — prevent synthetic bold from font fallback */
+.screenplay-editor .ProseMirror {
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
 .screenplay-editor .ProseMirror .transition-line {
   text-transform: uppercase;
   text-align: right;

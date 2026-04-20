@@ -2,23 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Plus, Trash2, Edit2, ChevronLeft } from 'lucide-react';
-import { useLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/lib/api/hooks';
+import { Trash2, Edit2, ChevronLeft } from 'lucide-react';
+import { useLocations, useUpdateLocation, useDeleteLocation } from '@/lib/api/hooks';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useUIStore } from '@/store/uiStore';
+// Note: Add Location removed — locations are created automatically via Add Scene modal
 
 export default function LocationsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const addToast = useUIStore((s) => s.addToast);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showAdd, setShowAdd] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newType, setNewType] = useState('INT');
 
   const { data: locations = [], isLoading } = useLocations(id);
-  const create = useCreateLocation(id);
   const update = useUpdateLocation(id);
   const del = useDeleteLocation(id);
 
@@ -32,21 +29,6 @@ export default function LocationsPage() {
       setEditForm({ name: editingLoc.name, intExt: editingLoc.intExt, description: editingLoc.description || '' });
     }
   }, [editingId, editingLoc]);
-
-  const handleAdd = () => {
-    if (!newName.trim()) return;
-    create.mutate({ name: newName, intExt: newType }, {
-      onSuccess: () => {
-        setNewName('');
-        setShowAdd(false);
-        addToast('Məkan əlavə edildi', 'success');
-      },
-      onError: (err: unknown) => {
-        const msg = err instanceof Error ? err.message : 'Xəta baş verdi';
-        addToast(`Əlavə uğursuz: ${msg}`, 'error');
-      },
-    });
-  };
 
   const handleSave = () => {
     if (!editingId || !editForm.name.trim()) return;
@@ -88,38 +70,9 @@ export default function LocationsPage() {
             <h1 className="text-2xl font-bold text-txt-primary">Locations</h1>
             <p className="text-sm text-txt-muted mt-1">{locations.length} location{locations.length !== 1 ? 's' : ''}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button onClick={() => setShowAdd(true)} className="flex items-center gap-2">
-              <Plus size={16} /> Add Location
-            </Button>
-          </div>
+          <div />
         </div>
 
-        {showAdd && (
-          <div className="bg-surface-card border border-border rounded-lg p-4 mb-6">
-            <div className="space-y-3">
-              <Input
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
-                placeholder="Location name (e.g., COFFEE SHOP)"
-                autoFocus
-              />
-              <select
-                value={newType}
-                onChange={e => setNewType(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded bg-surface-base text-txt-primary text-sm"
-              >
-                <option value="INT">INT (Interior)</option>
-                <option value="EXT">EXT (Exterior)</option>
-                <option value="INT_EXT">INT./EXT. (Both)</option>
-              </select>
-              <div className="flex gap-2">
-                <Button onClick={handleAdd} disabled={!newName.trim()}>Save</Button>
-                <Button onClick={() => setShowAdd(false)} variant="secondary">Cancel</Button>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="space-y-2">
           {locations.map((loc: any) => (

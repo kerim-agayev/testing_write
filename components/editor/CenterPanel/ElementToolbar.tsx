@@ -6,7 +6,6 @@ import { Undo2, Redo2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const ELEMENTS = [
-  { type: 'sceneHeading', label: 'S.H.', shortcut: '⌘1' },
   { type: 'actionLine', label: 'Action', shortcut: '⌘2' },
   { type: 'characterName', label: 'Character', shortcut: '⌘3' },
   { type: 'dialogue', label: 'Dialogue', shortcut: '⌘4' },

@@ -30,42 +30,21 @@ export const ScreenplayShortcuts = Extension.create({
       'Tab': () => {
         const cur = this.editor.state.selection.$from.parent.type.name;
 
-        switch (cur) {
-          case 'sceneHeading':
-            this.editor.chain().focus().setNode('actionLine').run();
-            return true;
+        // Full cycle: actionLine → characterName → dialogue → parenthetical → transition → actionLine
+        const cycle: Record<string, string> = {
+          sceneHeading: 'actionLine',
+          actionLine: 'characterName',
+          characterName: 'dialogue',
+          dialogue: 'parenthetical',
+          parenthetical: 'transition',
+          transition: 'actionLine',
+        };
 
-          case 'actionLine':
-            this.editor.chain().focus().setNode('characterName').run();
-            return true;
+        const next = cycle[cur];
+        if (!next) return true;
 
-          case 'characterName': {
-            this.editor.chain().focus().setNode('parenthetical').run();
-            const pos = this.editor.state.selection.$from.start();
-            const nodeText = this.editor.state.selection.$from.parent.textContent;
-            if (!nodeText.startsWith('(')) {
-              this.editor
-                .chain()
-                .focus()
-                .setTextSelection(pos)
-                .insertContent('()')
-                .setTextSelection(pos + 1)
-                .run();
-            }
-            return true;
-          }
-
-          case 'dialogue':
-            this.editor.chain().focus().setNode('parenthetical').run();
-            return true;
-
-          case 'parenthetical':
-            this.editor.chain().focus().setNode('dialogue').run();
-            return true;
-
-          default:
-            return true;
-        }
+        this.editor.chain().focus().setNode(next).run();
+        return true;
       },
 
       'Mod-1': () => this.editor.chain().focus().setNode('sceneHeading').run(),

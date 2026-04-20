@@ -124,7 +124,10 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
     editorProps: {
       attributes: {
         class: 'outline-none min-h-full',
-        spellcheck: 'true',
+        spellcheck: 'false',
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
       },
     },
     immediatelyRender: false,
@@ -141,13 +144,35 @@ export function ScreenplayEditor({ sceneId, screenplayId, initialContent, scenes
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId]);
 
-  // Focus editor on mount/scene change so toolbar activeType syncs immediately
+  // Focus first actionLine on mount so toolbar shows "Action" active, not "S.H."
   useEffect(() => {
     if (!editor) return;
     const timer = setTimeout(() => {
-      editor.commands.focus('start');
+      const state = editor.state;
+      let actionPos = -1;
+      state.doc.forEach((node, offset) => {
+        if (node.type.name === 'actionLine' && actionPos === -1) {
+          actionPos = offset + 1;
+        }
+      });
+      if (actionPos >= 0) {
+        editor.commands.setTextSelection(actionPos);
+        editor.commands.focus();
+      } else {
+        editor.commands.focus('start');
+      }
     }, 50);
     return () => clearTimeout(timer);
+  }, [editor]);
+
+  // Disable spellcheck on editor DOM element
+  useEffect(() => {
+    if (!editor) return;
+    const el = editor.view.dom as HTMLElement;
+    el.setAttribute('spellcheck', 'false');
+    el.setAttribute('autocomplete', 'off');
+    el.setAttribute('autocorrect', 'off');
+    el.setAttribute('autocapitalize', 'off');
   }, [editor]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {

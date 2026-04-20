@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Plus, Trash2, Edit2, ChevronLeft } from 'lucide-react';
+import { Plus, Trash2, Edit2, ChevronLeft, X, Check } from 'lucide-react';
 import {
   DndContext, DragEndEvent, closestCenter,
 } from '@dnd-kit/core';
@@ -16,13 +16,17 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useUIStore } from '@/store/uiStore';
 
-const COLORS = ['#6B7280', '#1D7A5A', '#C47A1B', '#B22222', '#1B2A6B', '#5C3178', '#1B4F72', '#D35400', '#138D75', '#2C3E50'];
+const COLORS = [
+  '#6B7280', '#1D7A5A', '#C47A1B', '#B22222', '#1B2A6B',
+  '#5C3178', '#1B4F72', '#D35400', '#138D75', '#2C3E50',
+];
 
 export default function CardsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const addToast = useUIStore((s) => s.addToast);
-  const { data: cards = [], isLoading } = useCards(id);
+  const { data: cardsData = [], isLoading } = useCards(id);
+  const cards = cardsData as any[];
   const create = useCreateCard(id);
   const update = useUpdateCard(id);
   const del = useDeleteCard(id);
@@ -31,13 +35,13 @@ export default function CardsPage() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', color: '#6B7280' });
+  const [form, setForm] = useState({ title: '', description: '', color: '#1B4F72' });
 
   const handleAdd = () => {
     if (!form.title.trim()) return;
     create.mutate(form, {
       onSuccess: () => {
-        setForm({ title: '', description: '', color: '#6B7280' });
+        setForm({ title: '', description: '', color: '#1B4F72' });
         setShowAdd(false);
         addToast('Kart əlavə edildi', 'success');
       },
@@ -48,9 +52,8 @@ export default function CardsPage() {
     });
   };
 
-  const handleSave = () => {
-    if (!editingId) return;
-    update.mutate({ id: editingId, data: form }, {
+  const handleSave = (cardId: string) => {
+    update.mutate({ id: cardId, data: form }, {
       onSuccess: () => {
         setEditingId(null);
         addToast('Yadda saxlandı', 'success');
@@ -75,11 +78,9 @@ export default function CardsPage() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-
     const oldIndex = (cards as any[]).findIndex(c => c.id === active.id);
     const newIndex = (cards as any[]).findIndex(c => c.id === over.id);
     const newCards = arrayMove(cards, oldIndex, newIndex);
-
     qc.setQueryData(['cards', id], newCards);
     reorder.mutate(newCards.map((c: any, i: number) => ({ id: c.id, order: i })));
   };
@@ -87,26 +88,41 @@ export default function CardsPage() {
   if (isLoading) return <div className="p-8 text-txt-muted">Loading...</div>;
 
   return (
-    <div className="flex-1 overflow-y-auto bg-surface-base p-8">
-      <div className="max-w-6xl mx-auto">
+    <div
+      className="flex-1 overflow-y-auto p-8"
+      style={{
+        background: `
+          radial-gradient(ellipse at 20% 50%, rgba(180,140,100,0.15) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 20%, rgba(160,120,80,0.12) 0%, transparent 50%),
+          repeating-linear-gradient(
+            0deg, transparent, transparent 2px, rgba(139,90,43,0.04) 2px, rgba(139,90,43,0.04) 3px
+          ),
+          repeating-linear-gradient(
+            90deg, transparent, transparent 2px, rgba(139,90,43,0.04) 2px, rgba(139,90,43,0.04) 3px
+          ),
+          #c4956a
+        `,
+      }}
+    >
+      <div className="max-w-7xl mx-auto">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
+          className="flex items-center gap-1 text-white/80 hover:text-white mb-4 text-sm transition-colors drop-shadow"
         >
           <ChevronLeft size={16} /> Back
         </button>
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-txt-primary">Cards</h1>
-            <p className="text-sm text-txt-muted mt-1">{cards.length} card{cards.length !== 1 ? 's' : ''}</p>
+            <h1 className="text-2xl font-bold text-white drop-shadow">Cards</h1>
+            <p className="text-sm text-white/70 mt-1">{cards.length} card{cards.length !== 1 ? 's' : ''}</p>
           </div>
-          <Button onClick={() => setShowAdd(true)} className="flex items-center gap-2">
+          <Button onClick={() => { setShowAdd(true); setForm({ title: '', description: '', color: '#1B4F72' }); }} className="flex items-center gap-2">
             <Plus size={16} /> Add Card
           </Button>
         </div>
 
         {showAdd && (
-          <div className="bg-surface-card border border-border rounded-lg p-4 mb-6 space-y-3">
+          <div className="bg-white/95 backdrop-blur border border-white/50 rounded-xl p-4 mb-6 shadow-xl space-y-3 max-w-sm">
             <Input
               value={form.title}
               onChange={e => setForm({ ...form, title: e.target.value })}
@@ -116,9 +132,9 @@ export default function CardsPage() {
             <textarea
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              placeholder="Description"
+              placeholder="Description (optional)"
               rows={3}
-              className="w-full px-3 py-2 border border-border rounded bg-surface-base text-txt-primary text-sm resize-none"
+              className="w-full px-3 py-2 border border-border rounded bg-surface-base text-txt-primary text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <div className="flex gap-2 flex-wrap">
               {COLORS.map(c => (
@@ -126,7 +142,7 @@ export default function CardsPage() {
                   key={c}
                   onClick={() => setForm({ ...form, color: c })}
                   className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                    form.color === c ? 'border-txt-primary scale-110' : 'border-transparent'
+                    form.color === c ? 'border-gray-800 scale-125' : 'border-transparent'
                   }`}
                   style={{ background: c }}
                 />
@@ -134,14 +150,14 @@ export default function CardsPage() {
             </div>
             <div className="flex gap-2">
               <Button onClick={handleAdd} disabled={!form.title.trim()}>Save</Button>
-              <Button onClick={() => setShowAdd(false)} variant="secondary">Cancel</Button>
+              <Button onClick={() => setShowAdd(false)} variant="ghost">Cancel</Button>
             </div>
           </div>
         )}
 
         {cards.length === 0 ? (
-          <div className="text-center py-16 text-txt-muted">
-            <p className="mb-2">No cards yet</p>
+          <div className="text-center py-16 text-white/70 drop-shadow">
+            <p className="mb-2 text-lg font-medium">No cards yet</p>
             <p className="text-sm">Create cards to plan your screenplay scenes</p>
           </div>
         ) : (
@@ -156,9 +172,12 @@ export default function CardsPage() {
                     isEditing={editingId === card.id}
                     form={form}
                     setForm={setForm}
-                    onEdit={() => { setEditingId(card.id); setForm({ title: card.title, description: card.description || '', color: card.color }); }}
+                    onEdit={() => {
+                      setEditingId(card.id);
+                      setForm({ title: card.title, description: card.description || '', color: card.color });
+                    }}
                     onDelete={() => handleDelete(card.id)}
-                    onSave={handleSave}
+                    onSave={() => handleSave(card.id)}
                     onCancel={() => setEditingId(null)}
                   />
                 ))}
@@ -173,18 +192,20 @@ export default function CardsPage() {
 
 function CardItem({ card, idx, isEditing, form, setForm, onEdit, onDelete, onSave, onCancel }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: card.id });
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 };
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="relative bg-surface-card border border-border rounded-lg overflow-hidden cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
+      className="relative flex flex-col bg-[#2a2f3e] rounded-xl shadow-lg overflow-hidden"
+      /* Fixed height so all cards are the same size */
     >
-      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: card.color }} />
+      {/* Color accent bar at top */}
+      <div className="h-1.5 w-full flex-shrink-0" style={{ background: card.color }} />
 
       {isEditing ? (
-        <div className="p-3 space-y-2">
+        <div className="flex-1 p-3 flex flex-col gap-2">
           <Input
             value={form.title}
             onChange={e => setForm({ ...form, title: e.target.value })}
@@ -193,43 +214,62 @@ function CardItem({ card, idx, isEditing, form, setForm, onEdit, onDelete, onSav
           <textarea
             value={form.description}
             onChange={e => setForm({ ...form, description: e.target.value })}
-            rows={2}
-            className="w-full px-2 py-1 border border-border rounded bg-surface-base text-txt-primary text-[11px] resize-none"
+            className="flex-1 w-full px-2 py-1.5 border border-border rounded bg-surface-base text-txt-primary text-[11px] resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+            style={{ minHeight: '80px' }}
           />
-          <div className="flex gap-1 flex-wrap justify-center">
-            {['#6B7280', '#1D7A5A', '#C47A1B', '#B22222'].map(c => (
+          <div className="flex gap-1 flex-wrap">
+            {COLORS.map(c => (
               <button
                 key={c}
                 onClick={() => setForm({ ...form, color: c })}
-                className={`w-4 h-4 rounded-full border ${form.color === c ? 'border-txt-primary' : 'border-transparent'}`}
+                className={`w-4 h-4 rounded-full border ${form.color === c ? 'border-white' : 'border-transparent'}`}
                 style={{ background: c }}
               />
             ))}
           </div>
-          <div className="flex gap-1 text-[10px]">
-            <button onClick={onSave} className="flex-1 px-2 py-1 bg-primary text-white rounded hover:bg-primary/90">Save</button>
-            <button onClick={onCancel} className="flex-1 px-2 py-1 bg-border text-txt-secondary rounded hover:bg-border/70">Cancel</button>
+          <div className="flex gap-1">
+            <button
+              onClick={onSave}
+              className="flex-1 flex items-center justify-center gap-1 py-1 bg-primary text-white rounded text-[11px] hover:bg-primary/90"
+            >
+              <Check size={11} /> Save
+            </button>
+            <button
+              onClick={onCancel}
+              className="flex-1 flex items-center justify-center gap-1 py-1 bg-[#3a3f50] text-txt-secondary rounded text-[11px] hover:bg-[#454a5e]"
+            >
+              <X size={11} /> Cancel
+            </button>
           </div>
         </div>
       ) : (
         <>
-          <div className="p-3 pl-4" {...listeners} {...attributes}>
-            <div className="text-[10px] text-txt-muted font-mono mb-1">#{idx + 1}</div>
-            <p className="text-xs font-bold text-txt-primary line-clamp-2 mb-1">{card.title}</p>
-            {card.description && <p className="text-[11px] text-txt-secondary line-clamp-2">{card.description}</p>}
+          <div
+            className="flex-1 p-3 overflow-y-auto cursor-grab active:cursor-grabbing"
+            style={{ minHeight: '160px', maxHeight: '220px' }}
+            {...listeners}
+            {...attributes}
+          >
+            <div className="text-[10px] text-white/40 font-mono mb-1.5">#{idx + 1}</div>
+            <p className="text-sm font-bold text-white leading-snug mb-2">{card.title}</p>
+            {card.description && (
+              <p className="text-[11px] text-white/70 leading-relaxed">{card.description}</p>
+            )}
           </div>
-          <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 flex gap-1 transition-opacity">
+          {/* Always-visible action buttons */}
+          <div className="flex border-t border-white/10 flex-shrink-0">
             <button
-              onClick={(e) => { e.stopPropagation(); onEdit(); }}
-              className="p-1 bg-surface-panel border border-border rounded hover:bg-surface-card text-txt-muted hover:text-txt-primary text-[10px]"
+              onClick={onEdit}
+              className="flex-1 flex items-center justify-center gap-1 py-2 text-white/50 hover:text-white hover:bg-white/10 transition-colors text-[11px]"
             >
-              <Edit2 size={10} />
+              <Edit2 size={11} /> Edit
             </button>
+            <div className="w-px bg-white/10" />
             <button
-              onClick={(e) => { e.stopPropagation(); onDelete(); }}
-              className="p-1 bg-surface-panel border border-border rounded hover:bg-red-50 text-txt-muted hover:text-red-500 text-[10px]"
+              onClick={onDelete}
+              className="flex-1 flex items-center justify-center gap-1 py-2 text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-colors text-[11px]"
             >
-              <Trash2 size={10} />
+              <Trash2 size={11} /> Delete
             </button>
           </div>
         </>
