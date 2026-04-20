@@ -232,17 +232,21 @@ body {
   text-align: left;
 }
 
-/* Parenthetical () — shown via CSS, not inserted as text */
+/* Parenthetical () — shown via CSS pseudo-elements */
 .screenplay-editor .ProseMirror .parenthetical::before {
   content: "(";
 }
 .screenplay-editor .ProseMirror .parenthetical::after {
   content: ")";
 }
-/* Hide pseudo-elements when parenthetical is empty (placeholder visible) */
+/* Hide pseudo-elements when empty (only placeholder is visible) */
 .screenplay-editor .ProseMirror .parenthetical.is-empty::before,
 .screenplay-editor .ProseMirror .parenthetical.is-empty::after {
   content: none;
+}
+/* ProseMirror adds a trailing <br> in empty blocks — hide it so ( ) stay on one line */
+.screenplay-editor .ProseMirror .parenthetical > br {
+  display: none;
 }
 
 /* ə character fix — prevent synthetic bold from font fallback */

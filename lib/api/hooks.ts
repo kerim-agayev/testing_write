@@ -49,6 +49,7 @@ export function useSaveScene(screenplayId: string) {
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: ['scenes', screenplayId] });
       qc.invalidateQueries({ queryKey: ['scene-data', variables.sceneId] });
+      qc.invalidateQueries({ queryKey: ['locations', screenplayId] });
     },
   });
 }

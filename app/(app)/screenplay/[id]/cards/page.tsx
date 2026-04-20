@@ -89,7 +89,7 @@ export default function CardsPage() {
 
   return (
     <div
-      className="flex-1 overflow-y-auto p-8"
+      className="flex-1 overflow-y-auto p-8 min-h-full"
       style={{
         background: `
           radial-gradient(ellipse at 20% 50%, rgba(180,140,100,0.15) 0%, transparent 50%),

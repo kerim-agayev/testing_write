@@ -40,7 +40,7 @@ export const useEditorStore = create<EditorStore>((set) => ({
   isSaving: false,
   slideOverCharacterId: null,
 
-  setScreenplayId: (id) => set({ screenplayId: id }),
+  setScreenplayId: (id) => set((s) => s.screenplayId !== id ? { screenplayId: id, activeSceneId: null } : { screenplayId: id }),
   setActiveScene: (sceneId) => set({ activeSceneId: sceneId }),
   setActiveEpisode: (episodeId) => set({ activeEpisodeId: episodeId }),
   setDirty: (dirty) => set({ isDirty: dirty }),

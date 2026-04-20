@@ -57,15 +57,32 @@ export async function PATCH(req: Request, { params }: Params) {
       );
     }
 
-    // Handle locationName -> upsert Location
+    // Handle locationName -> update existing location or create new one
     const updateData = { ...parsed.data };
     if (updateData.locationName) {
-      const loc = await prisma.location.upsert({
-        where: { screenplayId_name: { screenplayId: id, name: updateData.locationName.toUpperCase() } },
-        create: { screenplayId: id, name: updateData.locationName.toUpperCase(), intExt: updateData.intExt ?? 'INT' },
-        update: {},
+      const newName = updateData.locationName.toUpperCase();
+      // Check if this scene already has a location — if so, rename it in place
+      const currentScene = await prisma.scene.findUnique({
+        where: { id: sid },
+        select: { locationId: true },
       });
-      updateData.locationId = loc.id;
+      if (currentScene?.locationId) {
+        await prisma.location.update({
+          where: { id: currentScene.locationId },
+          data: {
+            name: newName,
+            ...(updateData.intExt ? { intExt: updateData.intExt } : {}),
+          },
+        });
+        updateData.locationId = currentScene.locationId;
+      } else {
+        const loc = await prisma.location.upsert({
+          where: { screenplayId_name: { screenplayId: id, name: newName } },
+          create: { screenplayId: id, name: newName, intExt: updateData.intExt ?? 'INT' },
+          update: {},
+        });
+        updateData.locationId = loc.id;
+      }
       delete updateData.locationName;
     }
 

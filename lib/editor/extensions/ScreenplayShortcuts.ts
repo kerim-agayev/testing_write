@@ -43,7 +43,7 @@ export const ScreenplayShortcuts = Extension.create({
         const next = cycle[cur];
         if (!next) return true;
 
-        this.editor.chain().focus().setNode(next).run();
+        this.editor.chain().setNode(next).focus().run();
         return true;
       },
 

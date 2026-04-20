@@ -288,7 +288,7 @@ export default function EditorPage() {
                         )}
                       >
                         <span className="font-mono text-xs mr-2">{scene.sceneNumber}</span>
-                        <span className="text-xs">{scene.intExt}. {scene.location?.name || scene.synopsis || 'Untitled'}</span>
+                        <span className="text-xs">{scene.intExt}. {scene.location?.name || 'Untitled'}</span>
                       </button>
                       <button
                         onClick={() => handleDeleteScene(scene.id)}

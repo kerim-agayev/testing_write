@@ -12,11 +12,11 @@ const nextConfig = {
     // Allow production builds to complete even with type errors
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: ['sql.js'],
   experimental: {
+    serverComponentsExternalPackages: ['sql.js'],
     outputFileTracingIncludes: {
       '/api/import/kitsp': [
-        './node_modules/sql.js/dist/**/*',
+        './node_modules/sql.js/**/*',
         './public/_wasm/**/*',
       ],
     },
