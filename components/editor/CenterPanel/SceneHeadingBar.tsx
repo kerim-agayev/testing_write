@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import { useSceneData } from '@/hooks/useSceneData';
-import { useSaveScene } from '@/lib/api/hooks';
+import { useSaveScene, useUpdateLocation } from '@/lib/api/hooks';
 import { Save } from 'lucide-react';
 
 const INT_EXT_OPTIONS = ['INT', 'EXT', 'INT_EXT'] as const;
@@ -13,8 +13,9 @@ const TIME_OPTIONS = ['DAY', 'NIGHT', 'DAWN', 'DUSK', 'CONTINUOUS', 'LATER'];
 export function SceneHeadingBar({ screenplayId }: { screenplayId: string }) {
   const activeSceneId = useEditorStore(s => s.activeSceneId);
   const { data: rawData } = useSceneData(screenplayId);
-  const sceneData = rawData as { intExt?: string; location?: { name: string } | null; timeOfDay?: string | null; sceneNumber?: number } | undefined;
+  const sceneData = rawData as { intExt?: string; location?: { id: string; name: string } | null; timeOfDay?: string | null; sceneNumber?: number } | undefined;
   const saveScene = useSaveScene(screenplayId);
+  const updateLocation = useUpdateLocation(screenplayId);
 
   const [intExt, setIntExt] = useState('INT');
   const [locationName, setLocationName] = useState('');
@@ -33,6 +34,9 @@ export function SceneHeadingBar({ screenplayId }: { screenplayId: string }) {
   const handleSaveIntExt = (val: string) => {
     setIntExt(val);
     saveScene.mutate({ sceneId: activeSceneId, data: { intExt: val } });
+    if (sceneData?.location?.id) {
+      updateLocation.mutate({ id: sceneData.location.id, data: { intExt: val } });
+    }
   };
 
   const handleSaveTime = (val: string) => {
