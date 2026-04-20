@@ -205,8 +205,14 @@ export async function POST(req: Request) {
       'SELECT type, name FROM research WHERE name IS NOT NULL AND name != "" ORDER BY sort_order'
     );
 
-    // 3b. Cards (scenario_cards table — collectRows returns [] if table doesn't exist)
-    const cardRows = collectRows(db, 'SELECT title, description, stamp_color FROM scenario_cards ORDER BY id');
+    // 3b. Cards — try multiple column name variants for color
+    let cardRows = collectRows(db, 'SELECT title, description, stamp_color FROM scenario_cards ORDER BY id');
+    if (cardRows.length === 0) {
+      cardRows = collectRows(db, 'SELECT title, description, color FROM scenario_cards ORDER BY id');
+    }
+    if (cardRows.length === 0) {
+      cardRows = collectRows(db, 'SELECT title, description FROM scenario_cards ORDER BY id');
+    }
 
     db.close();
 
@@ -338,7 +344,7 @@ export async function POST(req: Request) {
             screenplayId: screenplay.id,
             title,
             description: (card.description as string | null) || undefined,
-            color: (card.stamp_color as string | null) || '#6B7280',
+            color: ((card.stamp_color ?? card.color) as string | null) || '#6B7280',
             order: i,
           },
         });
