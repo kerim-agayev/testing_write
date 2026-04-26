@@ -14,6 +14,7 @@ type ScreenplayCardProps = {
   logline: string | null;
   lastEditedAt: string | Date;
   _count: { collaborators: number };
+  collaborators?: { userId: string }[];
 };
 
 export function ScreenplayCard({ screenplay }: { screenplay: ScreenplayCardProps }) {
@@ -68,12 +69,17 @@ export function ScreenplayCard({ screenplay }: { screenplay: ScreenplayCardProps
               {screenplay.logline}
             </p>
           )}
-          {screenplay._count.collaborators > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-panel border border-border rounded-full text-xs text-txt-secondary mb-2">
-              <Users className="w-3 h-3" />
-              {screenplay._count.collaborators} co-writer{screenplay._count.collaborators > 1 ? 's' : ''}
-            </span>
-          )}
+          {(() => {
+            // accepted count + 1 for owner = total team size
+            const accepted = screenplay.collaborators?.length ?? screenplay._count.collaborators;
+            const total = accepted + 1;
+            return accepted > 0 ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-panel border border-border rounded-full text-xs text-txt-secondary mb-2">
+                <Users className="w-3 h-3" />
+                {total} co-writer{total > 1 ? 's' : ''}
+              </span>
+            ) : null;
+          })()}
         </div>
 
         {/* Bottom row */}

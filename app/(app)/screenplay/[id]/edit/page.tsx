@@ -325,7 +325,13 @@ export default function EditorPage() {
                         <SceneOwnerDropdown
                           sceneId={scene.id}
                           screenplayId={id}
-                          collaborators={(screenplay as { collaborators?: { userId: string; acceptedAt: string | null; user: { id: string; name: string; avatarUrl?: string | null } }[] } | undefined)?.collaborators?.filter((c) => c.acceptedAt !== null).map((c) => ({ userId: c.userId, user: c.user })) ?? []}
+                          collaborators={(() => {
+                            type SP = { owner?: { id: string; name: string }; collaborators?: { userId: string; acceptedAt: string | null; user: { id: string; name: string; avatarUrl?: string | null } }[] };
+                            const sp = screenplay as SP | undefined;
+                            const ownerEntry = sp?.owner ? [{ userId: sp.owner.id, user: { id: sp.owner.id, name: sp.owner.name, avatarUrl: null } }] : [];
+                            const colEntries = sp?.collaborators?.filter((c) => c.acceptedAt !== null).map((c) => ({ userId: c.userId, user: c.user })) ?? [];
+                            return [...ownerEntry, ...colEntries];
+                          })()}
                           currentOwner={sceneOwners[scene.id] ?? null}
                         />
                       )}
