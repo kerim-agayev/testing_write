@@ -148,6 +148,56 @@ function buildTiptapJSON(heading: string | null, elements: SceneElement[]): obje
   return { type: 'doc', content: nodes };
 }
 
+interface KitCard {
+  id: string;
+  number: number;
+  title: string;
+  description: string;
+  color: string;
+}
+
+function parseKitspCards(xml: string): KitCard[] {
+  if (!xml || xml.trim() === '') return [];
+
+  const kitColorToHex = (kitColor: string): string => {
+    if (!kitColor || kitColor.trim() === '') return '#6B7280';
+    if (kitColor.startsWith('#')) return kitColor;
+    if (/^[0-9a-fA-F]{6}$/.test(kitColor)) return `#${kitColor}`;
+    const colorMap: Record<string, string> = {
+      red: '#C0392B', green: '#1D7A5A', blue: '#1B2A6B',
+      yellow: '#C47A1B', purple: '#5C3178', orange: '#D35400',
+      pink: '#E91E8C', gray: '#6B7280',
+    };
+    return colorMap[kitColor.toLowerCase()] ?? '#6B7280';
+  };
+
+  const cards: KitCard[] = [];
+  const cardRegex = /<card\s([\s\S]*?)\/>/g;
+  let cardMatch: RegExpExecArray | null;
+  while ((cardMatch = cardRegex.exec(xml)) !== null) {
+    const attrStr = cardMatch[1];
+    const attrs: Record<string, string> = {};
+    const attrRe = /(\w+)="([^"]*)"/g;
+    let attrMatch: RegExpExecArray | null;
+    while ((attrMatch = attrRe.exec(attrStr)) !== null) {
+      attrs[attrMatch[1]] = attrMatch[2];
+    }
+    if (attrs['is_folder'] === 'true') continue;
+    if (attrs['is_embedded'] === 'true') continue;
+    const number = parseInt(attrs['number'] ?? '0', 10);
+    if (isNaN(number) || number <= 0) continue;
+    cards.push({
+      id: attrs['id'] ?? '',
+      number,
+      title: attrs['title'] ?? '',
+      description: attrs['description'] ?? '',
+      color: kitColorToHex(attrs['colors'] ?? ''),
+    });
+  }
+  cards.sort((a, b) => a.number - b.number);
+  return cards;
+}
+
 function collectRows(db: Database, query: string): Record<string, unknown>[] {
   try {
     const stmt = db.prepare(query);
@@ -205,14 +255,9 @@ export async function POST(req: Request) {
       'SELECT type, name FROM research WHERE name IS NOT NULL AND name != "" ORDER BY sort_order'
     );
 
-    // 3b. Cards — try multiple column name variants for color
-    let cardRows = collectRows(db, 'SELECT title, description, stamp_color FROM scenario_cards ORDER BY id');
-    if (cardRows.length === 0) {
-      cardRows = collectRows(db, 'SELECT title, description, color FROM scenario_cards ORDER BY id');
-    }
-    if (cardRows.length === 0) {
-      cardRows = collectRows(db, 'SELECT title, description FROM scenario_cards ORDER BY id');
-    }
+    // 3b. Cards — stored as XML in scenario.scheme field
+    const schemeRows = collectRows(db, 'SELECT scheme FROM scenario WHERE id = 1');
+    const schemeXML = (schemeRows[0]?.scheme as string | null) ?? '';
 
     db.close();
 
@@ -332,20 +377,18 @@ export async function POST(req: Request) {
       }
     }
 
-    // 10. Import Cards
+    // 10. Import Cards (parsed from scheme XML)
+    const kitCards = parseKitspCards(schemeXML);
     let cardCount = 0;
-    for (let i = 0; i < cardRows.length; i++) {
-      const card = cardRows[i];
-      const title = (card.title as string | null)?.trim();
-      if (!title) continue;
+    for (const card of kitCards) {
       try {
         await prisma.card.create({
           data: {
             screenplayId: screenplay.id,
-            title,
-            description: (card.description as string | null) || undefined,
-            color: ((card.stamp_color ?? card.color) as string | null) || '#6B7280',
-            order: i,
+            title: card.title.trim() || 'Başlıqsız kart',
+            description: card.description || undefined,
+            color: card.color || '#6B7280',
+            order: card.number,
           },
         });
         cardCount++;
