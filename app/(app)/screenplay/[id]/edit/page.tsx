@@ -3,6 +3,7 @@
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useScreenplay, useScenes, useSaveScene, useDeleteScene, useCharacters, useMentorNotes } from '@/lib/api/hooks';
+import { useQuery } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api/client';
 import { useSceneData } from '@/hooks/useSceneData';
 import { useEditorStore } from '@/store/editorStore';
@@ -11,6 +12,7 @@ import Link from 'next/link';
 import { PanelLeft, PanelRight, ChevronLeft, Share2, Download, Users, BarChart3, BookOpen, Plus, Film, Trash2, Flag, MessageSquare, MapPin } from 'lucide-react';
 import { SceneKronotopBadges } from '@/components/editor/LeftPanel/SceneKronotopBadges';
 import { SceneEmotionSelector } from '@/components/editor/LeftPanel/SceneEmotionSelector';
+import { SceneOwnerDropdown } from '@/components/editor/LeftPanel/SceneOwnerDropdown';
 import { cn } from '@/lib/utils/cn';
 import { ScreenplayEditor } from '@/components/editor/CenterPanel/ScreenplayEditor';
 import { AddSceneModal } from '@/components/editor/AddSceneModal';
@@ -65,6 +67,18 @@ export default function EditorPage() {
       router.replace('/dashboard');
     }
   }, [screenplayError, router]);
+
+  const isCollaboration = (screenplay as { collaborators?: { userId: string; acceptedAt: string | null }[] } | undefined)
+    ?.collaborators?.some((c) => c.acceptedAt !== null) ?? false;
+
+  const { data: sceneOwners = {} } = useQuery<Record<string, { userId: string; name: string; avatarUrl: string | null }>>({
+    queryKey: ['scene-owners', id],
+    queryFn: () => fetch(`/api/screenplays/${id}/scene-owners`).then((r) => r.json()),
+    enabled: isCollaboration,
+    refetchInterval: isCollaboration ? 5000 : false,
+    refetchIntervalInBackground: true,
+    staleTime: 0,
+  });
 
   const saveScene = useSaveScene(id);
   const deleteSceneMutation = useDeleteScene(id);
@@ -277,26 +291,44 @@ export default function EditorPage() {
               ) : (
                 <div className="space-y-0.5">
                   {scenes.map((scene) => (
-                    <div key={scene.id} className="group flex items-center">
-                      <button
-                        onClick={() => setActiveScene(scene.id)}
-                        className={cn(
-                          'flex-1 text-left px-2.5 py-2 rounded-l text-sm transition-all',
-                          activeSceneId === scene.id
-                            ? 'bg-primary text-white'
-                            : 'text-txt-primary hover:bg-surface-hover'
-                        )}
-                      >
-                        <span className="font-mono text-xs mr-2">{scene.sceneNumber}</span>
-                        <span className="text-xs">{scene.intExt}. {scene.location?.name || 'Untitled'}</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteScene(scene.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 text-txt-muted hover:text-[var(--color-danger)] transition-all"
-                        title="Delete scene"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
+                    <div key={scene.id} className="group">
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => setActiveScene(scene.id)}
+                          className={cn(
+                            'flex-1 text-left px-2.5 py-2 rounded-l text-sm transition-all',
+                            activeSceneId === scene.id
+                              ? 'bg-primary text-white'
+                              : 'text-txt-primary hover:bg-surface-hover'
+                          )}
+                        >
+                          <span className="font-mono text-xs mr-2">{scene.sceneNumber}</span>
+                          <span className="text-xs">{scene.intExt}. {scene.location?.name || 'Untitled'}</span>
+                          {isCollaboration && sceneOwners[scene.id] && (
+                            <span
+                              className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/20 text-[8px] font-bold"
+                              title={`Son toxunan: ${sceneOwners[scene.id].name}`}
+                            >
+                              {sceneOwners[scene.id].name?.[0]?.toUpperCase()}
+                            </span>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteScene(scene.id)}
+                          className="opacity-0 group-hover:opacity-100 p-1.5 text-txt-muted hover:text-[var(--color-danger)] transition-all"
+                          title="Delete scene"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                      {isCollaboration && (
+                        <SceneOwnerDropdown
+                          sceneId={scene.id}
+                          screenplayId={id}
+                          collaborators={(screenplay as { collaborators?: { userId: string; acceptedAt: string | null; user: { id: string; name: string; avatarUrl?: string | null } }[] } | undefined)?.collaborators?.filter((c) => c.acceptedAt !== null).map((c) => ({ userId: c.userId, user: c.user })) ?? []}
+                          currentOwner={sceneOwners[scene.id] ?? null}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

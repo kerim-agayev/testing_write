@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Plus, Trash2, Edit2, ChevronLeft, X, Check } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Check } from 'lucide-react';
+import { SmartBackButton } from '@/components/ui/SmartBackButton';
 import {
   DndContext, DragEndEvent, closestCenter,
 } from '@dnd-kit/core';
@@ -105,12 +106,7 @@ export default function CardsPage() {
       }}
     >
       <div className="max-w-7xl mx-auto">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-1 text-white/80 hover:text-white mb-4 text-sm transition-colors drop-shadow"
-        >
-          <ChevronLeft size={16} /> Back
-        </button>
+        <SmartBackButton screenplayId={id} label="Back" className="flex items-center gap-1 text-white/80 hover:text-white mb-4 text-sm transition-colors drop-shadow" />
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-white drop-shadow">Cards</h1>

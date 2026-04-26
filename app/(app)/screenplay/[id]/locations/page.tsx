@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Trash2, Edit2, ChevronLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { Trash2, Edit2 } from 'lucide-react';
+import { SmartBackButton } from '@/components/ui/SmartBackButton';
 import { useLocations, useUpdateLocation, useDeleteLocation } from '@/lib/api/hooks';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -11,7 +12,7 @@ import { useUIStore } from '@/store/uiStore';
 
 export default function LocationsPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
+
   const addToast = useUIStore((s) => s.addToast);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -60,12 +61,7 @@ export default function LocationsPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base p-8">
       <div className="max-w-4xl mx-auto">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
-        >
-          <ChevronLeft size={16} /> Back
-        </button>
+        <SmartBackButton screenplayId={id} label="Back" className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors" />
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Locations</h1>

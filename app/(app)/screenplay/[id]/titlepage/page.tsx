@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Save, ChevronLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { Save } from 'lucide-react';
+import { SmartBackButton } from '@/components/ui/SmartBackButton';
 import { useScreenplay, useUpdateTitlePage } from '@/lib/api/hooks';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -20,7 +21,7 @@ type ScreenplayWithOwner = {
 
 export default function TitlePagePage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
+
   const { data: screenplay } = useScreenplay(id) as { data: ScreenplayWithOwner | undefined };
   const updateTitlePage = useUpdateTitlePage(id);
   const addToast = useUIStore((s) => s.addToast);
@@ -86,12 +87,7 @@ export default function TitlePagePage() {
   return (
     <div className="flex-1 overflow-y-auto bg-surface-base">
       <div className="max-w-6xl mx-auto p-8">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors"
-        >
-          <ChevronLeft size={16} /> Back
-        </button>
+        <SmartBackButton screenplayId={id} label="Back" className="flex items-center gap-1 text-txt-secondary hover:text-txt-primary mb-4 text-sm transition-colors" />
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-txt-primary">Title Page</h1>

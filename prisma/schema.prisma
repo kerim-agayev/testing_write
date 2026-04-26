@@ -27,6 +27,7 @@ model User {
   mentorAssignments MentorAssignment[]       @relation("MentorAssignments")
   mentorNotes       MentorNote[]
   notifications     Notification[]
+  sceneOwners       SceneOwner[]
 
   @@index([email])
   @@index([role])
@@ -165,6 +166,7 @@ model Scene {
   kronotoplar            SceneKronotop[]
   structureAssignments   StructureAssignment[]
   card            Card?
+  owner           SceneOwner?
 
   @@index([sequenceId])
   @@index([sceneNumber])
@@ -386,6 +388,23 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead])
+}
+
+// ─────────────────────────────────────────────
+// SCENE OWNERSHIP (Co-writer attribution)
+// ─────────────────────────────────────────────
+
+model SceneOwner {
+  id         String   @id @default(cuid())
+  sceneId    String   @unique
+  userId     String
+  assignedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  scene Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sceneId])
 }
 
 // ─────────────────────────────────────────────
