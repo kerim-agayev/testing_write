@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { auth } from '@/lib/auth';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes — no auth needed
@@ -32,6 +33,17 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // Admin routes require ADMIN role — decode JWT to verify
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
+    const session = await auth();
+    if (session?.user?.role !== 'ADMIN') {
+      if (pathname.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Forbidden', code: 'FORBIDDEN' }, { status: 403 });
+      }
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
   }
 
   return NextResponse.next();
